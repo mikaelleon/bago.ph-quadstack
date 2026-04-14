@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bago_barangays xmlns="https://bago.ph/schema/barangays"
+                city="Lipa City"
+                province="Batangas"
+                last_updated="2026-04-14">
+  <meta>
+    <source>BAGO.PH LGU dashboard prototype</source>
+    <note>Sample performance snapshot for CENRO reporting</note>
+  </meta>
+  <barangay name="Balintawak">
+    <collection_rate>96%</collection_rate>
+    <compliance_rate>93%</compliance_rate>
+    <open_reports>1</open_reports>
+    <eco_points>15200</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Marawoy">
+    <collection_rate>91%</collection_rate>
+    <compliance_rate>89%</compliance_rate>
+    <open_reports>3</open_reports>
+    <eco_points>12400</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Dagatan">
+    <collection_rate>88%</collection_rate>
+    <compliance_rate>85%</compliance_rate>
+    <open_reports>5</open_reports>
+    <eco_points>9870</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="San Sebastian">
+    <collection_rate>79%</collection_rate>
+    <compliance_rate>74%</compliance_rate>
+    <open_reports>11</open_reports>
+    <eco_points>8750</eco_points>
+    <status>Monitor</status>
+  </barangay>
+  <barangay name="Tambo">
+    <collection_rate>63%</collection_rate>
+    <compliance_rate>62%</compliance_rate>
+    <open_reports>19</open_reports>
+    <eco_points>5430</eco_points>
+    <status>Urgent</status>
+  </barangay>
+</bago_barangays>

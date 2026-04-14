@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0" />
+  <title>BAGO.PH — Login</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .login-wrapper {
+      min-height: calc(100vh - 60px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .login-box {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 40px;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .login-logo {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .login-logo h1 {
+      font-size: 28px;
+      color: #2E7D32;
+    }
+
+    .login-logo p {
+      font-size: 12px;
+      color: #757575;
+      margin-top: 4px;
+    }
+
+    .divider {
+      text-align: center;
+      margin: 16px 0;
+      color: #BDBDBD;
+      font-size: 13px;
+    }
+
+    .register-link {
+      text-align: center;
+      font-size: 13px;
+      margin-top: 16px;
+      color: #757575;
+    }
+
+    .register-link a {
+      color: #2E7D32;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .role-selector {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .role-btn {
+      flex: 1;
+      height: 44px;
+      border: 2px solid #BDBDBD;
+      border-radius: 8px;
+      background: white;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #757575;
+      transition: all 0.2s;
+    }
+
+    .role-btn.active,
+    .role-btn:hover {
+      border-color: #2E7D32;
+      color: #2E7D32;
+      background: #F1F8F1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <a href="index.html" class="logo">🌿 BAGO.PH</a>
+    <ul>
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="report.html">Report</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+    </ul>
+  </nav>
+
+  <!-- LOGIN FORM -->
+  <main class="login-wrapper">
+    <div class="login-box">
+
+      <div class="login-logo">
+        <h1>🌿 BAGO.PH</h1>
+        <p>Barangay App for Garbage Operations<br/>
+           in the Philippines</p>
+      </div>
+
+      <!-- ROLE SELECTOR -->
+      <div class="form-group">
+        <label>Select Your Role</label>
+        <div class="role-selector">
+          <button class="role-btn active"
+                  type="button"
+                  onclick="selectRole(this)">
+            🏠 Resident
+          </button>
+          <button class="role-btn"
+                  type="button"
+                  onclick="selectRole(this)">
+            🚛 Collector
+          </button>
+          <button class="role-btn"
+                  type="button"
+                  onclick="selectRole(this)">
+            🏛️ LGU Admin
+          </button>
+        </div>
+      </div>
+
+      <!-- LOGIN FIELDS -->
+      <form action="#" method="post">
+
+        <div class="form-group">
+          <label for="mobile">Mobile Number</label>
+          <input
+            type="tel"
+            id="mobile"
+            name="mobile"
+            placeholder="e.g., 09171234567"
+            maxlength="11"
+            required />
+          <span class="helper-text">
+            Use the number you registered with BAGO.PH.
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="pin">4-Digit PIN</label>
+          <input
+            type="password"
+            id="pin"
+            name="pin"
+            placeholder="Enter your 4-digit PIN"
+            maxlength="4"
+            required />
+          <span class="helper-text">
+            Forgot your PIN? Contact your barangay hall
+            with your Household ID.
+          </span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+          Login to BAGO.PH
+        </button>
+
+      </form>
+
+      <div class="divider">— or —</div>
+
+      <div class="register-link">
+        Don't have an account?
+        <a href="#">Register Now</a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>
+      🌿 BAGO.PH | In compliance with RA 9003 and
+      RA 10173 | Aligned with UN SDGs 11, 12, and 13
+    </p>
+    <p style="margin-top:4px; opacity:0.7;">
+      Team QuadStack | University of Batangas — CITEC |
+      IT3B 2025–2026
+    </p>
+  </footer>
+
+  <script>
+    function selectRole(btn) {
+      document.querySelectorAll('.role-btn')
+        .forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+  </script>
+
+</body>
+</html>

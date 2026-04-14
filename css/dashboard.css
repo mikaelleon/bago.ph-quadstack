@@ -1,0 +1,62 @@
+/* ─── METRIC GRID ──────────────────────────────── */
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,
+                         minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+/* ─── METRIC CARD ──────────────────────────────── */
+.metric-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 20px;
+  border-top: 4px solid #BDBDBD;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metric-card.green  { border-top-color: #2E7D32; }
+.metric-card.blue   { border-top-color: #1565C0; }
+.metric-card.orange { border-top-color: #E65100; }
+.metric-card.red    { border-top-color: #B71C1C; }
+
+.metric-icon {
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+
+.metric-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #212121;
+  line-height: 1.1;
+}
+
+.metric-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #424242;
+  margin-top: 4px;
+}
+
+.metric-sub {
+  font-size: 12px;
+  color: #757575;
+  margin-top: 4px;
+}
+
+/* ─── TABLE WRAPPER ─────────────────────────────── */
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.table-wrapper table {
+  box-shadow: none;
+  border-radius: 0;
+}

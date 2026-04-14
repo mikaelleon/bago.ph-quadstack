@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0" />
+  <title>BAGO.PH — Report an Issue</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .report-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 24px;
+      margin-top: 24px;
+      padding-bottom: 40px;
+    }
+
+    @media (max-width: 768px) {
+      .report-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .info-box {
+      background: #E8F5E9;
+      border-left: 4px solid #2E7D32;
+      border-radius: 0 8px 8px 0;
+      padding: 16px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: #1B5E20;
+    }
+
+    .steps-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+
+    .step-item {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      align-items: flex-start;
+    }
+
+    .step-number {
+      background: #2E7D32;
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .step-text {
+      font-size: 13px;
+      color: #424242;
+      padding-top: 4px;
+    }
+
+    .char-count {
+      text-align: right;
+      font-size: 12px;
+      color: #757575;
+      margin-top: 4px;
+    }
+
+    .eco-points-notice {
+      background: #F1F8E9;
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: #33691E;
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <a href="index.html" class="logo">🌿 BAGO.PH</a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="report.html" class="active">Report</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="container">
+      <h1>📸 Report a Waste Issue</h1>
+      <p>
+        Submit a waste problem in your barangay.
+        Your report creates an official tracked ticket
+        visible to your LGU officer.
+      </p>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="container" style="padding-top: 0;">
+    <div class="report-layout">
+
+      <!-- LEFT — FORM -->
+      <div>
+        <div class="info-box">
+          🌿 <strong>Earn 15 Eco-Points</strong> when your
+          report is validated by an LGU officer.
+        </div>
+
+        <div class="card">
+          <form action="#" method="post">
+
+            <div class="form-group">
+              <label for="issue-type">Issue Type</label>
+              <select id="issue-type" name="issue_type"
+                      required>
+                <option value="" disabled selected>
+                  Select the type of issue
+                </option>
+                <option>Missed Pickup</option>
+                <option>Overflowing Bin</option>
+                <option>Illegal Dumping</option>
+                <option>Blocked Road</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="description">Description</label>
+              <textarea
+                id="description"
+                name="description"
+                placeholder="Describe the problem in detail. Include what you see, how long it has been there, and any health or safety concerns."
+                maxlength="300"
+                oninput="updateCount(this)"
+                required></textarea>
+              <div class="char-count">
+                <span id="char-count">0</span> / 300
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="street">Street Address</label>
+              <input
+                type="text"
+                id="street"
+                name="street_address"
+                placeholder="e.g., 12 Rizal Street, Purok 3"
+                required />
+            </div>
+
+            <div class="form-group">
+              <label for="barangay-select">Barangay</label>
+              <select id="barangay-select"
+                      name="barangay" required>
+                <option value="" disabled selected>
+                  Select your barangay
+                </option>
+                <option>Marawoy</option>
+                <option>San Sebastian</option>
+                <option>Balintawak</option>
+                <option>Tambo</option>
+                <option>Dagatan</option>
+              </select>
+            </div>
+
+            <p class="helper-text" style="margin-bottom:16px;">
+              📍 Your GPS location will be automatically
+              tagged to this report upon submission.
+            </p>
+
+            <button type="submit" class="btn btn-primary">
+              Submit Report
+            </button>
+
+            <div class="eco-points-notice">
+              🌿 +15 Eco-Points will be credited to your
+              wallet once this report is validated by
+              your LGU officer.
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+      <!-- RIGHT — HOW IT WORKS -->
+      <div>
+        <div class="steps-card">
+          <h3 style="margin-bottom:16px;">
+            How It Works
+          </h3>
+
+          <div class="step-item">
+            <div class="step-number">1</div>
+            <div class="step-text">
+              <strong>Submit your report.</strong>
+              Describe the waste problem and your location.
+              Your GPS coordinates are auto-tagged.
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-number">2</div>
+            <div class="step-text">
+              <strong>LGU officer reviews it.</strong>
+              Your report appears on the CENRO dashboard
+              as an open ticket within minutes.
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-number">3</div>
+            <div class="step-text">
+              <strong>Collector is assigned.</strong>
+              An assigned garbage collector receives
+              the report on their app interface.
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-number">4</div>
+            <div class="step-text">
+              <strong>You get notified.</strong>
+              A push notification updates you every
+              time your report status changes.
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-number">5</div>
+            <div class="step-text">
+              <strong>Earn 15 Eco-Points.</strong>
+              Points are credited automatically after
+              your report is validated.
+            </div>
+          </div>
+        </div>
+
+        <!-- STATUS LEGEND -->
+        <div class="card" style="margin-top:16px;">
+          <h3 style="margin-bottom:12px;">
+            Report Status Guide
+          </h3>
+          <div style="display:flex; flex-direction:column;
+                      gap:8px;">
+            <div style="display:flex; align-items:center;
+                        gap:10px; font-size:13px;">
+              <span class="badge badge-open">Open</span>
+              Submitted, awaiting review
+            </div>
+            <div style="display:flex; align-items:center;
+                        gap:10px; font-size:13px;">
+              <span class="badge badge-updated">
+                Acknowledged
+              </span>
+              Seen by LGU officer
+            </div>
+            <div style="display:flex; align-items:center;
+                        gap:10px; font-size:13px;">
+              <span class="badge badge-inprogress">
+                In Progress
+              </span>
+              Collector assigned and on the way
+            </div>
+            <div style="display:flex; align-items:center;
+                        gap:10px; font-size:13px;">
+              <span class="badge badge-resolved">
+                Resolved
+              </span>
+              Issue addressed and closed
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>
+      🌿 BAGO.PH | In compliance with RA 9003 and
+      RA 10173 | Aligned with UN SDGs 11, 12, and 13
+    </p>
+  </footer>
+
+  <script>
+    function updateCount(el) {
+      document.getElementById('char-count')
+        .textContent = el.value.length;
+    }
+  </script>
+
+</body>
+</html>

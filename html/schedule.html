@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0" />
+  <title>BAGO.PH — Collection Schedule</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,
+                             minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .schedule-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .schedule-card-header {
+      background: #2E7D32;
+      color: white;
+      padding: 14px 16px;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .schedule-card-body {
+      padding: 16px;
+    }
+
+    .schedule-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #EEEEEE;
+      font-size: 13px;
+    }
+
+    .schedule-row:last-child { border-bottom: none; }
+
+    .waste-type {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+
+    .alert-banner {
+      background: #FFF8E1;
+      border-left: 4px solid #F9A825;
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: #5D4037;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .filter-bar select {
+      width: auto;
+      height: 40px;
+      padding: 0 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <a href="index.html" class="logo">🌿 BAGO.PH</a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="schedule.html" class="active">Schedule</a></li>
+      <li><a href="report.html">Report</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="container">
+      <h1>📅 Collection Schedule</h1>
+      <p>
+        Garbage collection schedule for registered
+        barangays in Lipa City, Batangas.
+        Updated in real time by your LGU admin.
+      </p>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="container" style="padding-top: 0;">
+
+    <!-- ALERT -->
+    <div class="alert-banner">
+      ⚠️ <strong>Schedule Update:</strong>
+      Wednesday Non-Biodegradable collection for
+      Barangay Marawoy has been moved to Thursday,
+      April 10. — Updated April 8, 2025, 7:23 AM PST
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <label style="font-weight:600; font-size:13px;">
+        Filter by Barangay:
+      </label>
+      <select aria-label="Filter by barangay">
+        <option value="all">All Barangays</option>
+        <option value="marawoy">Marawoy</option>
+        <option value="sanseb">San Sebastian</option>
+        <option value="balintawak">Balintawak</option>
+        <option value="tambo">Tambo</option>
+        <option value="dagatan">Dagatan</option>
+      </select>
+
+      <label style="font-weight:600; font-size:13px;">
+        Waste Type:
+      </label>
+      <select aria-label="Filter by waste type">
+        <option value="all">All Types</option>
+        <option value="bio">Biodegradable</option>
+        <option value="nonbio">Non-Biodegradable</option>
+        <option value="rec">Recyclable</option>
+        <option value="res">Residual</option>
+      </select>
+    </div>
+
+    <!-- SCHEDULE CARDS -->
+    <div class="schedule-grid">
+
+      <!-- MARAWOY -->
+      <div class="schedule-card">
+        <div class="schedule-card-header">
+          📍 Barangay Marawoy
+        </div>
+        <div class="schedule-card-body">
+
+          <div class="schedule-row">
+            <div class="waste-type">🟢 Biodegradable</div>
+            <div>
+              <div>Monday, Apr 7</div>
+              <div style="color:#757575; font-size:12px;">
+                6:00 AM – 10:00 AM
+              </div>
+            </div>
+            <span class="badge badge-scheduled">
+              Scheduled
+            </span>
+          </div>
+
+          <div class="schedule-row">
+            <div class="waste-type">🔵 Non-Biodegradable</div>
+            <div>
+              <div>Thursday, Apr 10</div>
+              <div style="color:#757575; font-size:12px;">
+                7:00 AM – 11:00 AM
+              </div>
+            </div>
+            <span class="badge badge-updated">Updated</span>
+          </div>
+
+          <div class="schedule-row">
+            <div class="waste-type">♻️ Recyclable</div>
+            <div>
+              <div>Friday, Apr 11</div>
+              <div style="color:#757575; font-size:12px;">
+                6:00 AM – 10:00 AM
+              </div>
+            </div>
+            <span class="badge badge-scheduled">
+              Scheduled
+            </span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SAN SEBASTIAN -->
+      <div class="schedule-card">
+        <div class="schedule-card-header">
+          📍 Barangay San Sebastian
+        </div>
+        <div class="schedule-card-body">
+
+          <div class="schedule-row">
+            <div class="waste-type">🟢 Biodegradable</div>
+            <div>
+              <div>Tuesday, Apr 8</div>
+              <div style="color:#757575; font-size:12px;">
+                6:00 AM – 10:00 AM
+              </div>
+            </div>
+            <span class="badge badge-scheduled">
+              Scheduled
+            </span>
+          </div>
+
+          <div class="schedule-row">
+            <div class="waste-type">🔵 Non-Biodegradable</div>
+            <div>
+              <div>Thursday, Apr 10</div>
+              <div style="color:#757575; font-size:12px;">
+                7:00 AM – 11:00 AM
+              </div>
+            </div>
+            <span class="badge badge-cancelled">
+              Cancelled
+            </span>
+          </div>
+
+          <div class="schedule-row">
+            <div class="waste-type">♻️ Recyclable</div>
+            <div>
+              <div>Saturday, Apr 12</div>
+              <div style="color:#757575; font-size:12px;">
+                6:00 AM – 9:00 AM
+              </div>
+            </div>
+            <span class="badge badge-scheduled">
+              Scheduled
+            </span>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- end schedule-grid -->
+
+    <!-- XML DATA LINK -->
+    <div class="card" style="margin-top: 24px;">
+      <p style="font-size:13px;">
+        📂 Schedule data is also available in XML format:
+        <a href="../xml/schedules.xml"
+           style="color:#2E7D32; font-weight:600;">
+          View schedules.xml (XSL transformed view)
+        </a>
+      </p>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>
+      🌿 BAGO.PH | In compliance with RA 9003 and
+      RA 10173 | Aligned with UN SDGs 11, 12, and 13
+    </p>
+  </footer>
+
+</body>
+</html>
