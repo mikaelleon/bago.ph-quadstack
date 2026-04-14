@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BAGO.PH — QR Code Audit</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+  <link rel="stylesheet" href="../css/bento.css" />
+</head>
+<body>
+
+  <!-- NAV OVERLAY -->
+  <div class="nav-overlay" onclick="toggleNav()"></div>
+
+  <!-- NAVBAR -->
+  <nav>
+    <a href="index.html" class="logo">🌿 BAGO.PH</a>
+    <button class="nav-toggle" onclick="toggleNav()">☰</button>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="report.html">Reports</a></li>
+      <li><a href="collectors.html">Collectors</a></li>
+      <li><a href="compliance.html">Compliance</a></li>
+      <li><a href="eco-points.html">Eco-Points</a></li>
+      <li><a href="announcements.html">Announce</a></li>
+      <li><a href="denr-reports.html">DENR</a></li>
+      <li><a href="users.html">Users</a></li>
+      <li><a href="qr-audit.html" class="active">QR Audit</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="container">
+      <h1>🔍 QR Code Audit & Management</h1>
+      <p>Manage household QR codes, authorize replacements, and audit scan history.</p>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="container" style="padding-top: 0; padding-bottom: 40px;">
+
+    <!-- TOP ROW: LOOKUP, DETAILS, REPLACEMENT -->
+    <div class="bento-grid">
+      <!-- QR Code Lookup -->
+      <div class="bento-card bento-span-4">
+        <div class="bento-card-header">
+          <div class="bento-card-title">🔎 QR Code Lookup</div>
+        </div>
+
+        <form onsubmit="lookupQR(event)">
+          <div class="form-group">
+            <label for="lookup-input">Search by Household ID or Token</label>
+            <input type="text" id="lookup-input" placeholder="e.g., HH-MAR-0001 or ABC123XY" />
+          </div>
+          <button type="submit" class="bento-btn bento-btn-primary w-full">
+            Search
+          </button>
+        </form>
+
+        <div class="bento-divider"></div>
+
+        <div class="text-overline">Quick Stats</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
+          <div style="text-align: center; padding: 12px; background: #E8F5E9; border-radius: 8px;">
+            <div class="text-subtitle" style="color: var(--green-dark);">1,520</div>
+            <div class="text-caption">Active QR Codes</div>
+          </div>
+          <div style="text-align: center; padding: 12px; background: #FFF3E0; border-radius: 8px;">
+            <div class="text-subtitle" style="color: #E65100;">47</div>
+            <div class="text-caption">Pending Replacements</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Code Details -->
+      <div class="bento-card bento-span-4" id="code-details">
+        <div class="bento-card-header">
+          <div class="bento-card-title">📋 Code Details</div>
+          <span class="bento-badge success">Active</span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span class="text-caption">Household ID</span>
+            <span class="text-body" style="font-weight: 600;">HH-MAR-0001</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span class="text-caption">Secure Token</span>
+            <span class="text-body" style="font-family: monospace;">A7B3C9D2E4F6</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span class="text-caption">Type</span>
+            <span class="text-body">Household Card</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span class="text-caption">Issued Date</span>
+            <span class="text-body">Jan 15, 2025</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span class="text-caption">Last Scan</span>
+            <span class="text-body">Apr 14, 2025 6:42 AM</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span class="text-caption">Total Scans</span>
+            <span class="text-body">156</span>
+          </div>
+        </div>
+
+        <div class="bento-divider"></div>
+
+        <div style="text-align: center; padding: 16px; background: #F5F5F5; border-radius: 8px;">
+          <div style="width: 100px; height: 100px; background: white; margin: 0 auto; display: flex; align-items: center; justify-content: center; border: 2px dashed #BDBDBD; border-radius: 8px;">
+            <span style="font-size: 10px; color: var(--text-secondary);">QR Preview</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Replacement Authorization -->
+      <div class="bento-card bento-span-4">
+        <div class="bento-card-header">
+          <div class="bento-card-title">🔄 Replacement Authorization</div>
+        </div>
+
+        <div class="bento-alert info" style="margin-bottom: 16px;">
+          <div class="bento-alert-content">
+            <div class="bento-alert-text">Limit: 2 replacements per household per year. Current usage: <strong>0 of 2</strong></div>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span class="text-caption">Resident</span>
+            <span class="text-body">Juan D.</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span class="text-caption">Barangay</span>
+            <span class="text-body">Marawoy</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span class="text-caption">Current Token</span>
+            <span class="bento-badge success">Active</span>
+          </div>
+        </div>
+
+        <div class="bento-divider"></div>
+
+        <div class="form-group">
+          <label for="replace-reason">Reason for Replacement</label>
+          <select id="replace-reason">
+            <option value="">Select reason...</option>
+            <option value="lost">Lost Card</option>
+            <option value="damaged">Damaged Card</option>
+            <option value="stolen">Stolen Card</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <button class="bento-btn bento-btn-primary w-full">
+          ✅ Authorize Replacement
+        </button>
+
+        <div class="text-caption" style="margin-top: 8px; text-align: center;">
+          Old token will be permanently invalidated
+        </div>
+      </div>
+    </div>
+
+    <!-- QR SCAN AUDIT LOG -->
+    <h2 style="margin: 28px 0 16px;">📜 QR Scan Audit Log</h2>
+
+    <div class="bento-filter-bar">
+      <select aria-label="Filter by household">
+        <option value="current">Current Household (HH-MAR-0001)</option>
+        <option value="all">All Households</option>
+      </select>
+      <select aria-label="Filter by barangay">
+        <option value="all">All Barangays</option>
+        <option value="marawoy">Marawoy</option>
+        <option value="sanseb">San Sebastian</option>
+        <option value="balintawak">Balintawak</option>
+        <option value="tambo">Tambo</option>
+        <option value="dagatan">Dagatan</option>
+      </select>
+      <input type="date" value="2025-04-01" />
+      <span class="text-caption">to</span>
+      <input type="date" value="2025-04-14" />
+      <button class="bento-btn bento-btn-sm bento-btn-secondary" style="margin-left: auto;">
+        📥 Export Log
+      </button>
+    </div>
+
+    <div class="bento-table-wrapper">
+      <table class="bento-table">
+        <thead>
+          <tr>
+            <th>Date & Time</th>
+            <th>Household</th>
+            <th>Collector</th>
+            <th>Waste Type</th>
+            <th>Eco-Points</th>
+            <th>GPS Coordinates</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Apr 14, 2025 6:42 AM</td>
+            <td><strong>HH-MAR-0001</strong></td>
+            <td>COL-001 (Juan dela Cruz)</td>
+            <td>🟢 Biodegradable</td>
+            <td>+5 pts</td>
+            <td>14.0871, 121.1622</td>
+            <td><span class="bento-badge success">Verified</span></td>
+          </tr>
+          <tr>
+            <td>Apr 12, 2025 7:15 AM</td>
+            <td><strong>HH-MAR-0001</strong></td>
+            <td>COL-002 (Pedro Santos)</td>
+            <td>🔵 Non-Biodegradable</td>
+            <td>+5 pts</td>
+            <td>14.0871, 121.1622</td>
+            <td><span class="bento-badge success">Verified</span></td>
+          </tr>
+          <tr>
+            <td>Apr 11, 2025 6:38 AM</td>
+            <td><strong>HH-MAR-0001</strong></td>
+            <td>COL-001 (Juan dela Cruz)</td>
+            <td>♻️ Recyclable</td>
+            <td>+5 pts</td>
+            <td>14.0871, 121.1622</td>
+            <td><span class="bento-badge success">Verified</span></td>
+          </tr>
+          <tr>
+            <td>Apr 9, 2025 6:55 AM</td>
+            <td><strong>HH-MAR-0001</strong></td>
+            <td>COL-001 (Juan dela Cruz)</td>
+            <td>🟢 Biodegradable</td>
+            <td>+5 pts</td>
+            <td>14.0871, 121.1622</td>
+            <td><span class="bento-badge success">Verified</span></td>
+          </tr>
+          <tr>
+            <td>Apr 7, 2025 6:30 AM</td>
+            <td><strong>HH-MAR-0001</strong></td>
+            <td>COL-001 (Juan dela Cruz)</td>
+            <td>🟢 Biodegradable</td>
+            <td>+5 pts</td>
+            <td>14.0871, 121.1622</td>
+            <td><span class="bento-badge success">Verified</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- SECURITY FLAGS -->
+    <h2 style="margin: 28px 0 16px;">🚨 Security Flags</h2>
+
+    <div class="bento-grid">
+      <div class="bento-card bento-span-6">
+        <div class="bento-card-header">
+          <div class="bento-card-title">⚠️ Flagged Events</div>
+          <span class="bento-badge danger">3 Active</span>
+        </div>
+
+        <div class="bento-alert danger" style="margin-bottom: 12px;">
+          <div class="bento-alert-icon">🚩</div>
+          <div class="bento-alert-content">
+            <div class="bento-alert-title">Multiple Scans Detected</div>
+            <div class="bento-alert-text">
+              <strong>HH-TAM-0078</strong> scanned 4 times on Apr 13, 2025. Possible fraud.
+              <br><span class="text-caption">Collector: COL-004 | Location: Tambo, Purok 5</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bento-alert warning" style="margin-bottom: 12px;">
+          <div class="bento-alert-icon">⏹️</div>
+          <div class="bento-alert-content">
+            <div class="bento-alert-title">Suspended Code Scan Attempt</div>
+            <div class="bento-alert-text">
+              Attempt to scan <strong>HH-SAN-0045</strong> (suspended) on Apr 12, 2025.
+              <br><span class="text-caption">Collector: COL-003 | Rejected automatically</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bento-alert warning" style="margin-bottom: 0;">
+          <div class="bento-alert-icon">❌</div>
+          <div class="bento-alert-content">
+            <div class="bento-alert-title">Invalidated Token Used</div>
+            <div class="bento-alert-text">
+              Old token for <strong>HH-BAL-0023</strong> used after replacement on Apr 10, 2025.
+              <br><span class="text-caption">Scan rejected | Alert sent to CENRO</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bento-card bento-span-6">
+        <div class="bento-card-header">
+          <div class="bento-card-title">📊 Flag Statistics</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div style="padding: 16px; background: #FFEBEE; border-radius: 8px; text-align: center;">
+            <div class="text-headline" style="color: var(--error);">12</div>
+            <div class="text-caption">Multiple Scans (30 days)</div>
+          </div>
+          <div style="padding: 16px; background: #FFF3E0; border-radius: 8px; text-align: center;">
+            <div class="text-headline" style="color: #E65100;">8</div>
+            <div class="text-caption">Suspended Scan Attempts</div>
+          </div>
+          <div style="padding: 16px; background: #F5F5F5; border-radius: 8px; text-align: center;">
+            <div class="text-headline">3</div>
+            <div class="text-caption">Invalid Token Uses</div>
+          </div>
+          <div style="padding: 16px; background: #E8F5E9; border-radius: 8px; text-align: center;">
+            <div class="text-headline" style="color: var(--green-dark);">23</div>
+            <div class="text-caption">Flags Resolved</div>
+          </div>
+        </div>
+
+        <div class="bento-divider"></div>
+
+        <div class="text-overline">Recent Resolutions</div>
+        <div style="margin-top: 8px;">
+          <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #EEEEEE;">
+            <span class="text-body">HH-DAG-0012 - False positive</span>
+            <span class="bento-badge success" style="font-size: 10px;">Resolved</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #EEEEEE;">
+            <span class="text-body">HH-MAR-0089 - Warning issued</span>
+            <span class="bento-badge success" style="font-size: 10px;">Resolved</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+            <span class="text-body">HH-BAL-0034 - Account suspended</span>
+            <span class="bento-badge danger" style="font-size: 10px;">Escalated</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>🌿 BAGO.PH | In compliance with RA 9003 and RA 10173 | Aligned with UN SDGs 11, 12, and 13</p>
+  </footer>
+
+  <script>
+    function toggleNav() {
+      document.querySelector('nav ul').classList.toggle('active');
+      document.querySelector('.nav-overlay').classList.toggle('active');
+    }
+
+    function lookupQR(event) {
+      event.preventDefault();
+      const input = document.getElementById('lookup-input').value;
+      if (input) {
+        alert('Looking up: ' + input);
+        // In real app, would fetch and update code-details section
+      }
+    }
+  </script>
+
+</body>
+</html>

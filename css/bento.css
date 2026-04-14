@@ -1,0 +1,1041 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   BENTO.CSS — Modern Bento UI Component Library for BAGO.PH
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── EXTENDED VARIABLES ────────────────────────────────────────────────── */
+:root {
+  /* Glass Effects */
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-blur: 10px;
+
+  /* Enhanced Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+  --shadow-glow-green: 0 0 20px rgba(46, 125, 50, 0.25);
+  --shadow-glow-blue: 0 0 20px rgba(21, 101, 192, 0.25);
+
+  /* Transitions */
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+}
+
+/* ─── BENTO GRID SYSTEM ─────────────────────────────────────────────────── */
+.bento-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: minmax(80px, auto);
+  margin-top: 24px;
+}
+
+/* Column Spans */
+.bento-span-1  { grid-column: span 1; }
+.bento-span-2  { grid-column: span 2; }
+.bento-span-3  { grid-column: span 3; }
+.bento-span-4  { grid-column: span 4; }
+.bento-span-5  { grid-column: span 5; }
+.bento-span-6  { grid-column: span 6; }
+.bento-span-7  { grid-column: span 7; }
+.bento-span-8  { grid-column: span 8; }
+.bento-span-9  { grid-column: span 9; }
+.bento-span-10 { grid-column: span 10; }
+.bento-span-11 { grid-column: span 11; }
+.bento-span-12 { grid-column: span 12; }
+
+/* Row Spans */
+.bento-row-1 { grid-row: span 1; }
+.bento-row-2 { grid-row: span 2; }
+.bento-row-3 { grid-row: span 3; }
+.bento-row-4 { grid-row: span 4; }
+
+/* Responsive Breakpoints */
+@media (max-width: 1200px) {
+  .bento-span-4 { grid-column: span 6; }
+  .bento-span-5 { grid-column: span 6; }
+  .bento-span-7 { grid-column: span 12; }
+  .bento-span-8 { grid-column: span 12; }
+}
+
+@media (max-width: 768px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .bento-span-1, .bento-span-2, .bento-span-3,
+  .bento-span-4, .bento-span-5, .bento-span-6,
+  .bento-span-7, .bento-span-8, .bento-span-9,
+  .bento-span-10, .bento-span-11, .bento-span-12 {
+    grid-column: span 1;
+  }
+
+  .bento-row-2, .bento-row-3, .bento-row-4 {
+    grid-row: span 1;
+  }
+}
+
+/* ─── BENTO CARD COMPONENT ──────────────────────────────────────────────── */
+.bento-card {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-normal),
+              box-shadow var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.bento-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Card with Accent Border */
+.bento-card.accent {
+  border-left: 4px solid var(--green-dark);
+}
+
+.bento-card.accent.blue { border-left-color: var(--blue); }
+.bento-card.accent.orange { border-left-color: #E65100; }
+.bento-card.accent.red { border-left-color: var(--error); }
+
+/* Card Header */
+.bento-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #EEEEEE;
+}
+
+.bento-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ─── GLASS MORPHISM ────────────────────────────────────────────────────── */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+
+.glass-header {
+  background: linear-gradient(135deg,
+    rgba(46, 125, 50, 0.95) 0%,
+    rgba(21, 101, 192, 0.95) 100%);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+/* ─── ENHANCED METRIC CARD ──────────────────────────────────────────────── */
+.bento-metric {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  box-shadow: var(--shadow-md);
+  border-top: 4px solid var(--green-dark);
+  transition: all var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bento-metric:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.bento-metric.blue { border-top-color: var(--blue); }
+.bento-metric.orange { border-top-color: #E65100; }
+.bento-metric.red { border-top-color: var(--error); }
+
+.bento-metric-icon {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.bento-metric-value {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.bento-metric-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #424242;
+}
+
+.bento-metric-sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bento-metric-sub .trend-up {
+  color: #2E7D32;
+}
+
+.bento-metric-sub .trend-down {
+  color: var(--error);
+}
+
+/* ─── TYPOGRAPHY SCALE ──────────────────────────────────────────────────── */
+.text-display {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--text-primary);
+}
+
+.text-headline {
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+.text-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.text-subtitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.text-body-lg {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.text-body {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.text-caption {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.text-overline {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+}
+
+/* ─── STATUS INDICATORS ─────────────────────────────────────────────────── */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.status-dot.active {
+  background: #4CAF50;
+  animation: pulse 2s infinite;
+}
+
+.status-dot.warning {
+  background: #FF9800;
+  animation: pulse 2s infinite;
+}
+
+.status-dot.danger {
+  background: #F44336;
+  animation: pulse 2s infinite;
+}
+
+.status-dot.inactive {
+  background: #9E9E9E;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 currentColor;
+  }
+  50% {
+    opacity: 0.6;
+    box-shadow: 0 0 0 4px transparent;
+  }
+}
+
+/* Enhanced Badges */
+.bento-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  gap: 6px;
+  transition: all var(--transition-fast);
+}
+
+.bento-badge.success {
+  background: #E8F5E9;
+  color: #1B5E20;
+}
+
+.bento-badge.warning {
+  background: #FFF3E0;
+  color: #E65100;
+}
+
+.bento-badge.danger {
+  background: #FFEBEE;
+  color: #C62828;
+}
+
+.bento-badge.info {
+  background: #E3F2FD;
+  color: #0D47A1;
+}
+
+.bento-badge.neutral {
+  background: #F5F5F5;
+  color: #616161;
+}
+
+/* ─── TREND INDICATORS ──────────────────────────────────────────────────── */
+.trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.trend.up {
+  color: #2E7D32;
+}
+
+.trend.down {
+  color: var(--error);
+}
+
+.trend.stable {
+  color: var(--text-secondary);
+}
+
+/* ─── ENHANCED BUTTONS ──────────────────────────────────────────────────── */
+.bento-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 20px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.bento-btn-primary {
+  background: var(--green-dark);
+  color: white;
+}
+
+.bento-btn-primary:hover {
+  background: #1B5E20;
+  box-shadow: var(--shadow-glow-green);
+}
+
+.bento-btn-secondary {
+  background: var(--blue);
+  color: white;
+}
+
+.bento-btn-secondary:hover {
+  background: #0D47A1;
+  box-shadow: var(--shadow-glow-blue);
+}
+
+.bento-btn-outline {
+  background: transparent;
+  color: var(--green-dark);
+  border: 2px solid var(--green-dark);
+}
+
+.bento-btn-outline:hover {
+  background: var(--green-dark);
+  color: white;
+}
+
+.bento-btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.bento-btn-ghost:hover {
+  background: #F5F5F5;
+  color: var(--text-primary);
+}
+
+.bento-btn-sm {
+  height: 36px;
+  padding: 0 14px;
+  font-size: 13px;
+}
+
+.bento-btn-lg {
+  height: 52px;
+  padding: 0 28px;
+  font-size: 16px;
+}
+
+/* Button Group */
+.bento-btn-group {
+  display: inline-flex;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.bento-btn-group .bento-btn {
+  border-radius: 0;
+  border-right: 1px solid rgba(255,255,255,0.2);
+}
+
+.bento-btn-group .bento-btn:last-child {
+  border-right: none;
+}
+
+/* ─── FILTER BAR ────────────────────────────────────────────────────────── */
+.bento-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 16px 20px;
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 20px;
+}
+
+.bento-filter-bar select,
+.bento-filter-bar input {
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid #E0E0E0;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  background: white;
+  transition: border-color var(--transition-fast);
+}
+
+.bento-filter-bar select:focus,
+.bento-filter-bar input:focus {
+  outline: none;
+  border-color: var(--green-dark);
+}
+
+.bento-filter-bar .search-input {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* ─── TAB NAVIGATION ────────────────────────────────────────────────────── */
+.bento-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: #F5F5F5;
+  border-radius: var(--radius-md);
+  margin-bottom: 24px;
+}
+
+.bento-tab {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.bento-tab:hover {
+  color: var(--text-primary);
+}
+
+.bento-tab.active {
+  background: white;
+  color: var(--green-dark);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ─── ENHANCED TABLE ────────────────────────────────────────────────────── */
+.bento-table-wrapper {
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  background: var(--surface);
+}
+
+.bento-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.bento-table thead tr {
+  background: linear-gradient(135deg, var(--green-dark) 0%, #1B5E20 100%);
+}
+
+.bento-table thead th {
+  color: white;
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.bento-table tbody td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #F0F0F0;
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+.bento-table tbody tr {
+  transition: background var(--transition-fast);
+}
+
+.bento-table tbody tr:hover {
+  background: #FAFAFA;
+}
+
+.bento-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Table Actions */
+.table-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.table-action-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: #F5F5F5;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.table-action-btn:hover {
+  background: var(--green-dark);
+  color: white;
+}
+
+/* ─── INFO PANELS ───────────────────────────────────────────────────────── */
+.bento-alert {
+  display: flex;
+  gap: 12px;
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+}
+
+.bento-alert.info {
+  background: #E3F2FD;
+  border-left: 4px solid var(--blue);
+  color: #0D47A1;
+}
+
+.bento-alert.success {
+  background: #E8F5E9;
+  border-left: 4px solid var(--green-dark);
+  color: #1B5E20;
+}
+
+.bento-alert.warning {
+  background: #FFF3E0;
+  border-left: 4px solid #E65100;
+  color: #E65100;
+}
+
+.bento-alert.danger {
+  background: #FFEBEE;
+  border-left: 4px solid var(--error);
+  color: #C62828;
+}
+
+.bento-alert-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.bento-alert-content {
+  flex: 1;
+}
+
+.bento-alert-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.bento-alert-text {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+/* ─── PROGRESS INDICATORS ───────────────────────────────────────────────── */
+.bento-progress {
+  height: 8px;
+  background: #E0E0E0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.bento-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green-dark) 0%, var(--green-light) 100%);
+  border-radius: 4px;
+  transition: width var(--transition-slow);
+}
+
+.bento-progress-bar.blue {
+  background: linear-gradient(90deg, var(--blue) 0%, #64B5F6 100%);
+}
+
+.bento-progress-bar.orange {
+  background: linear-gradient(90deg, #E65100 0%, #FFB74D 100%);
+}
+
+.bento-progress-bar.red {
+  background: linear-gradient(90deg, var(--error) 0%, #EF9A9A 100%);
+}
+
+/* Circular Progress */
+.bento-circular-progress {
+  width: 120px;
+  height: 120px;
+  position: relative;
+}
+
+.bento-circular-progress svg {
+  transform: rotate(-90deg);
+}
+
+.bento-circular-progress .progress-bg {
+  fill: none;
+  stroke: #E0E0E0;
+  stroke-width: 8;
+}
+
+.bento-circular-progress .progress-bar {
+  fill: none;
+  stroke: var(--green-dark);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset var(--transition-slow);
+}
+
+.bento-circular-progress .progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* ─── MODAL ─────────────────────────────────────────────────────────────── */
+.bento-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition-normal);
+}
+
+.bento-modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.bento-modal {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow: hidden;
+  transform: scale(0.9) translateY(20px);
+  transition: transform var(--transition-normal);
+}
+
+.bento-modal-overlay.active .bento-modal {
+  transform: scale(1) translateY(0);
+}
+
+.bento-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #EEEEEE;
+}
+
+.bento-modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.bento-modal-close {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: #F5F5F5;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.bento-modal-close:hover {
+  background: #E0E0E0;
+}
+
+.bento-modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  max-height: calc(90vh - 140px);
+}
+
+.bento-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid #EEEEEE;
+  background: #FAFAFA;
+}
+
+/* ─── PHONE MOCKUP (for preview) ────────────────────────────────────────── */
+.phone-mockup {
+  width: 280px;
+  background: #1A1A1A;
+  border-radius: 32px;
+  padding: 12px;
+  box-shadow: var(--shadow-lg);
+}
+
+.phone-screen {
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  aspect-ratio: 9 / 16;
+}
+
+.phone-notch {
+  width: 100px;
+  height: 24px;
+  background: #1A1A1A;
+  margin: 0 auto;
+  border-radius: 0 0 16px 16px;
+}
+
+.phone-notification {
+  margin: 12px;
+  padding: 12px;
+  background: #F5F5F5;
+  border-radius: 12px;
+}
+
+.phone-notification-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.phone-notification-icon {
+  width: 20px;
+  height: 20px;
+  background: var(--green-dark);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+}
+
+.phone-notification-app {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.phone-notification-time {
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-left: auto;
+}
+
+.phone-notification-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.phone-notification-body {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* ─── EMPTY STATE ───────────────────────────────────────────────────────── */
+.bento-empty {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.bento-empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.bento-empty-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.bento-empty-text {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+/* ─── UTILITY CLASSES ───────────────────────────────────────────────────── */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.gap-4 { gap: 4px; }
+.gap-8 { gap: 8px; }
+.gap-12 { gap: 12px; }
+.gap-16 { gap: 16px; }
+.gap-24 { gap: 24px; }
+
+.mt-8 { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.mb-8 { margin-bottom: 8px; }
+.mb-12 { margin-bottom: 12px; }
+.mb-16 { margin-bottom: 16px; }
+.mb-24 { margin-bottom: 24px; }
+
+.p-16 { padding: 16px; }
+.p-20 { padding: 20px; }
+.p-24 { padding: 24px; }
+
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+.w-full { width: 100%; }
+
+.hidden { display: none; }
+
+/* ─── TRANSITIONS ───────────────────────────────────────────────────────── */
+.hover-lift {
+  transition: transform var(--transition-normal);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+.hover-glow:hover {
+  box-shadow: var(--shadow-glow-green);
+}
+
+.hover-glow.blue:hover {
+  box-shadow: var(--shadow-glow-blue);
+}
+
+/* ─── CHECKBOX & RADIO STYLING ──────────────────────────────────────────── */
+.bento-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.bento-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--green-dark);
+  cursor: pointer;
+}
+
+.bento-radio-group {
+  display: flex;
+  gap: 16px;
+}
+
+.bento-radio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.bento-radio input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--green-dark);
+  cursor: pointer;
+}
+
+/* ─── CHARACTER COUNTER ─────────────────────────────────────────────────── */
+.char-counter {
+  text-align: right;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.char-counter.warning {
+  color: #E65100;
+}
+
+.char-counter.danger {
+  color: var(--error);
+}
+
+/* ─── TIMELINE ──────────────────────────────────────────────────────────── */
+.bento-timeline {
+  position: relative;
+  padding-left: 24px;
+}
+
+.bento-timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #E0E0E0;
+}
+
+.bento-timeline-item {
+  position: relative;
+  padding-bottom: 20px;
+}
+
+.bento-timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -24px;
+  top: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--green-dark);
+  border: 2px solid white;
+  box-shadow: 0 0 0 2px var(--green-dark);
+}
+
+.bento-timeline-item.pending::before {
+  background: #9E9E9E;
+  box-shadow: 0 0 0 2px #9E9E9E;
+}
+
+.bento-timeline-time {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.bento-timeline-content {
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+/* ─── DIVIDER ───────────────────────────────────────────────────────────── */
+.bento-divider {
+  height: 1px;
+  background: #EEEEEE;
+  margin: 20px 0;
+}
+
+.bento-divider.vertical {
+  width: 1px;
+  height: auto;
+  margin: 0 20px;
+}

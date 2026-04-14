@@ -10,13 +10,20 @@
 /* ─── METRIC CARD ──────────────────────────────── */
 .metric-card {
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
   padding: 20px;
   border-top: 4px solid #BDBDBD;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.metric-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
 }
 
 .metric-card.green  { border-top-color: #2E7D32; }

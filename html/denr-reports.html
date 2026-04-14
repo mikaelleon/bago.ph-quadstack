@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BAGO.PH — DENR Compliance Reports</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+  <link rel="stylesheet" href="../css/bento.css" />
+</head>
+<body>
+
+  <!-- NAV OVERLAY -->
+  <div class="nav-overlay" onclick="toggleNav()"></div>
+
+  <!-- NAVBAR -->
+  <nav>
+    <a href="index.html" class="logo">🌿 BAGO.PH</a>
+    <button class="nav-toggle" onclick="toggleNav()">☰</button>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="report.html">Reports</a></li>
+      <li><a href="collectors.html">Collectors</a></li>
+      <li><a href="compliance.html">Compliance</a></li>
+      <li><a href="eco-points.html">Eco-Points</a></li>
+      <li><a href="announcements.html">Announce</a></li>
+      <li><a href="denr-reports.html" class="active">DENR</a></li>
+      <li><a href="users.html">Users</a></li>
+      <li><a href="qr-audit.html">QR Audit</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="container">
+      <h1>📋 DENR Compliance Report Generator</h1>
+      <p>Generate official DENR and EMB compliance reports from verified BAGO.PH system data.</p>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="container" style="padding-top: 0; padding-bottom: 40px;">
+
+    <div class="bento-grid">
+      <!-- CONFIGURATION FORM -->
+      <div class="bento-card bento-span-5">
+        <div class="bento-card-header">
+          <div class="bento-card-title">⚙️ Report Configuration</div>
+        </div>
+
+        <form>
+          <div class="form-group">
+            <label>Reporting Period</label>
+            <div style="display: flex; gap: 12px;">
+              <input type="date" id="start-date" value="2025-01-01" style="flex: 1;" />
+              <span style="display: flex; align-items: center;">to</span>
+              <input type="date" id="end-date" value="2025-03-31" style="flex: 1;" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Quick Select</label>
+            <div class="bento-btn-group" style="width: 100%;">
+              <button type="button" class="bento-btn bento-btn-sm bento-btn-ghost" onclick="setQuarter('Q1')">Q1</button>
+              <button type="button" class="bento-btn bento-btn-sm bento-btn-primary" onclick="setQuarter('Q2')">Q2</button>
+              <button type="button" class="bento-btn bento-btn-sm bento-btn-ghost" onclick="setQuarter('Q3')">Q3</button>
+              <button type="button" class="bento-btn bento-btn-sm bento-btn-ghost" onclick="setQuarter('Q4')">Q4</button>
+            </div>
+          </div>
+
+          <div class="bento-divider"></div>
+
+          <div class="form-group">
+            <label>Report Sections to Include</label>
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
+              <label class="bento-checkbox">
+                <input type="checkbox" checked />
+                Collection Completion Rates
+              </label>
+              <label class="bento-checkbox">
+                <input type="checkbox" checked />
+                Waste Volumes by Type
+              </label>
+              <label class="bento-checkbox">
+                <input type="checkbox" checked />
+                Segregation Compliance Rates
+              </label>
+              <label class="bento-checkbox">
+                <input type="checkbox" checked />
+                Report Resolution Times
+              </label>
+              <label class="bento-checkbox">
+                <input type="checkbox" checked />
+                Resident Participation Rates
+              </label>
+              <label class="bento-checkbox">
+                <input type="checkbox" checked />
+                MRF Status
+              </label>
+            </div>
+          </div>
+
+          <div class="bento-divider"></div>
+
+          <div class="form-group">
+            <label for="officer-name">Certifying Officer</label>
+            <input type="text" id="officer-name" placeholder="Enter full name..." value="Engr. Maria Santos, CENRO" />
+          </div>
+
+          <div class="form-group">
+            <label for="officer-position">Position / Designation</label>
+            <input type="text" id="officer-position" placeholder="Enter position..." value="City Environment and Natural Resources Officer" />
+          </div>
+
+          <button type="button" class="bento-btn bento-btn-primary w-full" onclick="generateReport()">
+            📄 Generate Report
+          </button>
+        </form>
+      </div>
+
+      <!-- REPORT PREVIEW -->
+      <div class="bento-card bento-span-7 bento-row-2">
+        <div class="bento-card-header">
+          <div class="bento-card-title">📄 Report Preview</div>
+          <span class="bento-badge info">Draft</span>
+        </div>
+
+        <div style="background: white; border: 1px solid #E0E0E0; border-radius: 8px; padding: 24px; max-height: 500px; overflow-y: auto;">
+          <!-- Report Header -->
+          <div style="text-align: center; margin-bottom: 24px;">
+            <div style="font-size: 11px; color: var(--text-secondary);">Republic of the Philippines</div>
+            <div style="font-size: 12px; font-weight: 600;">DEPARTMENT OF ENVIRONMENT AND NATURAL RESOURCES</div>
+            <div style="font-size: 11px; color: var(--text-secondary);">National Solid Waste Management Commission</div>
+            <div style="margin-top: 16px; font-size: 14px; font-weight: 700;">SOLID WASTE MANAGEMENT COMPLIANCE REPORT</div>
+            <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Lipa City, Batangas | Q1 2025 (January - March)</div>
+          </div>
+
+          <!-- Section 1 -->
+          <div style="margin-bottom: 20px;">
+            <div style="font-weight: 600; color: var(--green-dark); margin-bottom: 8px; cursor: pointer;" onclick="toggleSection('section1')">
+              ▼ 1. Solid Waste Generation Summary
+            </div>
+            <div id="section1" style="padding-left: 16px; font-size: 13px;">
+              <table style="width: 100%; font-size: 12px; margin-top: 8px;">
+                <tr><td style="padding: 4px 0;">Total Waste Generated:</td><td style="text-align: right; font-weight: 600;">2,450 metric tons</td></tr>
+                <tr><td style="padding: 4px 0;">Total Waste Collected:</td><td style="text-align: right; font-weight: 600;">2,280 metric tons</td></tr>
+                <tr><td style="padding: 4px 0;">Collection Rate:</td><td style="text-align: right; font-weight: 600; color: var(--green-dark);">93.1%</td></tr>
+                <tr><td style="padding: 4px 0;">RA 9003 Target:</td><td style="text-align: right;">90%</td></tr>
+                <tr><td style="padding: 4px 0; font-weight: 600;">Status:</td><td style="text-align: right;"><span class="bento-badge success" style="font-size: 10px;">COMPLIANT</span></td></tr>
+              </table>
+            </div>
+          </div>
+
+          <!-- Section 2 -->
+          <div style="margin-bottom: 20px;">
+            <div style="font-weight: 600; color: var(--green-dark); margin-bottom: 8px; cursor: pointer;" onclick="toggleSection('section2')">
+              ▼ 2. Waste Diversion Accomplishments
+            </div>
+            <div id="section2" style="padding-left: 16px; font-size: 13px;">
+              <table style="width: 100%; font-size: 12px; margin-top: 8px;">
+                <tr><td style="padding: 4px 0;">Recycled Materials:</td><td style="text-align: right;">312 metric tons</td></tr>
+                <tr><td style="padding: 4px 0;">Composted Biodegradables:</td><td style="text-align: right;">425 metric tons</td></tr>
+                <tr><td style="padding: 4px 0;">MRF Recovered:</td><td style="text-align: right;">89 metric tons</td></tr>
+                <tr style="border-top: 1px solid #E0E0E0;"><td style="padding: 8px 0; font-weight: 600;">Total Diversion Rate:</td><td style="text-align: right; font-weight: 600; color: var(--green-dark);">33.7%</td></tr>
+                <tr><td style="padding: 4px 0;">Minimum Required (RA 9003):</td><td style="text-align: right;">25%</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <!-- Section 3 -->
+          <div style="margin-bottom: 20px;">
+            <div style="font-weight: 600; color: var(--green-dark); margin-bottom: 8px; cursor: pointer;" onclick="toggleSection('section3')">
+              ▼ 3. Public Participation Data
+            </div>
+            <div id="section3" style="padding-left: 16px; font-size: 13px;">
+              <table style="width: 100%; font-size: 12px; margin-top: 8px;">
+                <tr><td style="padding: 4px 0;">BAGO.PH Registered Households:</td><td style="text-align: right; font-weight: 600;">1,520</td></tr>
+                <tr><td style="padding: 4px 0;">Reports Submitted:</td><td style="text-align: right;">412</td></tr>
+                <tr><td style="padding: 4px 0;">Reports Resolved:</td><td style="text-align: right;">398 (96.6%)</td></tr>
+                <tr><td style="padding: 4px 0;">QR-Verified Segregation Rate:</td><td style="text-align: right; font-weight: 600;">82%</td></tr>
+                <tr><td style="padding: 4px 0;">Eco-Points Participation Rate:</td><td style="text-align: right;">59%</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <!-- QR Code -->
+          <div style="margin-top: 24px; text-align: center; padding: 16px; background: #F5F5F5; border-radius: 8px;">
+            <div style="width: 80px; height: 80px; background: white; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-secondary); border: 1px solid #E0E0E0;">
+              QR Code
+            </div>
+            <div style="font-size: 10px; color: var(--text-secondary); margin-top: 8px;">
+              BAGO-CC-LIPA-Q1-2025-A7B3C9D2
+            </div>
+            <div style="font-size: 9px; color: var(--text-secondary);">
+              Scan to verify report authenticity
+            </div>
+          </div>
+
+          <!-- Certification -->
+          <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #E0E0E0;">
+            <div style="font-size: 11px; text-align: center; color: var(--text-secondary);">
+              I hereby certify that the above information is true and correct based on verified BAGO.PH system data.
+            </div>
+            <div style="margin-top: 32px; text-align: center;">
+              <div style="border-top: 1px solid #212121; width: 200px; margin: 0 auto; padding-top: 4px;">
+                <div style="font-weight: 600; font-size: 12px;">Engr. Maria Santos</div>
+                <div style="font-size: 11px; color: var(--text-secondary);">City Environment and Natural Resources Officer</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPORT OPTIONS -->
+    <div class="bento-card" style="margin-top: 20px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <div class="text-subtitle">Export Options</div>
+          <div class="text-caption">Download or send the generated report</div>
+        </div>
+        <div style="display: flex; gap: 12px;">
+          <button class="bento-btn bento-btn-primary">
+            📥 Export as PDF
+          </button>
+          <button class="bento-btn bento-btn-secondary">
+            📊 Export as CSV
+          </button>
+          <button class="bento-btn bento-btn-outline">
+            📧 Email to DENR EMB
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECENT REPORTS -->
+    <h2 style="margin: 28px 0 16px;">📁 Previously Generated Reports</h2>
+
+    <div class="bento-table-wrapper">
+      <table class="bento-table">
+        <thead>
+          <tr>
+            <th>Report ID</th>
+            <th>Period</th>
+            <th>Generated By</th>
+            <th>Generated Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>BAGO-CC-LIPA-Q4-2024</strong></td>
+            <td>Oct - Dec 2024</td>
+            <td>Engr. Maria Santos</td>
+            <td>Jan 15, 2025</td>
+            <td><span class="bento-badge success">Submitted</span></td>
+            <td>
+              <div class="table-actions">
+                <button class="table-action-btn" title="Download PDF">📥</button>
+                <button class="table-action-btn" title="View">👁️</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>BAGO-CC-LIPA-Q3-2024</strong></td>
+            <td>Jul - Sep 2024</td>
+            <td>Engr. Maria Santos</td>
+            <td>Oct 12, 2024</td>
+            <td><span class="bento-badge success">Submitted</span></td>
+            <td>
+              <div class="table-actions">
+                <button class="table-action-btn" title="Download PDF">📥</button>
+                <button class="table-action-btn" title="View">👁️</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>BAGO-CC-LIPA-Q2-2024</strong></td>
+            <td>Apr - Jun 2024</td>
+            <td>P. Reyes</td>
+            <td>Jul 10, 2024</td>
+            <td><span class="bento-badge success">Submitted</span></td>
+            <td>
+              <div class="table-actions">
+                <button class="table-action-btn" title="Download PDF">📥</button>
+                <button class="table-action-btn" title="View">👁️</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>🌿 BAGO.PH | In compliance with RA 9003 and RA 10173 | Aligned with UN SDGs 11, 12, and 13</p>
+  </footer>
+
+  <script>
+    function toggleNav() {
+      document.querySelector('nav ul').classList.toggle('active');
+      document.querySelector('.nav-overlay').classList.toggle('active');
+    }
+
+    function setQuarter(q) {
+      const year = 2025;
+      const quarters = {
+        'Q1': ['01-01', '03-31'],
+        'Q2': ['04-01', '06-30'],
+        'Q3': ['07-01', '09-30'],
+        'Q4': ['10-01', '12-31']
+      };
+      document.getElementById('start-date').value = year + '-' + quarters[q][0];
+      document.getElementById('end-date').value = year + '-' + quarters[q][1];
+    }
+
+    function toggleSection(id) {
+      const section = document.getElementById(id);
+      section.style.display = section.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function generateReport() {
+      alert('Report generated! Preview updated.');
+    }
+  </script>
+
+</body>
+</html>

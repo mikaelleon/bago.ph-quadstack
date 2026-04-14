@@ -6,6 +6,7 @@
         content="width=device-width, initial-scale=1.0" />
   <title>BAGO.PH — Collection Schedule</title>
   <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/bento.css" />
   <style>
     .schedule-grid {
       display: grid;
@@ -79,14 +80,25 @@
 </head>
 <body>
 
+  <!-- NAV OVERLAY -->
+  <div class="nav-overlay" onclick="toggleNav()"></div>
+
   <!-- NAVBAR -->
   <nav>
     <a href="index.html" class="logo">🌿 BAGO.PH</a>
+    <button class="nav-toggle" onclick="toggleNav()">☰</button>
     <ul>
       <li><a href="index.html">Home</a></li>
-      <li><a href="schedule.html" class="active">Schedule</a></li>
-      <li><a href="report.html">Report</a></li>
       <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="schedule.html" class="active">Schedule</a></li>
+      <li><a href="report.html">Reports</a></li>
+      <li><a href="collectors.html">Collectors</a></li>
+      <li><a href="compliance.html">Compliance</a></li>
+      <li><a href="eco-points.html">Eco-Points</a></li>
+      <li><a href="announcements.html">Announce</a></li>
+      <li><a href="denr-reports.html">DENR</a></li>
+      <li><a href="users.html">Users</a></li>
+      <li><a href="qr-audit.html">QR Audit</a></li>
     </ul>
   </nav>
 
@@ -104,6 +116,20 @@
 
   <!-- MAIN CONTENT -->
   <main class="container" style="padding-top: 0;">
+
+    <!-- ADMIN ACTION BAR -->
+    <div class="bento-filter-bar" style="margin-bottom: 16px;">
+      <button class="bento-btn bento-btn-primary" onclick="openAddModal()">
+        + Add New Schedule
+      </button>
+      <div class="bento-btn-group">
+        <button class="bento-btn bento-btn-sm bento-btn-primary">Card View</button>
+        <button class="bento-btn bento-btn-sm bento-btn-ghost">Calendar View</button>
+      </div>
+      <button class="bento-btn bento-btn-ghost" style="margin-left: auto;">
+        📜 Schedule History
+      </button>
+    </div>
 
     <!-- ALERT -->
     <div class="alert-banner">
@@ -184,6 +210,10 @@
             <span class="badge badge-scheduled">
               Scheduled
             </span>
+            <div class="table-actions" style="margin-left: 8px;">
+              <button class="table-action-btn" title="Edit" onclick="openEditModal()">✏️</button>
+              <button class="table-action-btn" title="Cancel" onclick="cancelSchedule()">❌</button>
+            </div>
           </div>
 
         </div>
@@ -253,6 +283,83 @@
 
   </main>
 
+  <!-- ADD SCHEDULE MODAL -->
+  <div class="bento-modal-overlay" id="add-schedule-modal">
+    <div class="bento-modal" style="max-width: 550px;">
+      <div class="bento-modal-header">
+        <div class="bento-modal-title">📅 Add New Schedule</div>
+        <button class="bento-modal-close" onclick="closeAddModal()">✕</button>
+      </div>
+      <div class="bento-modal-body">
+        <form>
+          <div class="form-group">
+            <label>Target Barangay(s)</label>
+            <select multiple style="height: 100px;">
+              <option value="marawoy">Marawoy</option>
+              <option value="sanseb">San Sebastian</option>
+              <option value="balintawak">Balintawak</option>
+              <option value="tambo">Tambo</option>
+              <option value="dagatan">Dagatan</option>
+            </select>
+            <span class="helper-text">Hold Ctrl/Cmd for multiple selection</span>
+          </div>
+
+          <div class="form-group">
+            <label>Waste Type</label>
+            <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px;">
+              <label class="bento-checkbox">
+                <input type="checkbox" name="waste" value="bio" />
+                🟢 Biodegradable
+              </label>
+              <label class="bento-checkbox">
+                <input type="checkbox" name="waste" value="nonbio" />
+                🔵 Non-Biodegradable
+              </label>
+              <label class="bento-checkbox">
+                <input type="checkbox" name="waste" value="rec" />
+                ♻️ Recyclable
+              </label>
+              <label class="bento-checkbox">
+                <input type="checkbox" name="waste" value="res" />
+                ⚫ Residual
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Collection Date</label>
+            <input type="date" min="2025-04-15" />
+          </div>
+
+          <div class="form-group">
+            <label>Time Window</label>
+            <div style="display: flex; gap: 12px; align-items: center;">
+              <input type="time" value="06:00" style="flex: 1;" />
+              <span>to</span>
+              <input type="time" value="10:00" style="flex: 1;" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Special Instructions (Optional)</label>
+            <textarea placeholder="e.g., Holiday schedule adjustment, alternate route..." maxlength="200" style="height: 80px;"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="bento-checkbox">
+              <input type="checkbox" checked />
+              📱 Send push notification to residents
+            </label>
+          </div>
+        </form>
+      </div>
+      <div class="bento-modal-footer">
+        <button class="bento-btn bento-btn-ghost" onclick="closeAddModal()">Cancel</button>
+        <button class="bento-btn bento-btn-primary" onclick="saveSchedule()">Save Schedule</button>
+      </div>
+    </div>
+  </div>
+
   <!-- FOOTER -->
   <footer>
     <p>
@@ -260,6 +367,36 @@
       RA 10173 | Aligned with UN SDGs 11, 12, and 13
     </p>
   </footer>
+
+  <script>
+    function toggleNav() {
+      document.querySelector('nav ul').classList.toggle('active');
+      document.querySelector('.nav-overlay').classList.toggle('active');
+    }
+
+    function openAddModal() {
+      document.getElementById('add-schedule-modal').classList.add('active');
+    }
+
+    function closeAddModal() {
+      document.getElementById('add-schedule-modal').classList.remove('active');
+    }
+
+    function openEditModal() {
+      alert('Edit schedule modal would open here');
+    }
+
+    function cancelSchedule() {
+      if (confirm('Cancel this schedule? Residents will be notified.')) {
+        alert('Schedule cancelled');
+      }
+    }
+
+    function saveSchedule() {
+      alert('Schedule saved! Notifications sent.');
+      closeAddModal();
+    }
+  </script>
 
 </body>
 </html>

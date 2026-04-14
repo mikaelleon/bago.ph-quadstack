@@ -50,6 +50,8 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
+  z-index: 100;
 }
 
 nav .logo {
@@ -57,20 +59,22 @@ nav .logo {
   font-size: 20px;
   font-weight: 700;
   text-decoration: none;
+  z-index: 101;
 }
 
 nav ul {
   list-style: none;
   display: flex;
-  gap: 24px;
+  gap: 16px;
 }
 
 nav ul li a {
   color: white;
   text-decoration: none;
-  font-size: 14px;
+  font-size: 13px;
   opacity: 0.85;
   transition: opacity 0.2s;
+  white-space: nowrap;
 }
 
 nav ul li a:hover { opacity: 1; }
@@ -79,6 +83,80 @@ nav ul li a.active {
   opacity: 1;
   border-bottom: 2px solid var(--green-light);
   padding-bottom: 2px;
+}
+
+/* Hamburger Menu Button */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 8px;
+  z-index: 101;
+}
+
+/* Responsive Navigation */
+@media (max-width: 1100px) {
+  .nav-toggle {
+    display: block;
+  }
+
+  nav ul {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100vh;
+    background: var(--green-dark);
+    flex-direction: column;
+    padding: 80px 24px 24px;
+    gap: 0;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.2);
+    transition: right 0.3s ease;
+    z-index: 100;
+  }
+
+  nav ul.active {
+    right: 0;
+  }
+
+  nav ul li {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  nav ul li a {
+    display: block;
+    padding: 16px 0;
+    font-size: 15px;
+  }
+
+  nav ul li a.active {
+    border-bottom: none;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 0 -24px;
+    padding: 16px 24px;
+  }
+
+  /* Overlay when menu is open */
+  .nav-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 99;
+  }
+
+  .nav-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
 }
 
 /* ─── BUTTONS ─────────────────────────────────────── */

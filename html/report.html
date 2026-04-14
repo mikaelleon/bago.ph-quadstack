@@ -4,8 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0" />
-  <title>BAGO.PH — Report an Issue</title>
+  <title>BAGO.PH — Report Management</title>
   <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/bento.css" />
   <style>
     .report-layout {
       display: grid;
@@ -87,31 +88,197 @@
 </head>
 <body>
 
+  <!-- NAV OVERLAY -->
+  <div class="nav-overlay" onclick="toggleNav()"></div>
+
   <!-- NAVBAR -->
   <nav>
     <a href="index.html" class="logo">🌿 BAGO.PH</a>
+    <button class="nav-toggle" onclick="toggleNav()">☰</button>
     <ul>
       <li><a href="index.html">Home</a></li>
-      <li><a href="schedule.html">Schedule</a></li>
-      <li><a href="report.html" class="active">Report</a></li>
       <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="report.html" class="active">Reports</a></li>
+      <li><a href="collectors.html">Collectors</a></li>
+      <li><a href="compliance.html">Compliance</a></li>
+      <li><a href="eco-points.html">Eco-Points</a></li>
+      <li><a href="announcements.html">Announce</a></li>
+      <li><a href="denr-reports.html">DENR</a></li>
+      <li><a href="users.html">Users</a></li>
+      <li><a href="qr-audit.html">QR Audit</a></li>
     </ul>
   </nav>
 
   <!-- PAGE HEADER -->
   <header class="page-header">
     <div class="container">
-      <h1>📸 Report a Waste Issue</h1>
+      <h1>📸 Report Management</h1>
       <p>
-        Submit a waste problem in your barangay.
-        Your report creates an official tracked ticket
-        visible to your LGU officer.
+        Manage waste issue reports submitted by residents.
+        Track, assign, and resolve tickets.
       </p>
     </div>
   </header>
 
   <!-- MAIN CONTENT -->
   <main class="container" style="padding-top: 0;">
+
+    <!-- VIEW TOGGLE -->
+    <div class="bento-tabs" style="margin-bottom: 20px; max-width: 400px;">
+      <button class="bento-tab active" onclick="switchView('admin')">
+        🏛️ Admin Console
+      </button>
+      <button class="bento-tab" onclick="switchView('submit')">
+        📸 Submit Report
+      </button>
+    </div>
+
+    <!-- ADMIN CONSOLE VIEW -->
+    <div id="view-admin">
+      <!-- Stats Row -->
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px;">
+        <div class="bento-metric">
+          <div class="bento-metric-value" style="color: var(--error);">14</div>
+          <div class="bento-metric-label">Open</div>
+        </div>
+        <div class="bento-metric blue">
+          <div class="bento-metric-value">8</div>
+          <div class="bento-metric-label">In Progress</div>
+        </div>
+        <div class="bento-metric">
+          <div class="bento-metric-value" style="color: var(--green-dark);">156</div>
+          <div class="bento-metric-label">Resolved (30d)</div>
+        </div>
+        <div class="bento-metric orange">
+          <div class="bento-metric-value">2.1d</div>
+          <div class="bento-metric-label">Avg Resolution</div>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="bento-filter-bar">
+        <select>
+          <option value="all">All Status</option>
+          <option value="open">Open</option>
+          <option value="ack">Acknowledged</option>
+          <option value="progress">In Progress</option>
+          <option value="resolved">Resolved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+        <select>
+          <option value="all">All Barangays</option>
+          <option value="marawoy">Marawoy</option>
+          <option value="sanseb">San Sebastian</option>
+          <option value="balintawak">Balintawak</option>
+          <option value="tambo">Tambo</option>
+          <option value="dagatan">Dagatan</option>
+        </select>
+        <select>
+          <option value="recent">Most Recent</option>
+          <option value="oldest">Oldest First</option>
+          <option value="priority">Priority</option>
+        </select>
+        <input type="search" placeholder="Search by reference # or name..." class="search-input" />
+        <div class="bento-btn-group" style="margin-left: auto;">
+          <button class="bento-btn bento-btn-sm bento-btn-primary">List</button>
+          <button class="bento-btn bento-btn-sm bento-btn-ghost">Map</button>
+        </div>
+      </div>
+
+      <!-- Report List -->
+      <div class="bento-table-wrapper">
+        <table class="bento-table">
+          <thead>
+            <tr>
+              <th><input type="checkbox" /></th>
+              <th>Reference</th>
+              <th>Issue Type</th>
+              <th>Location</th>
+              <th>Submitted</th>
+              <th>Status</th>
+              <th>Priority</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background: #FFF8E1;">
+              <td><input type="checkbox" /></td>
+              <td><strong>RPT-2025-00142</strong></td>
+              <td>Illegal Dumping</td>
+              <td>Tambo, Purok 5</td>
+              <td>Apr 14, 6:30 AM</td>
+              <td><span class="bento-badge danger">Open</span></td>
+              <td><span style="color: var(--error);">🔴 High</span></td>
+              <td>
+                <div class="table-actions">
+                  <button class="table-action-btn" title="View" onclick="openReportModal()">👁️</button>
+                  <button class="table-action-btn" title="Assign">👤</button>
+                  <button class="table-action-btn" title="Update Status">📝</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" /></td>
+              <td><strong>RPT-2025-00141</strong></td>
+              <td>Missed Pickup</td>
+              <td>Marawoy, Purok 2</td>
+              <td>Apr 13, 8:15 AM</td>
+              <td><span class="bento-badge info">In Progress</span></td>
+              <td><span style="color: #E65100;">🟠 Medium</span></td>
+              <td>
+                <div class="table-actions">
+                  <button class="table-action-btn" title="View">👁️</button>
+                  <button class="table-action-btn" title="Assign">👤</button>
+                  <button class="table-action-btn" title="Update Status">📝</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" /></td>
+              <td><strong>RPT-2025-00140</strong></td>
+              <td>Overflowing Bin</td>
+              <td>San Sebastian, Main St</td>
+              <td>Apr 13, 7:00 AM</td>
+              <td><span class="bento-badge warning">Acknowledged</span></td>
+              <td><span style="color: #9E9E9E;">⚪ Low</span></td>
+              <td>
+                <div class="table-actions">
+                  <button class="table-action-btn" title="View">👁️</button>
+                  <button class="table-action-btn" title="Assign">👤</button>
+                  <button class="table-action-btn" title="Update Status">📝</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" /></td>
+              <td><strong>RPT-2025-00139</strong></td>
+              <td>Blocked Road</td>
+              <td>Balintawak, Purok 1</td>
+              <td>Apr 12, 3:45 PM</td>
+              <td><span class="bento-badge success">Resolved</span></td>
+              <td><span style="color: #E65100;">🟠 Medium</span></td>
+              <td>
+                <div class="table-actions">
+                  <button class="table-action-btn" title="View">👁️</button>
+                  <button class="table-action-btn" title="Export PDF">📄</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Batch Actions -->
+      <div style="display: flex; gap: 12px; margin-top: 16px;">
+        <button class="bento-btn bento-btn-sm bento-btn-outline">Assign Selected</button>
+        <button class="bento-btn bento-btn-sm bento-btn-outline">Close Selected</button>
+        <button class="bento-btn bento-btn-sm bento-btn-ghost" style="margin-left: auto;">Export All as PDF</button>
+      </div>
+    </div>
+
+    <!-- SUBMIT REPORT VIEW (Original Form) -->
+    <div id="view-submit" style="display: none;">
     <div class="report-layout">
 
       <!-- LEFT — FORM -->
@@ -288,7 +455,96 @@
 
       </div>
     </div>
+    </div><!-- end view-submit -->
   </main>
+
+  <!-- REPORT DETAIL MODAL -->
+  <div class="bento-modal-overlay" id="report-modal">
+    <div class="bento-modal" style="max-width: 700px;">
+      <div class="bento-modal-header">
+        <div class="bento-modal-title">📸 Report Details — RPT-2025-00142</div>
+        <button class="bento-modal-close" onclick="closeReportModal()">✕</button>
+      </div>
+      <div class="bento-modal-body">
+        <div style="display: grid; grid-template-columns: 200px 1fr; gap: 24px;">
+          <!-- Photo -->
+          <div style="background: #F5F5F5; border-radius: 8px; height: 200px; display: flex; align-items: center; justify-content: center;">
+            <span style="color: var(--text-secondary);">📷 Photo Evidence</span>
+          </div>
+
+          <!-- Details -->
+          <div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div>
+                <div class="text-overline">Reference</div>
+                <div class="text-body" style="font-weight: 600;">RPT-2025-00142</div>
+              </div>
+              <div>
+                <div class="text-overline">Status</div>
+                <div><span class="bento-badge danger">Open</span></div>
+              </div>
+              <div>
+                <div class="text-overline">Resident</div>
+                <div class="text-body">Maria S. (per RA 10173)</div>
+              </div>
+              <div>
+                <div class="text-overline">Submitted</div>
+                <div class="text-body">Apr 14, 2025 6:30 AM</div>
+              </div>
+              <div>
+                <div class="text-overline">Location</div>
+                <div class="text-body">Tambo, Purok 5</div>
+              </div>
+              <div>
+                <div class="text-overline">GPS</div>
+                <div class="text-body">14.0892, 121.1634</div>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px;">
+              <div class="text-overline">Issue Type</div>
+              <div class="text-body">Illegal Dumping</div>
+            </div>
+
+            <div style="margin-top: 12px;">
+              <div class="text-overline">Description</div>
+              <div class="text-body">Large pile of construction debris dumped near the creek. Has been there for 3 days. Blocking pedestrian path and creating health hazard.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bento-divider"></div>
+
+        <!-- Status Timeline -->
+        <div class="text-overline">Status Timeline</div>
+        <div class="bento-timeline" style="margin-top: 12px;">
+          <div class="bento-timeline-item">
+            <div class="bento-timeline-time">Apr 14, 2025 6:30 AM</div>
+            <div class="bento-timeline-content">Report submitted by resident</div>
+          </div>
+          <div class="bento-timeline-item pending">
+            <div class="bento-timeline-time">Pending</div>
+            <div class="bento-timeline-content">Awaiting acknowledgment</div>
+          </div>
+        </div>
+
+        <div class="bento-divider"></div>
+
+        <!-- Admin Notes -->
+        <div class="form-group">
+          <label>Admin Notes (internal only)</label>
+          <textarea placeholder="Add notes about this report..." style="height: 60px;"></textarea>
+        </div>
+      </div>
+      <div class="bento-modal-footer">
+        <button class="bento-btn bento-btn-ghost" onclick="closeReportModal()">Close</button>
+        <button class="bento-btn bento-btn-outline">📄 Export PDF</button>
+        <button class="bento-btn bento-btn-outline" style="color: var(--error); border-color: var(--error);">❌ Reject</button>
+        <button class="bento-btn bento-btn-secondary">👤 Assign Collector</button>
+        <button class="bento-btn bento-btn-primary">✅ Update Status</button>
+      </div>
+    </div>
+  </div>
 
   <!-- FOOTER -->
   <footer>
@@ -299,9 +555,30 @@
   </footer>
 
   <script>
+    function toggleNav() {
+      document.querySelector('nav ul').classList.toggle('active');
+      document.querySelector('.nav-overlay').classList.toggle('active');
+    }
+
     function updateCount(el) {
       document.getElementById('char-count')
         .textContent = el.value.length;
+    }
+
+    function switchView(view) {
+      document.getElementById('view-admin').style.display = view === 'admin' ? 'block' : 'none';
+      document.getElementById('view-submit').style.display = view === 'submit' ? 'block' : 'none';
+      document.querySelectorAll('.bento-tab').forEach((tab, i) => {
+        tab.classList.toggle('active', (view === 'admin' && i === 0) || (view === 'submit' && i === 1));
+      });
+    }
+
+    function openReportModal() {
+      document.getElementById('report-modal').classList.add('active');
+    }
+
+    function closeReportModal() {
+      document.getElementById('report-modal').classList.remove('active');
     }
   </script>
 

@@ -7,21 +7,29 @@
   <title>BAGO.PH — LGU Dashboard</title>
   <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="../css/dashboard.css" />
+  <link rel="stylesheet" href="../css/bento.css" />
 </head>
 <body>
+
+  <!-- NAV OVERLAY -->
+  <div class="nav-overlay" onclick="toggleNav()"></div>
 
   <!-- NAVBAR -->
   <nav>
     <a href="index.html" class="logo">🌿 BAGO.PH</a>
+    <button class="nav-toggle" onclick="toggleNav()">☰</button>
     <ul>
       <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html" class="active">Dashboard</a></li>
       <li><a href="schedule.html">Schedule</a></li>
-      <li><a href="report.html">Report</a></li>
-      <li>
-        <a href="dashboard.html" class="active">
-          Dashboard
-        </a>
-      </li>
+      <li><a href="report.html">Reports</a></li>
+      <li><a href="collectors.html">Collectors</a></li>
+      <li><a href="compliance.html">Compliance</a></li>
+      <li><a href="eco-points.html">Eco-Points</a></li>
+      <li><a href="announcements.html">Announce</a></li>
+      <li><a href="denr-reports.html">DENR</a></li>
+      <li><a href="users.html">Users</a></li>
+      <li><a href="qr-audit.html">QR Audit</a></li>
     </ul>
   </nav>
 
@@ -206,6 +214,13 @@
       RA 10173 | Aligned with UN SDGs 11, 12, and 13
     </p>
   </footer>
+
+  <script>
+    function toggleNav() {
+      document.querySelector('nav ul').classList.toggle('active');
+      document.querySelector('.nav-overlay').classList.toggle('active');
+    }
+  </script>
 
 </body>
 </html>
