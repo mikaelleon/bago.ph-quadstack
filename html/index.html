@@ -144,7 +144,7 @@
       </div>
 
       <!-- LOGIN FIELDS -->
-      <form action="#" method="post">
+      <form id="login-form" action="#" method="post">
 
         <div class="form-group">
           <label for="mobile">Mobile Number</label>
@@ -203,6 +203,7 @@
     </p>
   </footer>
 
+  <script src="role-access.js"></script>
   <script>
     function toggleNav() {
       document.querySelector('nav ul').classList.toggle('active');
@@ -214,6 +215,33 @@
         .forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     }
+
+    function roleFromButton(buttonText) {
+      if (buttonText.includes('Collector')) return 'collector';
+      if (buttonText.includes('LGU')) return 'lgu_officer';
+      return 'user';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const savedRole = window.BAGOAccess.getStoredRole();
+      const roleButtons = document.querySelectorAll('.role-btn');
+
+      roleButtons.forEach((btn) => {
+        const mappedRole = roleFromButton(btn.textContent);
+        if (mappedRole === savedRole) {
+          roleButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+        }
+      });
+
+      document.getElementById('login-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const activeRoleButton = document.querySelector('.role-btn.active');
+        const selectedRole = roleFromButton(activeRoleButton ? activeRoleButton.textContent : '');
+        window.BAGOAccess.setCurrentRole(selectedRole);
+        window.location.href = 'dashboard.html';
+      });
+    });
   </script>
 
 </body>
