@@ -1,3 +1,6 @@
+/** Prototype-only: mobile → { role, pin } (plain PIN; no server). */
+const STORAGE_ACCOUNTS = "bago_ph_accounts_v1";
+
 const ROLE_PAGE_ACCESS = {
   user: new Set([
     "index.html",
@@ -46,6 +49,69 @@ function normalizeRole(role) {
   if (cleaned === "lgu_admin") return "lgu_officer";
   if (!ROLE_PAGE_ACCESS[cleaned]) return "user";
   return cleaned;
+}
+
+function normalizeMobile(raw) {
+  let d = String(raw || "").replace(/\D/g, "");
+  if (d.length > 11) d = d.slice(-11);
+  return d;
+}
+
+function loadAccounts() {
+  try {
+    const j = localStorage.getItem(STORAGE_ACCOUNTS);
+    return j ? JSON.parse(j) : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function saveRegisteredAccount(mobileRaw, pinRaw, role) {
+  const m = normalizeMobile(mobileRaw);
+  if (!m) return;
+  const all = loadAccounts();
+  all[m] = {
+    role: normalizeRole(role),
+    pin: String(pinRaw || "")
+  };
+  localStorage.setItem(STORAGE_ACCOUNTS, JSON.stringify(all));
+}
+
+function getRegisteredAccount(mobileRaw) {
+  const m = normalizeMobile(mobileRaw);
+  if (!m) return null;
+  const row = loadAccounts()[m];
+  if (!row || row.role == null) return null;
+  return {
+    role: normalizeRole(row.role),
+    pin: String(row.pin != null ? row.pin : "")
+  };
+}
+
+/**
+ * @returns {{ ok: true, role: string } | { ok: false, message: string }}
+ */
+function validateLoginAttempt(mobileRaw, pinRaw) {
+  const m = normalizeMobile(mobileRaw);
+  if (!m || m.length < 10) {
+    return { ok: false, message: "Enter a valid Philippine mobile number (e.g. 09171234567)." };
+  }
+  const pin = String(pinRaw || "");
+  if (!/^\d{4}$/.test(pin)) {
+    return { ok: false, message: "PIN must be exactly 4 digits." };
+  }
+  const acc = getRegisteredAccount(m);
+  if (!acc) {
+    return {
+      ok: false,
+      message:
+        "No account for this number on this device. Use Create an account to register first."
+    };
+  }
+  if (acc.pin !== pin) {
+    return { ok: false, message: "Incorrect PIN." };
+  }
+  return { ok: true, role: acc.role };
 }
 
 function getDashboardHomeForRole(role) {
@@ -170,7 +236,11 @@ window.BAGOAccess = {
   normalizeRole,
   getDashboardHome,
   roleFromSelectorButtonText,
-  activateRoleButton
+  activateRoleButton,
+  normalizeMobile,
+  saveRegisteredAccount,
+  getRegisteredAccount,
+  validateLoginAttempt
 };
 
 document.addEventListener("DOMContentLoaded", enforceAccessControl);

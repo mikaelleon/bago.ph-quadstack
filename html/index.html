@@ -68,32 +68,6 @@
       text-decoration: none;
     }
 
-    .role-selector {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
-    .role-btn {
-      flex: 1;
-      height: 44px;
-      border: 2px solid #BDBDBD;
-      border-radius: 8px;
-      background: white;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      color: #757575;
-      transition: all 0.2s;
-    }
-
-    .role-btn.active,
-    .role-btn:hover {
-      border-color: #2E7D32;
-      color: #2E7D32;
-      background: #F1F8F1;
-    }
-
     body.page-auth footer {
       padding: 16px 20px;
       text-align: center;
@@ -113,27 +87,6 @@
         <h1>🌿 BAGO.PH</h1>
         <p>Barangay App for Garbage Operations<br/>
            in the Philippines</p>
-      </div>
-
-      <div class="form-group">
-        <label>Select your role</label>
-        <div class="role-selector">
-          <button class="role-btn active"
-                  type="button"
-                  onclick="BAGOAccess.activateRoleButton(this)">
-            🏠 Resident
-          </button>
-          <button class="role-btn"
-                  type="button"
-                  onclick="BAGOAccess.activateRoleButton(this)">
-            🚛 Collector
-          </button>
-          <button class="role-btn"
-                  type="button"
-                  onclick="BAGOAccess.activateRoleButton(this)">
-            🏛️ LGU Admin
-          </button>
-        </div>
       </div>
 
       <form id="login-form" action="#" method="post">
@@ -195,19 +148,17 @@
   <script src="role-access.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      var savedRole = window.BAGOAccess.getStoredRole();
-      document.querySelectorAll(".role-btn").forEach(function (btn) {
-        if (window.BAGOAccess.roleFromSelectorButtonText(btn.textContent) === savedRole) {
-          window.BAGOAccess.activateRoleButton(btn);
-        }
-      });
       document.getElementById("login-form").addEventListener("submit", function (event) {
         event.preventDefault();
-        var active = document.querySelector(".role-btn.active");
-        var selectedRole = window.BAGOAccess.roleFromSelectorButtonText(
-          active ? active.textContent : ""
+        var check = window.BAGOAccess.validateLoginAttempt(
+          document.getElementById("mobile").value,
+          document.getElementById("pin").value
         );
-        window.BAGOAccess.setCurrentRole(selectedRole);
+        if (!check.ok) {
+          alert(check.message);
+          return;
+        }
+        window.BAGOAccess.setCurrentRole(check.role);
         window.location.href = window.BAGOAccess.getDashboardHome();
       });
     });

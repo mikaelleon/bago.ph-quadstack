@@ -133,10 +133,11 @@
         alert("PINs do not match.");
         return;
       }
+      var mobile = document.getElementById("mobile").value;
       var active = document.querySelector(".role-btn.active");
-      window.BAGOAccess.setCurrentRole(
-        window.BAGOAccess.roleFromSelectorButtonText(active ? active.textContent : "")
-      );
+      var role = window.BAGOAccess.roleFromSelectorButtonText(active ? active.textContent : "");
+      window.BAGOAccess.saveRegisteredAccount(mobile, p1, role);
+      window.BAGOAccess.setCurrentRole(role);
       window.location.href = window.BAGOAccess.getDashboardHome();
     });
   </script>

@@ -74,7 +74,7 @@ Baseline milestone work includes:
 ## Progress Since the 30% Milestone
 Implemented on top of the baseline above:
 
-- **Dedicated login & registration** — `index.html` (login) and `register.html` (sign-up) with role selection; **no main navbar** on these screens until the user completes login or registration.
+- **Dedicated login & registration** — `index.html` (mobile + PIN; role loaded from the saved account for that number) and `register.html` (sign-up with role selection); **no main navbar** on these screens until the user completes login or registration.
 - **Client-side access control** — `html/role-access.js` stores role in `localStorage`, hides disallowed nav links, redirects unauthorized URLs, adds **Logout**, and sends already-logged-in users away from login/register toward the dashboard.
 - **Official Lipa City barangay list** — all **72 barangays** in `html/js/lipa-barangays.js`, populated into relevant dropdowns via `lipa-barangays-select.js`; `xml/barangays.xml` regenerated with 72 rows (helper: `scripts/gen-barangays-xml.mjs`).
 - **XML / XSLT layout** — stylesheets under `xsl/` (e.g. `ecolinisph-schedules.xsl`, `barangays.xsl`); XML files reference them for browser transform (Firefox works best for opening raw `.xml`).
@@ -90,7 +90,7 @@ Implemented on top of the baseline above:
 ---
 
 ## Feature Overview
-- **Login & Register** — role selection; session role stored in `localStorage` (prototype only).
+- **Login & Register** — register picks role; login uses mobile + PIN only; session role stored in `localStorage` (prototype only).
 - **Dashboard**: high-level waste operations snapshot.
 - **Collection Schedule**: planned routes and collection timing.
 - **Report Management**: issue reporting and follow-up workflow.
@@ -107,7 +107,7 @@ Implemented on top of the baseline above:
 
 ## Auth, Registration & Navigation
 - Open **`html/index.html`** to log in, or **`html/register.html`** to register. Both pages intentionally **omit** the main app navbar.
-- After login or successful registration, the app stores **`bagoRole`** (`user` | `collector` | `lgu_officer`) and opens the **dashboard**.
+- After login or successful registration, the app stores **`bagoRole`** (`user` | `collector` | `lgu_officer`) from the account and opens the **dashboard**.
 - If a role is already stored, visiting login or register **redirects to the dashboard**.
 - Inside the app, use **Logout** (injected on authenticated pages) to clear the role and return to login.
 - **Security note:** this is a **front-end prototype**. There is no real server-side authentication or password hashing.
