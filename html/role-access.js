@@ -1,6 +1,7 @@
 const ROLE_PAGE_ACCESS = {
   user: new Set([
     "index.html",
+    "register.html",
     "dashboard.html",
     "schedule.html",
     "report.html",
@@ -9,6 +10,7 @@ const ROLE_PAGE_ACCESS = {
   ]),
   collector: new Set([
     "index.html",
+    "register.html",
     "dashboard.html",
     "schedule.html",
     "report.html",
@@ -19,6 +21,7 @@ const ROLE_PAGE_ACCESS = {
   ]),
   lgu_officer: new Set([
     "index.html",
+    "register.html",
     "dashboard.html",
     "schedule.html",
     "report.html",
@@ -47,6 +50,11 @@ function getCurrentPageName() {
   return path || "index.html";
 }
 
+function isAuthPage() {
+  const p = getCurrentPageName();
+  return p === "index.html" || p === "register.html";
+}
+
 function getStoredRole() {
   return normalizeRole(localStorage.getItem("bagoRole"));
 }
@@ -69,16 +77,43 @@ function getFirstAllowedPage(role) {
   return allowedPages.has("dashboard.html") ? "dashboard.html" : "index.html";
 }
 
-function enforceAccessControl() {
-  const role = getStoredRole();
-  const currentPage = getCurrentPageName();
-  const isLoginPage = currentPage === "index.html";
+function appendLogoutNav() {
+  if (isAuthPage()) return;
+  if (!localStorage.getItem("bagoRole")) return;
+  var navUl = document.querySelector("nav ul");
+  if (!navUl || document.getElementById("bago-logout-nav")) return;
+  var li = document.createElement("li");
+  li.id = "bago-logout-nav";
+  var a = document.createElement("a");
+  a.href = "#";
+  a.textContent = "Logout";
+  a.addEventListener("click", function (e) {
+    e.preventDefault();
+    localStorage.removeItem("bagoRole");
+    window.location.href = "index.html";
+  });
+  li.appendChild(a);
+  navUl.appendChild(li);
+}
 
-  if (!isLoginPage && !localStorage.getItem("bagoRole")) {
+function enforceAccessControl() {
+  const currentPage = getCurrentPageName();
+  const roleStored = localStorage.getItem("bagoRole");
+
+  if (isAuthPage()) {
+    if (roleStored) {
+      window.location.href = "dashboard.html";
+      return;
+    }
+    return;
+  }
+
+  if (!roleStored) {
     window.location.href = "index.html";
     return;
   }
 
+  const role = getStoredRole();
   if (!canAccessPage(role, currentPage)) {
     window.location.href = getFirstAllowedPage(role);
     return;
@@ -94,6 +129,8 @@ function enforceAccessControl() {
     if (!item) return;
     item.style.display = allowed ? "" : "none";
   });
+
+  appendLogoutNav();
 }
 
 window.BAGOAccess = {

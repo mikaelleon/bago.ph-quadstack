@@ -1,6 +1,14 @@
 (function () {
   var doc = null;
   var C = window.BAGO_XML_CORE;
+  var viewMode = new URLSearchParams(location.search).get("mode") === "view";
+
+  var sortState = {
+    routes: { col: null, dir: 1 },
+    barangay: { col: null, dir: 1 },
+    special: { col: null, dir: 1 },
+    shifts: { col: null, dir: 1 }
+  };
 
   function getSchedulesFallback() {
     if (window.BAGO_SCHEDULES_FALLBACK) return window.BAGO_SCHEDULES_FALLBACK;
@@ -71,6 +79,103 @@
     el("stat-exceptions").value = getText(st, "exceptions_this_month");
   }
 
+  function routeSortVal(r, col) {
+    switch (col) {
+      case 0:
+        return getText(r, "weekday").toLowerCase();
+      case 1:
+        return getText(r, "route_code").toLowerCase();
+      case 2:
+        return getText(r, "areas").toLowerCase();
+      case 3:
+        return getText(r, "window_start") + getText(r, "window_end");
+      case 4:
+        return getText(r, "status").toLowerCase();
+      default:
+        return "";
+    }
+  }
+
+  function barangaySortVal(b, col) {
+    switch (col) {
+      case 0:
+        return getText(b, "name").toLowerCase();
+      case 1:
+        return getText(b, "primary_day").toLowerCase();
+      case 2:
+        return getText(b, "time_window").toLowerCase();
+      case 3:
+        return getText(b, "frequency").toLowerCase();
+      case 4:
+        return getText(b, "notes").toLowerCase();
+      default:
+        return "";
+    }
+  }
+
+  function specialSortVal(e, col) {
+    switch (col) {
+      case 0:
+        return getText(e, "date");
+      case 1:
+        return getText(e, "description").toLowerCase();
+      case 2:
+        return getText(e, "action").toLowerCase();
+      default:
+        return "";
+    }
+  }
+
+  function shiftSortVal(s, col) {
+    switch (col) {
+      case 0:
+        return getText(s, "team").toLowerCase();
+      case 1:
+        return getText(s, "lead").toLowerCase();
+      case 2:
+        return getText(s, "assigned_days").toLowerCase();
+      case 3:
+        return getText(s, "start_time") + getText(s, "end_time");
+      default:
+        return "";
+    }
+  }
+
+  function applySort(rows, section, getVal) {
+    var st = sortState[section];
+    if (st.col === null) return rows;
+    rows.sort(function (a, b) {
+      var va = getVal(a.node, st.col);
+      var vb = getVal(b.node, st.col);
+      var cmp = String(va).localeCompare(String(vb), undefined, { numeric: true, sensitivity: "base" });
+      return cmp * st.dir;
+    });
+    return rows;
+  }
+
+  function toggleSort(section, col) {
+    var st = sortState[section];
+    if (st.col === col) st.dir = -st.dir;
+    else {
+      st.col = col;
+      st.dir = 1;
+    }
+    updateSortLabels();
+    renderTables();
+  }
+
+  function updateSortLabels() {
+    document.querySelectorAll("th.sortable").forEach(function (th) {
+      var base = th.getAttribute("data-label") || "";
+      var sec = th.getAttribute("data-section");
+      var col = parseInt(th.getAttribute("data-col"), 10);
+      var st = sortState[sec];
+      var mark = " ⇅";
+      if (st && st.col === col) mark = st.dir === 1 ? " ▲" : " ▼";
+      th.textContent = base + mark;
+    });
+  }
+
   function renderRoutes() {
     var tbody = el("tbody-routes");
     tbody.innerHTML = "";
@@ -79,6 +184,7 @@
     var routes = doc.getElementsByTagName("weekly_route_calendar")[0];
     if (!routes) return;
     var list = routes.getElementsByTagName("route");
+    var rows = [];
     for (var i = 0; i < list.length; i++) {
       var r = list[i];
       var wd = getText(r, "weekday");
@@ -89,7 +195,23 @@
         var blob = (wd + " " + code + " " + areas).toLowerCase();
         if (blob.indexOf(filterQ) === -1) continue;
       }
+      rows.push({ i: i, node: r });
+    }
+    applySort(rows, "routes", routeSortVal);
+    rows.forEach(function (row) {
+      var i = row.i;
+      var r = row.node;
+      var wd = getText(r, "weekday");
+      var code = getText(r, "route_code");
+      var areas = getText(r, "areas");
       var tr = document.createElement("tr");
+      var actions =
+        '<button type="button" class="bento-btn bento-btn-sm bento-btn-ghost btn-edit-route xml-crud-only" data-i="' +
+        i +
+        '">Edit</button> <button type="button" class="bento-btn bento-btn-sm bento-btn-outline btn-del-route xml-crud-only" data-i="' +
+        i +
+        '">Delete</button>';
+      if (viewMode) actions = "";
       tr.innerHTML =
         "<td>" +
         esc(wd) +
@@ -103,13 +225,11 @@
         esc(getText(r, "window_end")) +
         "</td><td>" +
         esc(getText(r, "status")) +
-        '</td><td><button type="button" class="bento-btn bento-btn-sm bento-btn-ghost btn-edit-route" data-i="' +
-        i +
-        '">Edit</button> <button type="button" class="bento-btn bento-btn-sm bento-btn-outline btn-del-route" data-i="' +
-        i +
-        '">Delete</button></td>';
+        "</td><td>" +
+        actions +
+        "</td>";
       tbody.appendChild(tr);
-    }
+    });
     tbody.querySelectorAll(".btn-edit-route").forEach(function (b) {
       b.onclick = function () {
         editRoute(parseInt(b.getAttribute("data-i"), 10));
@@ -130,13 +250,29 @@
     var holder = doc.getElementsByTagName("barangay_schedules")[0];
     if (!holder) return;
     var list = holder.getElementsByTagName("barangay");
+    var rows = [];
     for (var i = 0; i < list.length; i++) {
       var b = list[i];
       var name = getText(b, "name");
       var pd = getText(b, "primary_day");
       if (filterDay && pd.toLowerCase().indexOf(filterDay) === -1) continue;
       if (filterQ && name.toLowerCase().indexOf(filterQ) === -1) continue;
+      rows.push({ i: i, node: b });
+    }
+    applySort(rows, "barangay", barangaySortVal);
+    rows.forEach(function (row) {
+      var i = row.i;
+      var b = row.node;
+      var name = getText(b, "name");
+      var pd = getText(b, "primary_day");
       var tr = document.createElement("tr");
+      var actions =
+        '<button type="button" class="bento-btn bento-btn-sm bento-btn-ghost btn-edit-bg xml-crud-only" data-i="' +
+        i +
+        '">Edit</button> <button type="button" class="bento-btn bento-btn-sm bento-btn-outline btn-del-bg xml-crud-only" data-i="' +
+        i +
+        '">Delete</button>';
+      if (viewMode) actions = "";
       tr.innerHTML =
         "<td>" +
         esc(name) +
@@ -148,13 +284,11 @@
         esc(getText(b, "frequency")) +
         "</td><td>" +
         esc(getText(b, "notes")) +
-        '</td><td><button type="button" class="bento-btn bento-btn-sm bento-btn-ghost btn-edit-bg" data-i="' +
-        i +
-        '">Edit</button> <button type="button" class="bento-btn bento-btn-sm bento-btn-outline btn-del-bg" data-i="' +
-        i +
-        '">Delete</button></td>';
+        "</td><td>" +
+        actions +
+        "</td>";
       tbody.appendChild(tr);
-    }
+    });
     tbody.querySelectorAll(".btn-edit-bg").forEach(function (btn) {
       btn.onclick = function () {
         editBarangay(parseInt(btn.getAttribute("data-i"), 10));
@@ -174,6 +308,7 @@
     var holder = doc.getElementsByTagName("special_dates")[0];
     if (!holder) return;
     var list = holder.getElementsByTagName("entry");
+    var rows = [];
     for (var i = 0; i < list.length; i++) {
       var e = list[i];
       var d = getText(e, "date");
@@ -183,7 +318,23 @@
         var blob = (d + " " + desc + " " + act).toLowerCase();
         if (blob.indexOf(filterQ) === -1) continue;
       }
+      rows.push({ i: i, node: e });
+    }
+    applySort(rows, "special", specialSortVal);
+    rows.forEach(function (row) {
+      var i = row.i;
+      var e = row.node;
+      var d = getText(e, "date");
+      var desc = getText(e, "description");
+      var act = getText(e, "action");
       var tr = document.createElement("tr");
+      var actions =
+        '<button type="button" class="bento-btn bento-btn-sm bento-btn-ghost btn-edit-sp xml-crud-only" data-i="' +
+        i +
+        '">Edit</button> <button type="button" class="bento-btn bento-btn-sm bento-btn-outline btn-del-sp xml-crud-only" data-i="' +
+        i +
+        '">Delete</button>';
+      if (viewMode) actions = "";
       tr.innerHTML =
         "<td>" +
         esc(d) +
@@ -191,13 +342,11 @@
         esc(desc) +
         "</td><td>" +
         esc(act) +
-        '</td><td><button type="button" class="bento-btn bento-btn-sm bento-btn-ghost btn-edit-sp" data-i="' +
-        i +
-        '">Edit</button> <button type="button" class="bento-btn bento-btn-sm bento-btn-outline btn-del-sp" data-i="' +
-        i +
-        '">Delete</button></td>';
+        "</td><td>" +
+        actions +
+        "</td>";
       tbody.appendChild(tr);
-    }
+    });
     tbody.querySelectorAll(".btn-edit-sp").forEach(function (btn) {
       btn.onclick = function () {
         editSpecial(parseInt(btn.getAttribute("data-i"), 10));
@@ -217,6 +366,7 @@
     var holder = doc.getElementsByTagName("collector_shifts")[0];
     if (!holder) return;
     var list = holder.getElementsByTagName("shift");
+    var rows = [];
     for (var i = 0; i < list.length; i++) {
       var s = list[i];
       var team = getText(s, "team");
@@ -225,7 +375,22 @@
         var blob = (team + " " + lead + " " + getText(s, "assigned_days")).toLowerCase();
         if (blob.indexOf(filterQ) === -1) continue;
       }
+      rows.push({ i: i, node: s });
+    }
+    applySort(rows, "shifts", shiftSortVal);
+    rows.forEach(function (row) {
+      var i = row.i;
+      var s = row.node;
+      var team = getText(s, "team");
+      var lead = getText(s, "lead");
       var tr = document.createElement("tr");
+      var actions =
+        '<button type="button" class="bento-btn bento-btn-sm bento-btn-ghost btn-edit-sh xml-crud-only" data-i="' +
+        i +
+        '">Edit</button> <button type="button" class="bento-btn bento-btn-sm bento-btn-outline btn-del-sh xml-crud-only" data-i="' +
+        i +
+        '">Delete</button>';
+      if (viewMode) actions = "";
       tr.innerHTML =
         "<td>" +
         esc(team) +
@@ -237,13 +402,11 @@
         esc(getText(s, "start_time")) +
         " – " +
         esc(getText(s, "end_time")) +
-        '</td><td><button type="button" class="bento-btn bento-btn-sm bento-btn-ghost btn-edit-sh" data-i="' +
-        i +
-        '">Edit</button> <button type="button" class="bento-btn bento-btn-sm bento-btn-outline btn-del-sh" data-i="' +
-        i +
-        '">Delete</button></td>';
+        "</td><td>" +
+        actions +
+        "</td>";
       tbody.appendChild(tr);
-    }
+    });
     tbody.querySelectorAll(".btn-edit-sh").forEach(function (btn) {
       btn.onclick = function () {
         editShift(parseInt(btn.getAttribute("data-i"), 10));
@@ -264,6 +427,7 @@
   }
 
   function renderTables() {
+    updateSortLabels();
     renderRoutes();
     renderBarangays();
     renderSpecial();
@@ -277,6 +441,7 @@
   }
 
   function saveBrowser() {
+    if (viewMode) return;
     syncMetaFromForm();
     syncStatsFromForm();
     C.saveToStorage(C.STORAGE_SCHEDULES, doc, C.PI_SCHEDULES);
@@ -284,6 +449,7 @@
   }
 
   function editRoute(index) {
+    if (viewMode) return;
     var routes = doc.getElementsByTagName("weekly_route_calendar")[0];
     var r = routes.getElementsByTagName("route")[index];
     if (!r) return;
@@ -310,6 +476,7 @@
   }
 
   function delRoute(index) {
+    if (viewMode) return;
     if (!confirm("Delete this route row?")) return;
     var routes = doc.getElementsByTagName("weekly_route_calendar")[0];
     var r = routes.getElementsByTagName("route")[index];
@@ -319,6 +486,7 @@
   }
 
   function addRoute() {
+    if (viewMode) return;
     var routes = doc.getElementsByTagName("weekly_route_calendar")[0];
     var r = doc.createElement("route");
     setText(r, "weekday", "Monday");
@@ -333,6 +501,7 @@
   }
 
   function editBarangay(index) {
+    if (viewMode) return;
     var holder = doc.getElementsByTagName("barangay_schedules")[0];
     var b = holder.getElementsByTagName("barangay")[index];
     if (!b) return;
@@ -356,6 +525,7 @@
   }
 
   function delBarangay(index) {
+    if (viewMode) return;
     if (!confirm("Delete this barangay row?")) return;
     var holder = doc.getElementsByTagName("barangay_schedules")[0];
     var b = holder.getElementsByTagName("barangay")[index];
@@ -365,6 +535,7 @@
   }
 
   function addBarangay() {
+    if (viewMode) return;
     var holder = doc.getElementsByTagName("barangay_schedules")[0];
     var b = doc.createElement("barangay");
     setText(b, "name", "New Barangay");
@@ -378,6 +549,7 @@
   }
 
   function editSpecial(index) {
+    if (viewMode) return;
     var holder = doc.getElementsByTagName("special_dates")[0];
     var e = holder.getElementsByTagName("entry")[index];
     if (!e) return;
@@ -395,6 +567,7 @@
   }
 
   function delSpecial(index) {
+    if (viewMode) return;
     if (!confirm("Delete this special date?")) return;
     var holder = doc.getElementsByTagName("special_dates")[0];
     var e = holder.getElementsByTagName("entry")[index];
@@ -404,6 +577,7 @@
   }
 
   function addSpecial() {
+    if (viewMode) return;
     var holder = doc.getElementsByTagName("special_dates")[0];
     var e = doc.createElement("entry");
     setText(e, "date", "2026-01-01");
@@ -415,6 +589,7 @@
   }
 
   function editShift(index) {
+    if (viewMode) return;
     var holder = doc.getElementsByTagName("collector_shifts")[0];
     var s = holder.getElementsByTagName("shift")[index];
     if (!s) return;
@@ -438,6 +613,7 @@
   }
 
   function delShift(index) {
+    if (viewMode) return;
     if (!confirm("Delete this shift?")) return;
     var holder = doc.getElementsByTagName("collector_shifts")[0];
     var s = holder.getElementsByTagName("shift")[index];
@@ -447,6 +623,7 @@
   }
 
   function addShift() {
+    if (viewMode) return;
     var holder = doc.getElementsByTagName("collector_shifts")[0];
     var s = doc.createElement("shift");
     setText(s, "team", "New Team");
@@ -460,6 +637,7 @@
   }
 
   function reloadFromFile() {
+    if (viewMode) return;
     C.clearStorage(C.STORAGE_SCHEDULES);
     return C.loadXmlAsync({
       storageKey: C.STORAGE_SCHEDULES,
@@ -472,7 +650,37 @@
     });
   }
 
+  function bindSortClicks() {
+    document.querySelector("main").addEventListener("click", function (e) {
+      var th = e.target.closest("th.sortable");
+      if (!th) return;
+      e.preventDefault();
+      var section = th.getAttribute("data-section");
+      var col = parseInt(th.getAttribute("data-col"), 10);
+      if (!section || isNaN(col)) return;
+      toggleSort(section, col);
+    });
+  }
+
+  function applyViewMode() {
+    if (!viewMode) return;
+    document.body.classList.add("xml-view-mode");
+    var banner = el("view-mode-banner");
+    if (banner) banner.style.display = "block";
+    ["meta-title", "meta-tagline", "meta-proponent", "meta-coverage", "stat-routes", "stat-ontime", "stat-barangays", "stat-exceptions"].forEach(function (id) {
+      var n = el(id);
+      if (n) n.readOnly = true;
+    });
+    ["filter-route-day", "filter-route-q", "filter-barangay-day", "filter-barangay-q", "filter-special-q", "filter-shift-q"].forEach(function (id) {
+      var n = el(id);
+      if (n) n.removeAttribute("readonly");
+    });
+  }
+
   function init() {
+    applyViewMode();
+    bindSortClicks();
+
     C.loadXmlAsync({
       storageKey: C.STORAGE_SCHEDULES,
       fetchPath: "../xml/schedules.xml",
@@ -482,40 +690,51 @@
       fullRefresh();
     });
 
-    el("btn-save-browser").onclick = function () {
-      saveBrowser();
-    };
-    el("btn-export").onclick = function () {
-      syncMetaFromForm();
-      syncStatsFromForm();
-      C.downloadXml("schedules-edited.xml", doc, C.PI_SCHEDULES);
-      el("save-status").textContent = "Export started (downloads folder). Replace xml/schedules.xml manually if needed.";
-    };
-    el("btn-reload-file").onclick = function () {
-      reloadFromFile();
-    };
-    el("btn-clear-storage").onclick = function () {
-      if (!confirm("Clear saved copy in this browser? Unsaved export only in download folder.")) return;
-      C.clearStorage(C.STORAGE_SCHEDULES);
-      reloadFromFile();
-    };
-
-    ["meta-title", "meta-tagline", "meta-proponent", "meta-coverage", "stat-routes", "stat-ontime", "stat-barangays", "stat-exceptions"].forEach(function (id) {
-      el(id).addEventListener("change", function () {
+    if (!viewMode) {
+      el("btn-save-browser").onclick = function () {
+        saveBrowser();
+      };
+      el("btn-export").onclick = function () {
         syncMetaFromForm();
         syncStatsFromForm();
-        saveBrowser();
+        C.downloadXml("schedules-edited.xml", doc, C.PI_SCHEDULES);
+        el("save-status").textContent = "Export started (downloads folder). Replace xml/schedules.xml manually if needed.";
+      };
+      el("btn-reload-file").onclick = function () {
+        reloadFromFile();
+      };
+      el("btn-clear-storage").onclick = function () {
+        if (!confirm("Clear saved copy in this browser? Unsaved export only in download folder.")) return;
+        C.clearStorage(C.STORAGE_SCHEDULES);
+        reloadFromFile();
+      };
+
+      ["meta-title", "meta-tagline", "meta-proponent", "meta-coverage", "stat-routes", "stat-ontime", "stat-barangays", "stat-exceptions"].forEach(function (id) {
+        el(id).addEventListener("change", function () {
+          syncMetaFromForm();
+          syncStatsFromForm();
+          saveBrowser();
+        });
       });
-    });
+
+      el("btn-add-route").onclick = addRoute;
+      el("btn-add-barangay").onclick = addBarangay;
+      el("btn-add-special").onclick = addSpecial;
+      el("btn-add-shift").onclick = addShift;
+    } else {
+      el("btn-export").onclick = function () {
+        syncMetaFromForm();
+        syncStatsFromForm();
+        C.downloadXml("schedules-export.xml", doc, C.PI_SCHEDULES);
+        el("save-status").textContent = "Downloaded copy of current data.";
+      };
+    }
 
     ["filter-route-day", "filter-route-q", "filter-barangay-day", "filter-barangay-q", "filter-special-q", "filter-shift-q"].forEach(function (id) {
-      el(id).addEventListener("input", renderTables);
+      el(id).addEventListener("input", function () {
+        renderTables();
+      });
     });
-
-    el("btn-add-route").onclick = addRoute;
-    el("btn-add-barangay").onclick = addBarangay;
-    el("btn-add-special").onclick = addSpecial;
-    el("btn-add-shift").onclick = addShift;
   }
 
   document.addEventListener("DOMContentLoaded", init);

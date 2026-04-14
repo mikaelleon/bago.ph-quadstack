@@ -7,8 +7,16 @@
   <title>BAGO.PH — Login</title>
   <link rel="stylesheet" href="../css/style.css" />
   <style>
+    body.page-auth {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #f5f5f5;
+    }
+
     .login-wrapper {
-      min-height: calc(100vh - 60px);
+      flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -85,33 +93,19 @@
       color: #2E7D32;
       background: #F1F8F1;
     }
+
+    body.page-auth footer {
+      padding: 16px 20px;
+      text-align: center;
+      font-size: 12px;
+      color: #757575;
+      background: #fff;
+      border-top: 1px solid #eee;
+    }
   </style>
 </head>
-<body>
+<body class="page-auth">
 
-  <!-- NAV OVERLAY -->
-  <div class="nav-overlay" onclick="toggleNav()"></div>
-
-  <!-- NAVBAR -->
-  <nav>
-    <a href="index.html" class="logo">🌿 BAGO.PH</a>
-    <button class="nav-toggle" onclick="toggleNav()">☰</button>
-    <ul>
-      <li><a href="index.html" class="active">Home</a></li>
-      <li><a href="dashboard.html">Dashboard</a></li>
-      <li><a href="schedule.html">Schedule</a></li>
-      <li><a href="report.html">Reports</a></li>
-      <li><a href="collectors.html">Collectors</a></li>
-      <li><a href="compliance.html">Compliance</a></li>
-      <li><a href="eco-points.html">Eco-Points</a></li>
-      <li><a href="announcements.html">Announce</a></li>
-      <li><a href="denr-reports.html">DENR</a></li>
-      <li><a href="users.html">Users</a></li>
-      <li><a href="qr-audit.html">QR Audit</a></li>
-    </ul>
-  </nav>
-
-  <!-- LOGIN FORM -->
   <main class="login-wrapper">
     <div class="login-box">
 
@@ -121,9 +115,8 @@
            in the Philippines</p>
       </div>
 
-      <!-- ROLE SELECTOR -->
       <div class="form-group">
-        <label>Select Your Role</label>
+        <label>Select your role</label>
         <div class="role-selector">
           <button class="role-btn active"
                   type="button"
@@ -143,7 +136,6 @@
         </div>
       </div>
 
-      <!-- LOGIN FIELDS -->
       <form id="login-form" action="#" method="post">
 
         <div class="form-group">
@@ -184,32 +176,24 @@
       <div class="divider">— or —</div>
 
       <div class="register-link">
-        Don't have an account?
-        <a href="#">Register Now</a>
+        No account yet?
+        <a href="register.html">Create an account</a>
       </div>
 
     </div>
   </main>
 
-  <!-- FOOTER -->
   <footer>
     <p>
-      🌿 BAGO.PH | In compliance with RA 9003 and
-      RA 10173 | Aligned with UN SDGs 11, 12, and 13
+      🌿 BAGO.PH | RA 9003 &amp; RA 10173 | UN SDGs 11, 12, 13
     </p>
-    <p style="margin-top:4px; opacity:0.7;">
-      Team QuadStack | University of Batangas — CITEC |
-      IT3B 2025–2026
+    <p style="margin-top:4px; opacity:0.75;">
+      Team QuadStack | University of Batangas — CITEC | IT3B 2025–2026
     </p>
   </footer>
 
   <script src="role-access.js"></script>
   <script>
-    function toggleNav() {
-      document.querySelector('nav ul').classList.toggle('active');
-      document.querySelector('.nav-overlay').classList.toggle('active');
-    }
-
     function selectRole(btn) {
       document.querySelectorAll('.role-btn')
         .forEach(b => b.classList.remove('active'));

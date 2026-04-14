@@ -6,6 +6,22 @@
   <title>BAGO.PH — Schedule XML (interactive)</title>
   <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="../css/bento.css" />
+  <style>
+    .sortable { cursor: pointer; user-select: none; white-space: nowrap; }
+    .sortable:hover { background: rgba(46, 125, 50, 0.08); }
+    body.xml-view-mode .xml-crud-only { display: none !important; }
+    body.xml-view-mode .note-hide-view { display: none !important; }
+    #view-mode-banner {
+      display: none;
+      background: #E3F2FD;
+      border: 1px solid #90CAF9;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      color: #1565C0;
+    }
+  </style>
 </head>
 <body>
 
@@ -33,22 +49,27 @@
   <header class="page-header">
     <div class="container">
       <h1>📅 Schedule data (XML)</h1>
-      <p>Filter tables, edit fields, add/delete rows. Data saves in this browser; export downloads XML you can merge into <code>xml/schedules.xml</code>.</p>
+      <p>Click column headers to sort. Filter search boxes narrow rows. Full edit mode saves in-browser; export downloads XML for <code>xml/schedules.xml</code>.</p>
     </div>
   </header>
 
   <main class="container" style="padding-bottom: 48px;">
-    <div class="bento-filter-bar" style="flex-wrap: wrap; margin-bottom: 16px;">
+    <div id="view-mode-banner">
+      <strong>Read-only.</strong> Sort &amp; filter only.
+      <a href="xml-schedules-editor.html" style="color:#1565C0;font-weight:600;">Open full editor</a>
+    </div>
+
+    <div class="bento-filter-bar note-hide-view" style="flex-wrap: wrap; margin-bottom: 16px;">
       <span style="font-size: 13px; color: #616161; max-width: 100%;">
         <strong>Note:</strong> Browsers cannot overwrite project files on disk without a server. Use <strong>Save to browser</strong> + <strong>Export XML</strong>, then replace the file in the repo if needed.
       </span>
     </div>
 
     <div class="bento-filter-bar" style="flex-wrap: wrap; gap: 8px;">
-      <button type="button" class="bento-btn bento-btn-primary" id="btn-save-browser">Save to browser</button>
+      <button type="button" class="bento-btn bento-btn-primary xml-crud-only" id="btn-save-browser">Save to browser</button>
       <button type="button" class="bento-btn bento-btn-outline" id="btn-export">Export XML</button>
-      <button type="button" class="bento-btn bento-btn-ghost" id="btn-reload-file">Reload from project file</button>
-      <button type="button" class="bento-btn bento-btn-ghost" id="btn-clear-storage">Clear browser copy</button>
+      <button type="button" class="bento-btn bento-btn-ghost xml-crud-only" id="btn-reload-file">Reload from project file</button>
+      <button type="button" class="bento-btn bento-btn-ghost xml-crud-only" id="btn-clear-storage">Clear browser copy</button>
     </div>
     <p id="save-status" class="text-caption" style="margin: 12px 0 24px;"></p>
 
@@ -99,7 +120,7 @@
     <div class="bento-table-wrapper" style="margin-bottom: 24px;">
       <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px;">
         <h2 class="text-subtitle" style="margin: 0;">Weekly route calendar</h2>
-        <button type="button" class="bento-btn bento-btn-sm bento-btn-primary" id="btn-add-route">+ Add route</button>
+        <button type="button" class="bento-btn bento-btn-sm bento-btn-primary xml-crud-only" id="btn-add-route">+ Add route</button>
       </div>
       <div class="bento-filter-bar" style="margin-bottom: 12px;">
         <input type="search" id="filter-route-day" class="search-input" placeholder="Filter by weekday…" />
@@ -108,11 +129,11 @@
       <table class="bento-table">
         <thead>
           <tr>
-            <th>Day</th>
-            <th>Route</th>
-            <th>Areas</th>
-            <th>Window</th>
-            <th>Status</th>
+            <th class="sortable" data-section="routes" data-col="0" data-label="Day">Day</th>
+            <th class="sortable" data-section="routes" data-col="1" data-label="Route">Route</th>
+            <th class="sortable" data-section="routes" data-col="2" data-label="Areas">Areas</th>
+            <th class="sortable" data-section="routes" data-col="3" data-label="Window">Window</th>
+            <th class="sortable" data-section="routes" data-col="4" data-label="Status">Status</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -123,7 +144,7 @@
     <div class="bento-table-wrapper" style="margin-bottom: 24px;">
       <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px;">
         <h2 class="text-subtitle" style="margin: 0;">Pickup by barangay</h2>
-        <button type="button" class="bento-btn bento-btn-sm bento-btn-primary" id="btn-add-barangay">+ Add barangay</button>
+        <button type="button" class="bento-btn bento-btn-sm bento-btn-primary xml-crud-only" id="btn-add-barangay">+ Add barangay</button>
       </div>
       <div class="bento-filter-bar" style="margin-bottom: 12px;">
         <input type="search" id="filter-barangay-day" class="search-input" placeholder="Filter by primary day…" />
@@ -132,11 +153,11 @@
       <table class="bento-table">
         <thead>
           <tr>
-            <th>Barangay</th>
-            <th>Primary day</th>
-            <th>Time window</th>
-            <th>Frequency</th>
-            <th>Notes</th>
+            <th class="sortable" data-section="barangay" data-col="0" data-label="Barangay">Barangay</th>
+            <th class="sortable" data-section="barangay" data-col="1" data-label="Primary day">Primary day</th>
+            <th class="sortable" data-section="barangay" data-col="2" data-label="Time window">Time window</th>
+            <th class="sortable" data-section="barangay" data-col="3" data-label="Frequency">Frequency</th>
+            <th class="sortable" data-section="barangay" data-col="4" data-label="Notes">Notes</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -147,7 +168,7 @@
     <div class="bento-table-wrapper" style="margin-bottom: 24px;">
       <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px;">
         <h2 class="text-subtitle" style="margin: 0;">Special dates</h2>
-        <button type="button" class="bento-btn bento-btn-sm bento-btn-primary" id="btn-add-special">+ Add entry</button>
+        <button type="button" class="bento-btn bento-btn-sm bento-btn-primary xml-crud-only" id="btn-add-special">+ Add entry</button>
       </div>
       <div class="bento-filter-bar" style="margin-bottom: 12px;">
         <input type="search" id="filter-special-q" class="search-input" placeholder="Search date or description…" style="width: 100%; max-width: 480px;" />
@@ -155,9 +176,9 @@
       <table class="bento-table">
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Description</th>
-            <th>Action</th>
+            <th class="sortable" data-section="special" data-col="0" data-label="Date">Date</th>
+            <th class="sortable" data-section="special" data-col="1" data-label="Description">Description</th>
+            <th class="sortable" data-section="special" data-col="2" data-label="Adjustment">Adjustment</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -168,7 +189,7 @@
     <div class="bento-table-wrapper">
       <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px;">
         <h2 class="text-subtitle" style="margin: 0;">Collector shifts</h2>
-        <button type="button" class="bento-btn bento-btn-sm bento-btn-primary" id="btn-add-shift">+ Add shift</button>
+        <button type="button" class="bento-btn bento-btn-sm bento-btn-primary xml-crud-only" id="btn-add-shift">+ Add shift</button>
       </div>
       <div class="bento-filter-bar" style="margin-bottom: 12px;">
         <input type="search" id="filter-shift-q" class="search-input" placeholder="Search team or lead…" style="width: 100%; max-width: 480px;" />
@@ -176,10 +197,10 @@
       <table class="bento-table">
         <thead>
           <tr>
-            <th>Team</th>
-            <th>Lead</th>
-            <th>Assigned days</th>
-            <th>Shift</th>
+            <th class="sortable" data-section="shifts" data-col="0" data-label="Team">Team</th>
+            <th class="sortable" data-section="shifts" data-col="1" data-label="Lead">Lead</th>
+            <th class="sortable" data-section="shifts" data-col="2" data-label="Assigned days">Assigned days</th>
+            <th class="sortable" data-section="shifts" data-col="3" data-label="Shift">Shift</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -188,7 +209,9 @@
     </div>
 
     <p style="margin-top: 24px; font-size: 13px; color: #757575;">
-      Static XSL view: <a href="../xml/schedules.xml" style="color: #2E7D32; font-weight: 600;">Open schedules.xml</a> (Firefox shows transform best).
+      Static XSL view (no sort in browser): <a href="../xml/schedules.xml" style="color: #2E7D32; font-weight: 600;">schedules.xml</a> — Firefox renders XSLT best.
+      <span class="note-hide-view"> | </span>
+      <a href="xml-schedules-editor.html?mode=view" class="note-hide-view" style="color: #2E7D32; font-weight: 600;">Read-only browse</a>
     </p>
   </main>
 
