@@ -2,238 +2,33 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0" />
-  <title>BAGO.PH — LGU Dashboard</title>
-  <link rel="stylesheet" href="../css/style.css" />
-  <link rel="stylesheet" href="../css/dashboard.css" />
-  <link rel="stylesheet" href="../css/bento.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BAGO.PH — Redirecting…</title>
+  <script>
+    (function () {
+      var raw = localStorage.getItem("bagoRole");
+      if (!raw) {
+        window.location.replace("index.html");
+        return;
+      }
+      function norm(r) {
+        if (!r) return "user";
+        var c = String(r).trim().toLowerCase().replace(/\s+/g, "_");
+        if (c === "lgu_admin") return "lgu_officer";
+        if (c === "user" || c === "collector" || c === "lgu_officer") return c;
+        return "user";
+      }
+      var role = norm(raw);
+      var map = {
+        user: "dashboard-resident.html",
+        collector: "dashboard-collector.html",
+        lgu_officer: "dashboard-lgu.html"
+      };
+      window.location.replace(map[role] || "dashboard-resident.html");
+    })();
+  </script>
 </head>
 <body>
-
-  <!-- NAV OVERLAY -->
-  <div class="nav-overlay" onclick="toggleNav()"></div>
-
-  <!-- NAVBAR -->
-  <nav>
-    <a href="index.html" class="logo">🌿 BAGO.PH</a>
-    <button class="nav-toggle" onclick="toggleNav()">☰</button>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="dashboard.html" class="active">Dashboard</a></li>
-      <li><a href="schedule.html">Schedule</a></li>
-      <li><a href="report.html">Reports</a></li>
-      <li><a href="collectors.html">Collectors</a></li>
-      <li><a href="compliance.html">Compliance</a></li>
-      <li><a href="eco-points.html">Eco-Points</a></li>
-      <li><a href="announcements.html">Announce</a></li>
-      <li><a href="denr-reports.html">DENR</a></li>
-      <li><a href="users.html">Users</a></li>
-      <li><a href="qr-audit.html">QR Audit</a></li>
-    </ul>
-  </nav>
-
-  <!-- PAGE HEADER -->
-  <header class="page-header">
-    <div class="container">
-      <h1>📊 LGU Operations Overview</h1>
-      <p>
-        Lipa City, Batangas | CENRO Office |
-        Real-time waste management performance data
-      </p>
-    </div>
-  </header>
-
-  <!-- MAIN CONTENT -->
-  <main class="container" style="padding-top: 0;
-                                  padding-bottom: 40px;">
-
-    <!-- METRIC CARDS -->
-    <div class="metric-grid">
-
-      <div class="metric-card green">
-        <div class="metric-icon">📦</div>
-        <div class="metric-value">87%</div>
-        <div class="metric-label">
-          Collection Completion Rate
-        </div>
-        <div class="metric-sub">▲ +3% from last week</div>
-      </div>
-
-      <div class="metric-card red">
-        <div class="metric-icon">📸</div>
-        <div class="metric-value">14</div>
-        <div class="metric-label">Open Waste Reports</div>
-        <div class="metric-sub">
-          Oldest: 3 days unresolved
-        </div>
-      </div>
-
-      <div class="metric-card blue">
-        <div class="metric-icon">👥</div>
-        <div class="metric-value">1,450</div>
-        <div class="metric-label">
-          Registered Residents
-        </div>
-        <div class="metric-sub">+12 new this week</div>
-      </div>
-
-      <div class="metric-card green">
-        <div class="metric-icon">🚛</div>
-        <div class="metric-value">5</div>
-        <div class="metric-label">
-          Active Collectors Today
-        </div>
-        <div class="metric-sub">3 routes completed</div>
-      </div>
-
-      <div class="metric-card blue">
-        <div class="metric-icon">🌿</div>
-        <div class="metric-value">9,870</div>
-        <div class="metric-label">
-          Eco-Points Distributed
-        </div>
-        <div class="metric-sub">This month</div>
-      </div>
-
-      <div class="metric-card orange">
-        <div class="metric-icon">♻️</div>
-        <div class="metric-value">74%</div>
-        <div class="metric-label">
-          Segregation Compliance Rate
-        </div>
-        <div class="metric-sub">
-          DENR target: 80% — ▼ needs action
-        </div>
-      </div>
-
-    </div><!-- end metric-grid -->
-
-    <!-- BARANGAY PERFORMANCE TABLE -->
-    <h2 style="margin: 28px 0 12px;">
-      Barangay Performance
-    </h2>
-
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Barangay</th>
-            <th>Collection Rate</th>
-            <th>Compliance Rate</th>
-            <th>Open Reports</th>
-            <th>Eco-Points</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Balintawak</strong></td>
-            <td>96%</td>
-            <td>93%</td>
-            <td>1</td>
-            <td>15,200 pts</td>
-            <td>
-              <span class="badge badge-ontrack">
-                On Track
-              </span>
-            </td>
-          </tr>
-          <tr>
-            <td><strong>Marauoy</strong></td>
-            <td>91%</td>
-            <td>89%</td>
-            <td>3</td>
-            <td>12,400 pts</td>
-            <td>
-              <span class="badge badge-ontrack">
-                On Track
-              </span>
-            </td>
-          </tr>
-          <tr>
-            <td><strong>Dagatan</strong></td>
-            <td>88%</td>
-            <td>85%</td>
-            <td>5</td>
-            <td>9,870 pts</td>
-            <td>
-              <span class="badge badge-ontrack">
-                On Track
-              </span>
-            </td>
-          </tr>
-          <tr>
-            <td><strong>San Sebastian (Balagbag)</strong></td>
-            <td>79%</td>
-            <td>74%</td>
-            <td>11</td>
-            <td>8,750 pts</td>
-            <td>
-              <span class="badge badge-monitor">
-                Monitor
-              </span>
-            </td>
-          </tr>
-          <tr>
-            <td><strong>Tambo</strong></td>
-            <td>63%</td>
-            <td>62%</td>
-            <td>19</td>
-            <td>5,430 pts</td>
-            <td>
-              <span class="badge badge-urgent">
-                Urgent
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- EXPORT BUTTON -->
-    <div style="margin-top: 20px; display:flex; gap:12px; flex-wrap: wrap;">
-      <a href="../xml/barangays.xml"
-         class="btn btn-secondary"
-         style="text-decoration:none; display:flex;
-                align-items:center; height:44px;">
-        📂 View Barangay XML Data
-      </a>
-      <a href="xml-barangays-editor.html"
-         class="btn btn-secondary"
-         style="text-decoration:none; display:flex;
-                align-items:center; height:44px;">
-        ✏️ Edit Barangay XML
-      </a>
-      <a href="xml-schedules-editor.html"
-         class="btn btn-secondary"
-         style="text-decoration:none; display:flex;
-                align-items:center; height:44px;">
-        ✏️ Edit Schedule XML
-      </a>
-      <button type="button" class="btn btn-secondary"
-              style="height:44px;">
-        📄 Export as PDF (DENR)
-      </button>
-    </div>
-
-  </main>
-
-  <!-- FOOTER -->
-  <footer>
-    <p>
-      🌿 BAGO.PH | In compliance with RA 9003 and
-      RA 10173 | Aligned with UN SDGs 11, 12, and 13
-    </p>
-  </footer>
-
-  <script src="role-access.js"></script>
-  <script>
-    function toggleNav() {
-      document.querySelector('nav ul').classList.toggle('active');
-      document.querySelector('.nav-overlay').classList.toggle('active');
-    }
-  </script>
-
+  <p style="font-family: system-ui, sans-serif; padding: 1rem;">Redirecting…</p>
 </body>
 </html>

@@ -90,7 +90,7 @@ Implemented on top of the baseline above:
 ---
 
 ## Feature Overview
-- **Login & Register** — role selection; registration stores display/mobile strings locally (prototype only).
+- **Login & Register** — role selection; session role stored in `localStorage` (prototype only).
 - **Dashboard**: high-level waste operations snapshot.
 - **Collection Schedule**: planned routes and collection timing.
 - **Report Management**: issue reporting and follow-up workflow.
@@ -118,15 +118,23 @@ Implemented on top of the baseline above:
 Navigation and direct URL access follow `role-access.js`. Typical allowed pages:
 
 ### Resident (`user`)
-`index.html`, `register.html`, `dashboard.html`, `schedule.html`, `report.html`, `eco-points.html`, `announcements.html`
+- `index.html`, `register.html`
+- `dashboard.html` (redirect shim), `dashboard-resident.html` (home)
+- `schedule.html`, `report.html`, `eco-points.html`, `announcements.html`
 
 ### Collector (`collector`)
-Above, plus: `collectors.html`, `qr-audit.html`, **`xml-schedules-editor.html`** (and `?mode=view`)
+- `index.html`, `register.html`
+- `dashboard.html` (redirect shim), `dashboard-collector.html` (home)
+- `schedule.html`, `report.html`, `collectors.html`, `announcements.html`
+- `qr-audit.html`, `xml-schedules-editor.html` (append `?mode=view` for read-only)
 
 ### LGU Officer (`lgu_officer`)
-All collector pages, plus: `compliance.html`, `denr-reports.html`, `users.html`, **`xml-barangays-editor.html`** (and `?mode=view`)
+- `index.html`, `register.html`
+- `dashboard.html` (redirect shim), `dashboard-lgu.html` (home)
+- `schedule.html`, `report.html`, `collectors.html`, `compliance.html`, `eco-points.html`, `announcements.html`, `denr-reports.html`, `users.html`
+- `qr-audit.html`, `xml-schedules-editor.html`, `xml-barangays-editor.html` (append `?mode=view` for read-only)
 
-If a page is not allowed for the current role, the app redirects to an allowed page (usually the dashboard).
+If a page is not allowed for the current role, the app redirects to that role’s dashboard home.
 
 ---
 

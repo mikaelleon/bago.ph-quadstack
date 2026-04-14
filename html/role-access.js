@@ -3,6 +3,7 @@ const ROLE_PAGE_ACCESS = {
     "index.html",
     "register.html",
     "dashboard.html",
+    "dashboard-resident.html",
     "schedule.html",
     "report.html",
     "eco-points.html",
@@ -12,6 +13,7 @@ const ROLE_PAGE_ACCESS = {
     "index.html",
     "register.html",
     "dashboard.html",
+    "dashboard-collector.html",
     "schedule.html",
     "report.html",
     "collectors.html",
@@ -23,6 +25,7 @@ const ROLE_PAGE_ACCESS = {
     "index.html",
     "register.html",
     "dashboard.html",
+    "dashboard-lgu.html",
     "schedule.html",
     "report.html",
     "collectors.html",
@@ -43,6 +46,13 @@ function normalizeRole(role) {
   if (cleaned === "lgu_admin") return "lgu_officer";
   if (!ROLE_PAGE_ACCESS[cleaned]) return "user";
   return cleaned;
+}
+
+function getDashboardHomeForRole(role) {
+  const n = normalizeRole(role);
+  if (n === "collector") return "dashboard-collector.html";
+  if (n === "lgu_officer") return "dashboard-lgu.html";
+  return "dashboard-resident.html";
 }
 
 function getCurrentPageName() {
@@ -71,10 +81,11 @@ function canAccessPage(role, pageName) {
   return allowedPages.has(pageName);
 }
 
-function getFirstAllowedPage(role) {
-  const normalizedRole = normalizeRole(role);
-  const allowedPages = ROLE_PAGE_ACCESS[normalizedRole] || ROLE_PAGE_ACCESS.user;
-  return allowedPages.has("dashboard.html") ? "dashboard.html" : "index.html";
+function rewriteDashboardLinks(role) {
+  const home = getDashboardHomeForRole(role);
+  document.querySelectorAll('a[href="dashboard.html"]').forEach(function (a) {
+    a.setAttribute("href", home);
+  });
 }
 
 function appendLogoutNav() {
@@ -102,7 +113,7 @@ function enforceAccessControl() {
 
   if (isAuthPage()) {
     if (roleStored) {
-      window.location.href = "dashboard.html";
+      window.location.href = getDashboardHomeForRole(getStoredRole());
       return;
     }
     return;
@@ -115,7 +126,7 @@ function enforceAccessControl() {
 
   const role = getStoredRole();
   if (!canAccessPage(role, currentPage)) {
-    window.location.href = getFirstAllowedPage(role);
+    window.location.href = getDashboardHomeForRole(role);
     return;
   }
 
@@ -130,13 +141,36 @@ function enforceAccessControl() {
     item.style.display = allowed ? "" : "none";
   });
 
+  rewriteDashboardLinks(role);
   appendLogoutNav();
+}
+
+function getDashboardHome() {
+  return getDashboardHomeForRole(getStoredRole());
+}
+
+function roleFromSelectorButtonText(buttonText) {
+  if (!buttonText) return "user";
+  const t = String(buttonText);
+  if (t.includes("Collector")) return "collector";
+  if (t.includes("LGU")) return "lgu_officer";
+  return "user";
+}
+
+function activateRoleButton(btn) {
+  document.querySelectorAll(".role-btn").forEach(function (b) {
+    b.classList.remove("active");
+  });
+  btn.classList.add("active");
 }
 
 window.BAGOAccess = {
   setCurrentRole,
   getStoredRole,
-  normalizeRole
+  normalizeRole,
+  getDashboardHome,
+  roleFromSelectorButtonText,
+  activateRoleButton
 };
 
 document.addEventListener("DOMContentLoaded", enforceAccessControl);

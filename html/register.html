@@ -102,9 +102,9 @@
         <div class="form-group">
           <label>Account role</label>
           <div class="role-selector">
-            <button type="button" class="role-btn active" onclick="selectRole(this)">🏠 Resident</button>
-            <button type="button" class="role-btn" onclick="selectRole(this)">🚛 Collector</button>
-            <button type="button" class="role-btn" onclick="selectRole(this)">🏛️ LGU Admin</button>
+            <button type="button" class="role-btn active" onclick="BAGOAccess.activateRoleButton(this)">🏠 Resident</button>
+            <button type="button" class="role-btn" onclick="BAGOAccess.activateRoleButton(this)">🚛 Collector</button>
+            <button type="button" class="role-btn" onclick="BAGOAccess.activateRoleButton(this)">🏛️ LGU Admin</button>
           </div>
         </div>
 
@@ -125,30 +125,19 @@
 
   <script src="role-access.js"></script>
   <script>
-    function selectRole(btn) {
-      document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-    }
-    function roleFromButton(text) {
-      if (text.includes('Collector')) return 'collector';
-      if (text.includes('LGU')) return 'lgu_officer';
-      return 'user';
-    }
-    document.getElementById('register-form').addEventListener('submit', function (e) {
+    document.getElementById("register-form").addEventListener("submit", function (e) {
       e.preventDefault();
-      var p1 = document.getElementById('pin').value;
-      var p2 = document.getElementById('pin2').value;
+      var p1 = document.getElementById("pin").value;
+      var p2 = document.getElementById("pin2").value;
       if (p1 !== p2) {
-        alert('PINs do not match.');
+        alert("PINs do not match.");
         return;
       }
-      var active = document.querySelector('.role-btn.active');
-      window.BAGOAccess.setCurrentRole(roleFromButton(active ? active.textContent : ''));
-      try {
-        localStorage.setItem('bagoDisplayName', document.getElementById('full-name').value.trim());
-        localStorage.setItem('bagoMobile', document.getElementById('mobile').value.trim());
-      } catch (err) {}
-      window.location.href = 'dashboard.html';
+      var active = document.querySelector(".role-btn.active");
+      window.BAGOAccess.setCurrentRole(
+        window.BAGOAccess.roleFromSelectorButtonText(active ? active.textContent : "")
+      );
+      window.location.href = window.BAGOAccess.getDashboardHome();
     });
   </script>
 </body>

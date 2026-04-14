@@ -120,17 +120,17 @@
         <div class="role-selector">
           <button class="role-btn active"
                   type="button"
-                  onclick="selectRole(this)">
+                  onclick="BAGOAccess.activateRoleButton(this)">
             🏠 Resident
           </button>
           <button class="role-btn"
                   type="button"
-                  onclick="selectRole(this)">
+                  onclick="BAGOAccess.activateRoleButton(this)">
             🚛 Collector
           </button>
           <button class="role-btn"
                   type="button"
-                  onclick="selectRole(this)">
+                  onclick="BAGOAccess.activateRoleButton(this)">
             🏛️ LGU Admin
           </button>
         </div>
@@ -194,36 +194,21 @@
 
   <script src="role-access.js"></script>
   <script>
-    function selectRole(btn) {
-      document.querySelectorAll('.role-btn')
-        .forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-    }
-
-    function roleFromButton(buttonText) {
-      if (buttonText.includes('Collector')) return 'collector';
-      if (buttonText.includes('LGU')) return 'lgu_officer';
-      return 'user';
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-      const savedRole = window.BAGOAccess.getStoredRole();
-      const roleButtons = document.querySelectorAll('.role-btn');
-
-      roleButtons.forEach((btn) => {
-        const mappedRole = roleFromButton(btn.textContent);
-        if (mappedRole === savedRole) {
-          roleButtons.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
+    document.addEventListener("DOMContentLoaded", function () {
+      var savedRole = window.BAGOAccess.getStoredRole();
+      document.querySelectorAll(".role-btn").forEach(function (btn) {
+        if (window.BAGOAccess.roleFromSelectorButtonText(btn.textContent) === savedRole) {
+          window.BAGOAccess.activateRoleButton(btn);
         }
       });
-
-      document.getElementById('login-form').addEventListener('submit', function (event) {
+      document.getElementById("login-form").addEventListener("submit", function (event) {
         event.preventDefault();
-        const activeRoleButton = document.querySelector('.role-btn.active');
-        const selectedRole = roleFromButton(activeRoleButton ? activeRoleButton.textContent : '');
+        var active = document.querySelector(".role-btn.active");
+        var selectedRole = window.BAGOAccess.roleFromSelectorButtonText(
+          active ? active.textContent : ""
+        );
         window.BAGOAccess.setCurrentRole(selectedRole);
-        window.location.href = 'dashboard.html';
+        window.location.href = window.BAGOAccess.getDashboardHome();
       });
     });
   </script>

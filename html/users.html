@@ -427,20 +427,21 @@
   <script src="js/lipa-barangays.js"></script>
   <script src="js/lipa-barangays-select.js"></script>
   <script src="role-access.js"></script>
+  <script src="nav-ui.js"></script>
   <script>
-    function toggleNav() {
-      document.querySelector('nav ul').classList.toggle('active');
-      document.querySelector('.nav-overlay').classList.toggle('active');
-    }
-
     function switchTab(tab) {
-      // Hide all tabs
-      document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
-      document.querySelectorAll('.bento-tab').forEach(t => t.classList.remove('active'));
-
-      // Show selected tab
-      document.getElementById('tab-' + tab).style.display = 'block';
-      event.target.classList.add('active');
+      document.querySelectorAll(".tab-content").forEach(function (t) {
+        t.style.display = "none";
+      });
+      document.querySelectorAll(".bento-tab").forEach(function (t) {
+        t.classList.remove("active");
+      });
+      var panel = document.getElementById("tab-" + tab);
+      if (panel) panel.style.display = "block";
+      var order = { residents: 0, collectors: 1, admins: 2 };
+      var tabs = document.querySelectorAll(".bento-tab");
+      var idx = order[tab];
+      if (idx !== undefined && tabs[idx]) tabs[idx].classList.add("active");
     }
 
     function showUserModal() {
