@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BAGO.PH — Barangay XML (interactive)</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/bento.css" />
+</head>
+<body>
+
+  <div class="nav-overlay" onclick="toggleNav()"></div>
+  <nav>
+    <a href="index.html" class="logo">🌿 BAGO.PH</a>
+    <button class="nav-toggle" onclick="toggleNav()">☰</button>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="report.html">Reports</a></li>
+      <li><a href="collectors.html">Collectors</a></li>
+      <li><a href="compliance.html">Compliance</a></li>
+      <li><a href="eco-points.html">Eco-Points</a></li>
+      <li><a href="announcements.html">Announce</a></li>
+      <li><a href="denr-reports.html">DENR</a></li>
+      <li><a href="users.html">Users</a></li>
+      <li><a href="qr-audit.html">QR Audit</a></li>
+      <li><a href="xml-schedules-editor.html">XML Schedules</a></li>
+      <li><a href="xml-barangays-editor.html" class="active">XML Barangays</a></li>
+    </ul>
+  </nav>
+
+  <header class="page-header">
+    <div class="container">
+      <h1>🏘️ Barangay performance (XML)</h1>
+      <p>Filter, add, edit, delete barangay rows. Saves in this browser; export replaces <code>xml/barangays.xml</code> when you copy the file in.</p>
+    </div>
+  </header>
+
+  <main class="container" style="padding-bottom: 48px;">
+    <div class="bento-filter-bar" style="flex-wrap: wrap; margin-bottom: 16px;">
+      <span style="font-size: 13px; color: #616161;">
+        <strong>Note:</strong> No auto-write to disk. Use <strong>Export XML</strong> and overwrite the project file locally if needed.
+      </span>
+    </div>
+
+    <div class="bento-filter-bar" style="flex-wrap: wrap; gap: 8px;">
+      <button type="button" class="bento-btn bento-btn-primary" id="btn-save-browser">Save to browser</button>
+      <button type="button" class="bento-btn bento-btn-outline" id="btn-export">Export XML</button>
+      <button type="button" class="bento-btn bento-btn-ghost" id="btn-reload-file">Reload from project file</button>
+      <button type="button" class="bento-btn bento-btn-ghost" id="btn-clear-storage">Clear browser copy</button>
+    </div>
+    <p id="save-status" class="text-caption" style="margin: 12px 0 24px;"></p>
+
+    <div class="bento-table-wrapper" style="margin-bottom: 24px;">
+      <h2 class="text-subtitle" style="margin-bottom: 12px;">Header</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+        <div class="form-group">
+          <label for="hdr-city">City</label>
+          <input type="text" id="hdr-city" class="search-input" style="width: 100%;" />
+        </div>
+        <div class="form-group">
+          <label for="hdr-province">Province</label>
+          <input type="text" id="hdr-province" class="search-input" style="width: 100%;" />
+        </div>
+        <div class="form-group">
+          <label for="hdr-updated">Last updated</label>
+          <input type="text" id="hdr-updated" class="search-input" style="width: 100%;" placeholder="YYYY-MM-DD" />
+        </div>
+      </div>
+      <div style="margin-top: 16px; display: grid; grid-template-columns: 1fr; gap: 12px;">
+        <div class="form-group">
+          <label for="meta-source">Meta — source</label>
+          <input type="text" id="meta-source" class="search-input" style="width: 100%;" />
+        </div>
+        <div class="form-group">
+          <label for="meta-note">Meta — note</label>
+          <input type="text" id="meta-note" class="search-input" style="width: 100%;" />
+        </div>
+      </div>
+    </div>
+
+    <div class="bento-table-wrapper">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <h2 class="text-subtitle" style="margin: 0;">Barangays</h2>
+        <button type="button" class="bento-btn bento-btn-sm bento-btn-primary" id="btn-add">+ Add barangay</button>
+      </div>
+      <div class="bento-filter-bar" style="margin-bottom: 12px; flex-wrap: wrap;">
+        <input type="search" id="filter-barangay-q" class="search-input" placeholder="Search name, rates, status…" style="flex: 1; min-width: 200px;" />
+        <select id="filter-status" aria-label="Filter by status" style="height: 40px; padding: 0 12px; border-radius: 8px; border: 1px solid #E0E0E0;">
+          <option value="">All statuses</option>
+          <option value="on track">On Track</option>
+          <option value="monitor">Monitor</option>
+          <option value="urgent">Urgent</option>
+        </select>
+      </div>
+      <table class="bento-table">
+        <thead>
+          <tr>
+            <th>Barangay</th>
+            <th>Collection</th>
+            <th>Compliance</th>
+            <th>Open reports</th>
+            <th>Eco-points</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-barangays"></tbody>
+      </table>
+    </div>
+
+    <p style="margin-top: 24px; font-size: 13px; color: #757575;">
+      Static XSL view: <a href="../xml/barangays.xml" style="color: #2E7D32; font-weight: 600;">Open barangays.xml</a>
+    </p>
+  </main>
+
+  <footer>
+    <p>🌿 BAGO.PH | XML prototype editor</p>
+  </footer>
+
+  <script id="barangays-xml-fallback" type="text/plain">
+<bago_barangays city="Lipa City" province="Batangas" last_updated="2026-04-14">
+  <meta>
+    <source>BAGO.PH LGU dashboard prototype</source>
+    <note>Sample performance snapshot for CENRO reporting</note>
+  </meta>
+  <barangay name="Balintawak">
+    <collection_rate>96%</collection_rate>
+    <compliance_rate>93%</compliance_rate>
+    <open_reports>1</open_reports>
+    <eco_points>15200</eco_points>
+    <status>On Track</status>
+  </barangay>
+</bago_barangays>
+  </script>
+
+  <script src="role-access.js"></script>
+  <script src="js/xml-data-core.js"></script>
+  <script src="js/xml-barangays-app.js"></script>
+  <script>
+    function toggleNav() {
+      document.querySelector("nav ul").classList.toggle("active");
+      document.querySelector(".nav-overlay").classList.toggle("active");
+    }
+  </script>
+</body>
+</html>

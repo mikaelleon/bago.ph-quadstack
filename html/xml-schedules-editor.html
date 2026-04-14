@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BAGO.PH — Schedule XML (interactive)</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/bento.css" />
+</head>
+<body>
+
+  <div class="nav-overlay" onclick="toggleNav()"></div>
+  <nav>
+    <a href="index.html" class="logo">🌿 BAGO.PH</a>
+    <button class="nav-toggle" onclick="toggleNav()">☰</button>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="report.html">Reports</a></li>
+      <li><a href="collectors.html">Collectors</a></li>
+      <li><a href="compliance.html">Compliance</a></li>
+      <li><a href="eco-points.html">Eco-Points</a></li>
+      <li><a href="announcements.html">Announce</a></li>
+      <li><a href="denr-reports.html">DENR</a></li>
+      <li><a href="users.html">Users</a></li>
+      <li><a href="qr-audit.html">QR Audit</a></li>
+      <li><a href="xml-schedules-editor.html" class="active">XML Schedules</a></li>
+      <li><a href="xml-barangays-editor.html">XML Barangays</a></li>
+    </ul>
+  </nav>
+
+  <header class="page-header">
+    <div class="container">
+      <h1>📅 Schedule data (XML)</h1>
+      <p>Filter tables, edit fields, add/delete rows. Data saves in this browser; export downloads XML you can merge into <code>xml/schedules.xml</code>.</p>
+    </div>
+  </header>
+
+  <main class="container" style="padding-bottom: 48px;">
+    <div class="bento-filter-bar" style="flex-wrap: wrap; margin-bottom: 16px;">
+      <span style="font-size: 13px; color: #616161; max-width: 100%;">
+        <strong>Note:</strong> Browsers cannot overwrite project files on disk without a server. Use <strong>Save to browser</strong> + <strong>Export XML</strong>, then replace the file in the repo if needed.
+      </span>
+    </div>
+
+    <div class="bento-filter-bar" style="flex-wrap: wrap; gap: 8px;">
+      <button type="button" class="bento-btn bento-btn-primary" id="btn-save-browser">Save to browser</button>
+      <button type="button" class="bento-btn bento-btn-outline" id="btn-export">Export XML</button>
+      <button type="button" class="bento-btn bento-btn-ghost" id="btn-reload-file">Reload from project file</button>
+      <button type="button" class="bento-btn bento-btn-ghost" id="btn-clear-storage">Clear browser copy</button>
+    </div>
+    <p id="save-status" class="text-caption" style="margin: 12px 0 24px;"></p>
+
+    <div class="bento-table-wrapper" style="margin-bottom: 24px;">
+      <h2 class="text-subtitle" style="margin-bottom: 12px;">Document info</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+        <div class="form-group">
+          <label for="meta-title">Title</label>
+          <input type="text" id="meta-title" class="search-input" style="width: 100%;" />
+        </div>
+        <div class="form-group">
+          <label for="meta-tagline">Tagline</label>
+          <input type="text" id="meta-tagline" class="search-input" style="width: 100%;" />
+        </div>
+        <div class="form-group">
+          <label for="meta-proponent">Proponent</label>
+          <input type="text" id="meta-proponent" class="search-input" style="width: 100%;" />
+        </div>
+        <div class="form-group">
+          <label for="meta-coverage">Coverage area</label>
+          <input type="text" id="meta-coverage" class="search-input" style="width: 100%;" />
+        </div>
+      </div>
+    </div>
+
+    <div class="bento-table-wrapper" style="margin-bottom: 24px;">
+      <h2 class="text-subtitle" style="margin-bottom: 12px;">Statistics</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px;">
+        <div class="form-group">
+          <label for="stat-routes">Weekly routes planned</label>
+          <input type="text" id="stat-routes" class="search-input" style="width: 100%;" />
+        </div>
+        <div class="form-group">
+          <label for="stat-ontime">On-time completion</label>
+          <input type="text" id="stat-ontime" class="search-input" style="width: 100%;" />
+        </div>
+        <div class="form-group">
+          <label for="stat-barangays">Barangays on schedule</label>
+          <input type="text" id="stat-barangays" class="search-input" style="width: 100%;" />
+        </div>
+        <div class="form-group">
+          <label for="stat-exceptions">Exceptions this month</label>
+          <input type="text" id="stat-exceptions" class="search-input" style="width: 100%;" />
+        </div>
+      </div>
+    </div>
+
+    <div class="bento-table-wrapper" style="margin-bottom: 24px;">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <h2 class="text-subtitle" style="margin: 0;">Weekly route calendar</h2>
+        <button type="button" class="bento-btn bento-btn-sm bento-btn-primary" id="btn-add-route">+ Add route</button>
+      </div>
+      <div class="bento-filter-bar" style="margin-bottom: 12px;">
+        <input type="search" id="filter-route-day" class="search-input" placeholder="Filter by weekday…" />
+        <input type="search" id="filter-route-q" class="search-input" placeholder="Search route / areas…" style="flex: 1; min-width: 200px;" />
+      </div>
+      <table class="bento-table">
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>Route</th>
+            <th>Areas</th>
+            <th>Window</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-routes"></tbody>
+      </table>
+    </div>
+
+    <div class="bento-table-wrapper" style="margin-bottom: 24px;">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <h2 class="text-subtitle" style="margin: 0;">Pickup by barangay</h2>
+        <button type="button" class="bento-btn bento-btn-sm bento-btn-primary" id="btn-add-barangay">+ Add barangay</button>
+      </div>
+      <div class="bento-filter-bar" style="margin-bottom: 12px;">
+        <input type="search" id="filter-barangay-day" class="search-input" placeholder="Filter by primary day…" />
+        <input type="search" id="filter-barangay-q" class="search-input" placeholder="Search barangay name…" style="flex: 1; min-width: 200px;" />
+      </div>
+      <table class="bento-table">
+        <thead>
+          <tr>
+            <th>Barangay</th>
+            <th>Primary day</th>
+            <th>Time window</th>
+            <th>Frequency</th>
+            <th>Notes</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-barangay"></tbody>
+      </table>
+    </div>
+
+    <div class="bento-table-wrapper" style="margin-bottom: 24px;">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <h2 class="text-subtitle" style="margin: 0;">Special dates</h2>
+        <button type="button" class="bento-btn bento-btn-sm bento-btn-primary" id="btn-add-special">+ Add entry</button>
+      </div>
+      <div class="bento-filter-bar" style="margin-bottom: 12px;">
+        <input type="search" id="filter-special-q" class="search-input" placeholder="Search date or description…" style="width: 100%; max-width: 480px;" />
+      </div>
+      <table class="bento-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Action</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-special"></tbody>
+      </table>
+    </div>
+
+    <div class="bento-table-wrapper">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <h2 class="text-subtitle" style="margin: 0;">Collector shifts</h2>
+        <button type="button" class="bento-btn bento-btn-sm bento-btn-primary" id="btn-add-shift">+ Add shift</button>
+      </div>
+      <div class="bento-filter-bar" style="margin-bottom: 12px;">
+        <input type="search" id="filter-shift-q" class="search-input" placeholder="Search team or lead…" style="width: 100%; max-width: 480px;" />
+      </div>
+      <table class="bento-table">
+        <thead>
+          <tr>
+            <th>Team</th>
+            <th>Lead</th>
+            <th>Assigned days</th>
+            <th>Shift</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-shifts"></tbody>
+      </table>
+    </div>
+
+    <p style="margin-top: 24px; font-size: 13px; color: #757575;">
+      Static XSL view: <a href="../xml/schedules.xml" style="color: #2E7D32; font-weight: 600;">Open schedules.xml</a> (Firefox shows transform best).
+    </p>
+  </main>
+
+  <footer>
+    <p>🌿 BAGO.PH | XML prototype editor</p>
+  </footer>
+
+  <script id="schedules-xml-fallback" type="text/plain">
+<ecolinisph_schedules>
+  <title>EcoLinisPH — Collection &amp; Pickup Schedules</title>
+  <tagline>Know your barangay day and time — fewer missed pickups, cleaner streets</tagline>
+  <proponent>EcoLinisPH Team</proponent>
+  <coverage_area>Batangas City municipal waste routes</coverage_area>
+  <statistics>
+    <weekly_routes_planned>28</weekly_routes_planned>
+    <on_time_completion>94%</on_time_completion>
+    <barangays_on_schedule>7</barangays_on_schedule>
+    <exceptions_this_month>3</exceptions_this_month>
+  </statistics>
+  <weekly_route_calendar>
+    <route>
+      <weekday>Monday</weekday>
+      <route_code>R-N</route_code>
+      <areas>Cuta, Bolbok</areas>
+      <window_start>06:00</window_start>
+      <window_end>14:00</window_end>
+      <status>active</status>
+    </route>
+  </weekly_route_calendar>
+  <barangay_schedules>
+    <barangay>
+      <name>Sample Barangay</name>
+      <primary_day>Monday</primary_day>
+      <time_window>06:00–14:00</time_window>
+      <frequency>Weekly</frequency>
+      <notes>Edit or add rows above.</notes>
+    </barangay>
+  </barangay_schedules>
+  <special_dates>
+    <entry>
+      <date>2026-01-01</date>
+      <description>Sample holiday</description>
+      <action>No collection</action>
+    </entry>
+  </special_dates>
+  <collector_shifts>
+    <shift>
+      <team>Team Alpha</team>
+      <lead>Juan Dela Cruz</lead>
+      <assigned_days>Mon, Wed, Fri</assigned_days>
+      <start_time>05:30</start_time>
+      <end_time>15:00</end_time>
+    </shift>
+  </collector_shifts>
+</ecolinisph_schedules>
+  </script>
+
+  <script src="role-access.js"></script>
+  <script src="js/xml-data-core.js"></script>
+  <script src="js/xml-schedules-app.js"></script>
+  <script>
+    function toggleNav() {
+      document.querySelector("nav ul").classList.toggle("active");
+      document.querySelector(".nav-overlay").classList.toggle("active");
+    }
+  </script>
+</body>
+</html>

@@ -14,7 +14,8 @@ const ROLE_PAGE_ACCESS = {
     "report.html",
     "collectors.html",
     "announcements.html",
-    "qr-audit.html"
+    "qr-audit.html",
+    "xml-schedules-editor.html"
   ]),
   lgu_officer: new Set([
     "index.html",
@@ -27,7 +28,9 @@ const ROLE_PAGE_ACCESS = {
     "announcements.html",
     "denr-reports.html",
     "users.html",
-    "qr-audit.html"
+    "qr-audit.html",
+    "xml-schedules-editor.html",
+    "xml-barangays-editor.html"
   ])
 };
 
