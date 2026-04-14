@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="ecolinisph.xsl"?>
+<technosystem>
+  <title>EcoLinisPH - Smart Waste Management</title>
+  <tagline>Clean Barangays Start with One Tap</tagline>
+  <proponent>EcoLinisPH Team</proponent>
+  <problem>Many Philippine barangays struggle with waste management: missed pickups, poor segregation, and lack of accountability.</problem>
+  <solution>A mobile-first platform connecting residents, collectors, and officials to track waste collection, report issues, and earn rewards.</solution>
+
+  <barangays>
+    <barangay>
+      <name>Kumintang Ibaba</name>
+      <municipality>Batangas City</municipality>
+      <province>Batangas</province>
+      <households>2850</households>
+      <active_users>1240</active_users>
+      <segregation_rate>78%</segregation_rate>
+      <issues>45</issues>
+      <missed_pickups>12</missed_pickups>
+    </barangay>
+    <barangay>
+      <name>Pallocan West</name>
+      <municipality>Batangas City</municipality>
+      <province>Batangas</province>
+      <households>3120</households>
+      <active_users>1580</active_users>
+      <segregation_rate>85%</segregation_rate>
+      <issues>28</issues>
+      <missed_pickups>8</missed_pickups>
+    </barangay>
+    <barangay>
+      <name>Alangilan</name>
+      <municipality>Batangas City</municipality>
+      <province>Batangas</province>
+      <households>2650</households>
+      <active_users>1100</active_users>
+      <segregation_rate>72%</segregation_rate>
+      <issues>62</issues>
+      <missed_pickups>18</missed_pickups>
+    </barangay>
+    <barangay>
+      <name>Bolbok</name>
+      <municipality>Batangas City</municipality>
+      <province>Batangas</province>
+      <households>2340</households>
+      <active_users>980</active_users>
+      <segregation_rate>68%</segregation_rate>
+      <issues>71</issues>
+      <missed_pickups>22</missed_pickups>
+    </barangay>
+    <barangay>
+      <name>Gulod Itaas</name>
+      <municipality>Batangas City</municipality>
+      <province>Batangas</province>
+      <households>1890</households>
+      <active_users>750</active_users>
+      <segregation_rate>75%</segregation_rate>
+      <issues>38</issues>
+      <missed_pickups>10</missed_pickups>
+    </barangay>
+    <barangay>
+      <name>Cuta</name>
+      <municipality>Batangas City</municipality>
+      <province>Batangas</province>
+      <households>2120</households>
+      <active_users>890</active_users>
+      <segregation_rate>80%</segregation_rate>
+      <issues>32</issues>
+      <missed_pickups>7</missed_pickups>
+    </barangay>
+    <barangay>
+      <name>Calamba</name>
+      <municipality>Batangas City</municipality>
+      <province>Batangas</province>
+      <households>2780</households>
+      <active_users>1320</active_users>
+      <segregation_rate>82%</segregation_rate>
+      <issues>25</issues>
+      <missed_pickups>6</missed_pickups>
+    </barangay>
+  </barangays>
+
+  <resident_users>
+    <user>
+      <name>Ava Rodriguez</name>
+      <age>28</age>
+      <barangay>Kumintang Ibaba</barangay>
+      <location>Downtown</location>
+      <points_earned>312</points_earned>
+      <issues_reported>8</issues_reported>
+    </user>
+    <user>
+      <name>Liam Chen</name>
+      <age>38</age>
+      <barangay>Pallocan West</barangay>
+      <location>Residential Zone</location>
+      <points_earned>487</points_earned>
+      <issues_reported>12</issues_reported>
+    </user>
+    <user>
+      <name>Sophia Patel</name>
+      <age>24</age>
+      <barangay>Alangilan</barangay>
+      <location>Student Area</location>
+      <points_earned>256</points_earned>
+      <issues_reported>5</issues_reported>
+    </user>
+    <user>
+      <name>Noah Williams</name>
+      <age>45</age>
+      <barangay>Bolbok</barangay>
+      <location>Commercial Area</location>
+      <points_earned>198</points_earned>
+      <issues_reported>3</issues_reported>
+    </user>
+    <user>
+      <name>Maria Santos</name>
+      <age>28</age>
+      <barangay>Gulod Itaas</barangay>
+      <location>Barangay Center</location>
+      <points_earned>421</points_earned>
+      <issues_reported>9</issues_reported>
+    </user>
+  </resident_users>
+
+  <collector_users>
+    <user>
+      <name>Juan Dela Cruz</name>
+      <role>Truck Driver</role>
+      <age>38</age>
+      <location>Kumintang Ibaba</location>
+      <routes_completed>156</routes_completed>
+      <complaints_resolved>4</complaints_resolved>
+    </user>
+    <user>
+      <name>Pedro Ramirez</name>
+      <role>Waste Collector</role>
+      <age>31</age>
+      <location>Pallocan West</location>
+      <routes_completed>243</routes_completed>
+      <complaints_resolved>2</complaints_resolved>
+    </user>
+    <user>
+      <name>Anna Lopez</name>
+      <role>Waste Collector</role>
+      <age>32</age>
+      <location>Alangilan</location>
+      <routes_completed>198</routes_completed>
+      <complaints_resolved>6</complaints_resolved>
+    </user>
+    <user>
+      <name>Miguel Torres</name>
+      <role>Truck Driver</role>
+      <age>42</age>
+      <location>Bolbok</location>
+      <routes_completed>187</routes_completed>
+      <complaints_resolved>3</complaints_resolved>
+    </user>
+  </collector_users>
+
+  <official_users>
+    <user>
+      <name>Carlos Del Rio</name>
+      <role>Barangay Captain</role>
+      <age>55</age>
+      <barangay>Kumintang Ibaba</barangay>
+      <reports_handled>67</reports_handled>
+      <key_insights>Waste management awareness at 78%, community participation growing</key_insights>
+    </user>
+    <user>
+      <name>Elena Garcia</name>
+      <role>Health Officer</role>
+      <age>38</age>
+      <barangay>Pallocan West</barangay>
+      <reports_handled>54</reports_handled>
+      <key_insights>Segregation rate improved by 15% since platform launch</key_insights>
+    </user>
+    <user>
+      <name>Roberto Cruz</name>
+      <role>Sanitation Inspector</role>
+      <age>45</age>
+      <barangay>Alangilan</barangay>
+      <reports_handled>81</reports_handled>
+      <key_insights>Missed pickups reduced by 42% in past 3 months</key_insights>
+    </user>
+    <user>
+      <name>Teresa Villanueva</name>
+      <role>Social Worker</role>
+      <age>35</age>
+      <barangay>Cuta</barangay>
+      <reports_handled>43</reports_handled>
+      <key_insights>Resident engagement rate at 89%, reward program highly successful</key_insights>
+    </user>
+  </official_users>
+
+  <statistics>
+    <current_tonnage>47.8</current_tonnage>
+    <projected_2025>62.5</projected_2025>
+    <active_users_total>5860</active_users_total>
+    <avg_segregation_rate>77%</avg_segregation_rate>
+    <total_issues>301</total_issues>
+    <total_missed_pickups>83</total_missed_pickups>
+  </statistics>
+
+</technosystem>
