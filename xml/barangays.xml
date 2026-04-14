@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bago_barangays xmlns="https://bago.ph/schema/barangays"
-                city="Lipa City"
+<?xml-stylesheet type="text/xsl" href="../xsl/barangays.xsl"?>
+<bago_barangays city="Lipa City"
                 province="Batangas"
                 last_updated="2026-04-14">
   <meta>
