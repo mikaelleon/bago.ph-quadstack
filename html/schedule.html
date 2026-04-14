@@ -135,7 +135,7 @@
     <div class="alert-banner">
       ⚠️ <strong>Schedule Update:</strong>
       Wednesday Non-Biodegradable collection for
-      Barangay Marawoy has been moved to Thursday,
+      Barangay Marauoy has been moved to Thursday,
       April 10. — Updated April 8, 2025, 7:23 AM PST
     </div>
 
@@ -144,14 +144,7 @@
       <label style="font-weight:600; font-size:13px;">
         Filter by Barangay:
       </label>
-      <select aria-label="Filter by barangay">
-        <option value="all">All Barangays</option>
-        <option value="marawoy">Marawoy</option>
-        <option value="sanseb">San Sebastian</option>
-        <option value="balintawak">Balintawak</option>
-        <option value="tambo">Tambo</option>
-        <option value="dagatan">Dagatan</option>
-      </select>
+      <select aria-label="Filter by barangay" data-lipa-barangays data-include-all="true"></select>
 
       <label style="font-weight:600; font-size:13px;">
         Waste Type:
@@ -171,7 +164,7 @@
       <!-- MARAWOY -->
       <div class="schedule-card">
         <div class="schedule-card-header">
-          📍 Barangay Marawoy
+          📍 Barangay Marauoy
         </div>
         <div class="schedule-card-body">
 
@@ -222,7 +215,7 @@
       <!-- SAN SEBASTIAN -->
       <div class="schedule-card">
         <div class="schedule-card-header">
-          📍 Barangay San Sebastian
+          📍 Barangay San Sebastian (Balagbag)
         </div>
         <div class="schedule-card-body">
 
@@ -301,13 +294,7 @@
         <form>
           <div class="form-group">
             <label>Target Barangay(s)</label>
-            <select multiple style="height: 100px;">
-              <option value="marawoy">Marawoy</option>
-              <option value="sanseb">San Sebastian</option>
-              <option value="balintawak">Balintawak</option>
-              <option value="tambo">Tambo</option>
-              <option value="dagatan">Dagatan</option>
-            </select>
+            <select multiple style="height: 100px;" data-lipa-barangays aria-label="Target barangays"></select>
             <span class="helper-text">Hold Ctrl/Cmd for multiple selection</span>
           </div>
 
@@ -375,6 +362,8 @@
     </p>
   </footer>
 
+  <script src="js/lipa-barangays.js"></script>
+  <script src="js/lipa-barangays-select.js"></script>
   <script src="role-access.js"></script>
   <script>
     function toggleNav() {

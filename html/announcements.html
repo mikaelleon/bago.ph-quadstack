@@ -71,14 +71,7 @@
 
           <div class="form-group">
             <label for="target-barangay">Target Barangay</label>
-            <select id="target-barangay" name="barangay" multiple style="height: auto; min-height: 120px;">
-              <option value="all" selected>All Barangays</option>
-              <option value="marawoy">Marawoy</option>
-              <option value="sanseb">San Sebastian</option>
-              <option value="balintawak">Balintawak</option>
-              <option value="tambo">Tambo</option>
-              <option value="dagatan">Dagatan</option>
-            </select>
+            <select id="target-barangay" name="barangay" multiple style="height: auto; min-height: 120px;" data-lipa-barangays data-include-all="true" aria-label="Target barangays"></select>
             <span class="helper-text">Hold Ctrl/Cmd to select multiple barangays</span>
           </div>
 
@@ -215,9 +208,9 @@
             <tbody>
               <tr>
                 <td>Apr 10, 2025 7:23 AM</td>
-                <td><strong>Schedule Update: Marawoy</strong></td>
+                <td><strong>Schedule Update: Marauoy</strong></td>
                 <td>J. Santos</td>
-                <td>Marawoy</td>
+                <td>Marauoy</td>
                 <td><span class="bento-badge warning">Urgent</span></td>
                 <td>312</td>
               </tr>
@@ -258,6 +251,8 @@
     <p>🌿 BAGO.PH | In compliance with RA 9003 and RA 10173 | Aligned with UN SDGs 11, 12, and 13</p>
   </footer>
 
+  <script src="js/lipa-barangays.js"></script>
+  <script src="js/lipa-barangays-select.js"></script>
   <script src="role-access.js"></script>
   <script>
     function toggleNav() {

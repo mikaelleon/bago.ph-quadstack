@@ -78,14 +78,7 @@
         <option value="delayed">Delayed</option>
         <option value="offduty">Off Duty</option>
       </select>
-      <select aria-label="Filter by barangay">
-        <option value="all">All Barangays</option>
-        <option value="marawoy">Marawoy</option>
-        <option value="sanseb">San Sebastian</option>
-        <option value="balintawak">Balintawak</option>
-        <option value="tambo">Tambo</option>
-        <option value="dagatan">Dagatan</option>
-      </select>
+        <select aria-label="Filter by barangay" data-lipa-barangays data-include-all="true"></select>
       <input type="search" placeholder="Search collector name or code..." class="search-input" />
     </div>
 
@@ -108,7 +101,7 @@
           <tr>
             <td><strong>Juan dela Cruz</strong></td>
             <td>COL-001</td>
-            <td>Marawoy - Route A</td>
+            <td>Marauoy - Route A</td>
             <td>🟢 Biodegradable</td>
             <td>6:00 AM</td>
             <td><span class="bento-badge success"><span class="status-dot active"></span>On Route</span></td>
@@ -119,7 +112,7 @@
           <tr>
             <td><strong>Pedro Santos</strong></td>
             <td>COL-002</td>
-            <td>San Sebastian - Route B</td>
+            <td>San Sebastian (Balagbag) - Route B</td>
             <td>🔵 Non-Biodegradable</td>
             <td>6:00 AM</td>
             <td><span class="bento-badge info"><span class="status-dot"></span>Completed</span></td>
@@ -163,7 +156,7 @@
           <tr>
             <td><strong>Carlos Bautista</strong></td>
             <td>COL-006</td>
-            <td>Marawoy - Route F</td>
+            <td>Marauoy - Route F</td>
             <td>🔵 Non-Biodegradable</td>
             <td>7:00 AM</td>
             <td><span class="bento-badge success"><span class="status-dot active"></span>On Route</span></td>
@@ -174,7 +167,7 @@
           <tr>
             <td><strong>Elena Villanueva</strong></td>
             <td>COL-007</td>
-            <td>San Sebastian - Route G</td>
+            <td>San Sebastian (Balagbag) - Route G</td>
             <td>🟢 Biodegradable</td>
             <td>6:30 AM</td>
             <td><span class="bento-badge info"><span class="status-dot"></span>Completed</span></td>
@@ -301,6 +294,8 @@
     <p>🌿 BAGO.PH | In compliance with RA 9003 and RA 10173 | Aligned with UN SDGs 11, 12, and 13</p>
   </footer>
 
+  <script src="js/lipa-barangays.js"></script>
+  <script src="js/lipa-barangays-select.js"></script>
   <script src="role-access.js"></script>
   <script>
     function toggleNav() {

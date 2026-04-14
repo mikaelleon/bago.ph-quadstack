@@ -138,7 +138,7 @@
           </div>
           <div style="display: flex; justify-content: space-between;">
             <span class="text-caption">Barangay</span>
-            <span class="text-body">Marawoy</span>
+            <span class="text-body">Marauoy</span>
           </div>
           <div style="display: flex; justify-content: space-between;">
             <span class="text-caption">Current Token</span>
@@ -177,14 +177,7 @@
         <option value="current">Current Household (HH-MAR-0001)</option>
         <option value="all">All Households</option>
       </select>
-      <select aria-label="Filter by barangay">
-        <option value="all">All Barangays</option>
-        <option value="marawoy">Marawoy</option>
-        <option value="sanseb">San Sebastian</option>
-        <option value="balintawak">Balintawak</option>
-        <option value="tambo">Tambo</option>
-        <option value="dagatan">Dagatan</option>
-      </select>
+      <select aria-label="Filter by barangay" data-lipa-barangays data-include-all="true"></select>
       <input type="date" value="2025-04-01" />
       <span class="text-caption">to</span>
       <input type="date" value="2025-04-14" />
@@ -351,6 +344,8 @@
     <p>🌿 BAGO.PH | In compliance with RA 9003 and RA 10173 | Aligned with UN SDGs 11, 12, and 13</p>
   </footer>
 
+  <script src="js/lipa-barangays.js"></script>
+  <script src="js/lipa-barangays-select.js"></script>
   <script src="role-access.js"></script>
   <script>
     function toggleNav() {

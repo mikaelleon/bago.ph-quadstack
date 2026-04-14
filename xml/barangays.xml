@@ -5,41 +5,510 @@
                 last_updated="2026-04-14">
   <meta>
     <source>BAGO.PH LGU dashboard prototype</source>
-    <note>Sample performance snapshot for CENRO reporting</note>
+    <note>All 72 barangays — sample metrics for demonstration</note>
   </meta>
-  <barangay name="Balintawak">
-    <collection_rate>96%</collection_rate>
-    <compliance_rate>93%</compliance_rate>
-    <open_reports>1</open_reports>
-    <eco_points>15200</eco_points>
+  <barangay name="Adya">
+    <collection_rate>62%</collection_rate>
+    <compliance_rate>58%</compliance_rate>
+    <open_reports>0</open_reports>
+    <eco_points>3200</eco_points>
     <status>On Track</status>
   </barangay>
-  <barangay name="Marawoy">
-    <collection_rate>91%</collection_rate>
-    <compliance_rate>89%</compliance_rate>
+  <barangay name="Anilao">
+    <collection_rate>69%</collection_rate>
+    <compliance_rate>69%</compliance_rate>
     <open_reports>3</open_reports>
-    <eco_points>12400</eco_points>
+    <eco_points>3337</eco_points>
     <status>On Track</status>
   </barangay>
-  <barangay name="Dagatan">
-    <collection_rate>88%</collection_rate>
-    <compliance_rate>85%</compliance_rate>
-    <open_reports>5</open_reports>
-    <eco_points>9870</eco_points>
-    <status>On Track</status>
-  </barangay>
-  <barangay name="San Sebastian">
-    <collection_rate>79%</collection_rate>
-    <compliance_rate>74%</compliance_rate>
-    <open_reports>11</open_reports>
-    <eco_points>8750</eco_points>
+  <barangay name="Anilao-Labac">
+    <collection_rate>76%</collection_rate>
+    <compliance_rate>80%</compliance_rate>
+    <open_reports>6</open_reports>
+    <eco_points>3474</eco_points>
     <status>Monitor</status>
   </barangay>
-  <barangay name="Tambo">
-    <collection_rate>63%</collection_rate>
+  <barangay name="Antipolo del Norte">
+    <collection_rate>83%</collection_rate>
+    <compliance_rate>91%</compliance_rate>
+    <open_reports>9</open_reports>
+    <eco_points>3611</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Antipolo del Sur">
+    <collection_rate>90%</collection_rate>
     <compliance_rate>62%</compliance_rate>
-    <open_reports>19</open_reports>
-    <eco_points>5430</eco_points>
+    <open_reports>12</open_reports>
+    <eco_points>3748</eco_points>
     <status>Urgent</status>
+  </barangay>
+  <barangay name="Bagong Pook">
+    <collection_rate>62%</collection_rate>
+    <compliance_rate>73%</compliance_rate>
+    <open_reports>15</open_reports>
+    <eco_points>3885</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Balintawak">
+    <collection_rate>69%</collection_rate>
+    <compliance_rate>84%</compliance_rate>
+    <open_reports>18</open_reports>
+    <eco_points>4022</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Banaybanay">
+    <collection_rate>76%</collection_rate>
+    <compliance_rate>95%</compliance_rate>
+    <open_reports>21</open_reports>
+    <eco_points>4159</eco_points>
+    <status>Monitor</status>
+  </barangay>
+  <barangay name="Barangay 12 (Poblacion)">
+    <collection_rate>83%</collection_rate>
+    <compliance_rate>66%</compliance_rate>
+    <open_reports>2</open_reports>
+    <eco_points>4296</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Bolbok">
+    <collection_rate>90%</collection_rate>
+    <compliance_rate>77%</compliance_rate>
+    <open_reports>5</open_reports>
+    <eco_points>4433</eco_points>
+    <status>Urgent</status>
+  </barangay>
+  <barangay name="Bugtong na Pulo">
+    <collection_rate>62%</collection_rate>
+    <compliance_rate>88%</compliance_rate>
+    <open_reports>8</open_reports>
+    <eco_points>4570</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Bulacnin">
+    <collection_rate>69%</collection_rate>
+    <compliance_rate>59%</compliance_rate>
+    <open_reports>11</open_reports>
+    <eco_points>4707</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Bulaklakan">
+    <collection_rate>76%</collection_rate>
+    <compliance_rate>70%</compliance_rate>
+    <open_reports>14</open_reports>
+    <eco_points>4844</eco_points>
+    <status>Monitor</status>
+  </barangay>
+  <barangay name="Calamias">
+    <collection_rate>83%</collection_rate>
+    <compliance_rate>81%</compliance_rate>
+    <open_reports>17</open_reports>
+    <eco_points>4981</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Cumba">
+    <collection_rate>90%</collection_rate>
+    <compliance_rate>92%</compliance_rate>
+    <open_reports>20</open_reports>
+    <eco_points>5118</eco_points>
+    <status>Urgent</status>
+  </barangay>
+  <barangay name="Dagatan">
+    <collection_rate>62%</collection_rate>
+    <compliance_rate>63%</compliance_rate>
+    <open_reports>1</open_reports>
+    <eco_points>5255</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Duhatan">
+    <collection_rate>69%</collection_rate>
+    <compliance_rate>74%</compliance_rate>
+    <open_reports>4</open_reports>
+    <eco_points>5392</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Halang">
+    <collection_rate>76%</collection_rate>
+    <compliance_rate>85%</compliance_rate>
+    <open_reports>7</open_reports>
+    <eco_points>5529</eco_points>
+    <status>Monitor</status>
+  </barangay>
+  <barangay name="Inosloban">
+    <collection_rate>83%</collection_rate>
+    <compliance_rate>96%</compliance_rate>
+    <open_reports>10</open_reports>
+    <eco_points>5666</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Kayumanggi">
+    <collection_rate>90%</collection_rate>
+    <compliance_rate>67%</compliance_rate>
+    <open_reports>13</open_reports>
+    <eco_points>5803</eco_points>
+    <status>Urgent</status>
+  </barangay>
+  <barangay name="Latag">
+    <collection_rate>62%</collection_rate>
+    <compliance_rate>78%</compliance_rate>
+    <open_reports>16</open_reports>
+    <eco_points>5940</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Lodlod">
+    <collection_rate>69%</collection_rate>
+    <compliance_rate>89%</compliance_rate>
+    <open_reports>19</open_reports>
+    <eco_points>6077</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Lumbang">
+    <collection_rate>76%</collection_rate>
+    <compliance_rate>60%</compliance_rate>
+    <open_reports>0</open_reports>
+    <eco_points>6214</eco_points>
+    <status>Monitor</status>
+  </barangay>
+  <barangay name="Mabini">
+    <collection_rate>83%</collection_rate>
+    <compliance_rate>71%</compliance_rate>
+    <open_reports>3</open_reports>
+    <eco_points>6351</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Malagonlong">
+    <collection_rate>90%</collection_rate>
+    <compliance_rate>82%</compliance_rate>
+    <open_reports>6</open_reports>
+    <eco_points>6488</eco_points>
+    <status>Urgent</status>
+  </barangay>
+  <barangay name="Malitlit">
+    <collection_rate>62%</collection_rate>
+    <compliance_rate>93%</compliance_rate>
+    <open_reports>9</open_reports>
+    <eco_points>6625</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Marauoy">
+    <collection_rate>69%</collection_rate>
+    <compliance_rate>64%</compliance_rate>
+    <open_reports>12</open_reports>
+    <eco_points>6762</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Mataas na Lupa">
+    <collection_rate>76%</collection_rate>
+    <compliance_rate>75%</compliance_rate>
+    <open_reports>15</open_reports>
+    <eco_points>6899</eco_points>
+    <status>Monitor</status>
+  </barangay>
+  <barangay name="Munting Pulo">
+    <collection_rate>83%</collection_rate>
+    <compliance_rate>86%</compliance_rate>
+    <open_reports>18</open_reports>
+    <eco_points>7036</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Pagolingin Bata">
+    <collection_rate>90%</collection_rate>
+    <compliance_rate>97%</compliance_rate>
+    <open_reports>21</open_reports>
+    <eco_points>7173</eco_points>
+    <status>Urgent</status>
+  </barangay>
+  <barangay name="Pagolingin East">
+    <collection_rate>62%</collection_rate>
+    <compliance_rate>68%</compliance_rate>
+    <open_reports>2</open_reports>
+    <eco_points>7310</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Pagolingin West">
+    <collection_rate>69%</collection_rate>
+    <compliance_rate>79%</compliance_rate>
+    <open_reports>5</open_reports>
+    <eco_points>7447</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Pangao">
+    <collection_rate>76%</collection_rate>
+    <compliance_rate>90%</compliance_rate>
+    <open_reports>8</open_reports>
+    <eco_points>7584</eco_points>
+    <status>Monitor</status>
+  </barangay>
+  <barangay name="Pinagkawitan">
+    <collection_rate>83%</collection_rate>
+    <compliance_rate>61%</compliance_rate>
+    <open_reports>11</open_reports>
+    <eco_points>7721</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Pinagtongulan">
+    <collection_rate>90%</collection_rate>
+    <compliance_rate>72%</compliance_rate>
+    <open_reports>14</open_reports>
+    <eco_points>7858</eco_points>
+    <status>Urgent</status>
+  </barangay>
+  <barangay name="Plaridel">
+    <collection_rate>62%</collection_rate>
+    <compliance_rate>83%</compliance_rate>
+    <open_reports>17</open_reports>
+    <eco_points>7995</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Poblacion Barangay 1">
+    <collection_rate>69%</collection_rate>
+    <compliance_rate>94%</compliance_rate>
+    <open_reports>20</open_reports>
+    <eco_points>8132</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Poblacion Barangay 2">
+    <collection_rate>76%</collection_rate>
+    <compliance_rate>65%</compliance_rate>
+    <open_reports>1</open_reports>
+    <eco_points>8269</eco_points>
+    <status>Monitor</status>
+  </barangay>
+  <barangay name="Poblacion Barangay 3">
+    <collection_rate>83%</collection_rate>
+    <compliance_rate>76%</compliance_rate>
+    <open_reports>4</open_reports>
+    <eco_points>8406</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Poblacion Barangay 4">
+    <collection_rate>90%</collection_rate>
+    <compliance_rate>87%</compliance_rate>
+    <open_reports>7</open_reports>
+    <eco_points>8543</eco_points>
+    <status>Urgent</status>
+  </barangay>
+  <barangay name="Poblacion Barangay 5">
+    <collection_rate>62%</collection_rate>
+    <compliance_rate>58%</compliance_rate>
+    <open_reports>10</open_reports>
+    <eco_points>8680</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Poblacion Barangay 6">
+    <collection_rate>69%</collection_rate>
+    <compliance_rate>69%</compliance_rate>
+    <open_reports>13</open_reports>
+    <eco_points>8817</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Poblacion Barangay 7">
+    <collection_rate>76%</collection_rate>
+    <compliance_rate>80%</compliance_rate>
+    <open_reports>16</open_reports>
+    <eco_points>8954</eco_points>
+    <status>Monitor</status>
+  </barangay>
+  <barangay name="Poblacion Barangay 8">
+    <collection_rate>83%</collection_rate>
+    <compliance_rate>91%</compliance_rate>
+    <open_reports>19</open_reports>
+    <eco_points>9091</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Poblacion Barangay 9">
+    <collection_rate>90%</collection_rate>
+    <compliance_rate>62%</compliance_rate>
+    <open_reports>0</open_reports>
+    <eco_points>9228</eco_points>
+    <status>Urgent</status>
+  </barangay>
+  <barangay name="Poblacion Barangay 9-A">
+    <collection_rate>62%</collection_rate>
+    <compliance_rate>73%</compliance_rate>
+    <open_reports>3</open_reports>
+    <eco_points>9365</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Poblacion Barangay 10">
+    <collection_rate>69%</collection_rate>
+    <compliance_rate>84%</compliance_rate>
+    <open_reports>6</open_reports>
+    <eco_points>9502</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Poblacion Barangay 11">
+    <collection_rate>76%</collection_rate>
+    <compliance_rate>95%</compliance_rate>
+    <open_reports>9</open_reports>
+    <eco_points>9639</eco_points>
+    <status>Monitor</status>
+  </barangay>
+  <barangay name="Pusil">
+    <collection_rate>83%</collection_rate>
+    <compliance_rate>66%</compliance_rate>
+    <open_reports>12</open_reports>
+    <eco_points>9776</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Quezon">
+    <collection_rate>90%</collection_rate>
+    <compliance_rate>77%</compliance_rate>
+    <open_reports>15</open_reports>
+    <eco_points>9913</eco_points>
+    <status>Urgent</status>
+  </barangay>
+  <barangay name="Rizal">
+    <collection_rate>62%</collection_rate>
+    <compliance_rate>88%</compliance_rate>
+    <open_reports>18</open_reports>
+    <eco_points>10050</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Sabang">
+    <collection_rate>69%</collection_rate>
+    <compliance_rate>59%</compliance_rate>
+    <open_reports>21</open_reports>
+    <eco_points>10187</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Sampaguita">
+    <collection_rate>76%</collection_rate>
+    <compliance_rate>70%</compliance_rate>
+    <open_reports>2</open_reports>
+    <eco_points>10324</eco_points>
+    <status>Monitor</status>
+  </barangay>
+  <barangay name="San Benito">
+    <collection_rate>83%</collection_rate>
+    <compliance_rate>81%</compliance_rate>
+    <open_reports>5</open_reports>
+    <eco_points>10461</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="San Carlos">
+    <collection_rate>90%</collection_rate>
+    <compliance_rate>92%</compliance_rate>
+    <open_reports>8</open_reports>
+    <eco_points>10598</eco_points>
+    <status>Urgent</status>
+  </barangay>
+  <barangay name="San Celestino">
+    <collection_rate>62%</collection_rate>
+    <compliance_rate>63%</compliance_rate>
+    <open_reports>11</open_reports>
+    <eco_points>10735</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="San Francisco">
+    <collection_rate>69%</collection_rate>
+    <compliance_rate>74%</compliance_rate>
+    <open_reports>14</open_reports>
+    <eco_points>10872</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="San Guillermo">
+    <collection_rate>76%</collection_rate>
+    <compliance_rate>85%</compliance_rate>
+    <open_reports>17</open_reports>
+    <eco_points>11009</eco_points>
+    <status>Monitor</status>
+  </barangay>
+  <barangay name="San Jose">
+    <collection_rate>83%</collection_rate>
+    <compliance_rate>96%</compliance_rate>
+    <open_reports>20</open_reports>
+    <eco_points>11146</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="San Lucas">
+    <collection_rate>90%</collection_rate>
+    <compliance_rate>67%</compliance_rate>
+    <open_reports>1</open_reports>
+    <eco_points>11283</eco_points>
+    <status>Urgent</status>
+  </barangay>
+  <barangay name="San Salvador">
+    <collection_rate>62%</collection_rate>
+    <compliance_rate>78%</compliance_rate>
+    <open_reports>4</open_reports>
+    <eco_points>11420</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="San Sebastian (Balagbag)">
+    <collection_rate>69%</collection_rate>
+    <compliance_rate>89%</compliance_rate>
+    <open_reports>7</open_reports>
+    <eco_points>11557</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Sapac">
+    <collection_rate>76%</collection_rate>
+    <compliance_rate>60%</compliance_rate>
+    <open_reports>10</open_reports>
+    <eco_points>11694</eco_points>
+    <status>Monitor</status>
+  </barangay>
+  <barangay name="Sico">
+    <collection_rate>83%</collection_rate>
+    <compliance_rate>71%</compliance_rate>
+    <open_reports>13</open_reports>
+    <eco_points>11831</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Santo Niño">
+    <collection_rate>90%</collection_rate>
+    <compliance_rate>82%</compliance_rate>
+    <open_reports>16</open_reports>
+    <eco_points>11968</eco_points>
+    <status>Urgent</status>
+  </barangay>
+  <barangay name="Santo Toribio">
+    <collection_rate>62%</collection_rate>
+    <compliance_rate>93%</compliance_rate>
+    <open_reports>19</open_reports>
+    <eco_points>12105</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Talisay">
+    <collection_rate>69%</collection_rate>
+    <compliance_rate>64%</compliance_rate>
+    <open_reports>0</open_reports>
+    <eco_points>12242</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Tambo">
+    <collection_rate>76%</collection_rate>
+    <compliance_rate>75%</compliance_rate>
+    <open_reports>3</open_reports>
+    <eco_points>12379</eco_points>
+    <status>Monitor</status>
+  </barangay>
+  <barangay name="Tangob">
+    <collection_rate>83%</collection_rate>
+    <compliance_rate>86%</compliance_rate>
+    <open_reports>6</open_reports>
+    <eco_points>12516</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Tanguay">
+    <collection_rate>90%</collection_rate>
+    <compliance_rate>97%</compliance_rate>
+    <open_reports>9</open_reports>
+    <eco_points>12653</eco_points>
+    <status>Urgent</status>
+  </barangay>
+  <barangay name="Tibig">
+    <collection_rate>62%</collection_rate>
+    <compliance_rate>68%</compliance_rate>
+    <open_reports>12</open_reports>
+    <eco_points>12790</eco_points>
+    <status>On Track</status>
+  </barangay>
+  <barangay name="Tipacan">
+    <collection_rate>69%</collection_rate>
+    <compliance_rate>79%</compliance_rate>
+    <open_reports>15</open_reports>
+    <eco_points>12927</eco_points>
+    <status>On Track</status>
   </barangay>
 </bago_barangays>

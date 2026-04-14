@@ -60,14 +60,7 @@
     <div id="tab-residents" class="tab-content">
       <!-- Search/Filter Bar -->
       <div class="bento-filter-bar">
-        <select aria-label="Filter by barangay">
-          <option value="all">All Barangays</option>
-          <option value="marawoy">Marawoy</option>
-          <option value="sanseb">San Sebastian</option>
-          <option value="balintawak">Balintawak</option>
-          <option value="tambo">Tambo</option>
-          <option value="dagatan">Dagatan</option>
-        </select>
+        <select aria-label="Filter by barangay" data-lipa-barangays data-include-all="true"></select>
         <select aria-label="Filter by tier">
           <option value="all">All Tiers</option>
           <option value="seedling">Seedling</option>
@@ -102,7 +95,7 @@
             <tr>
               <td><strong>Juan D.</strong></td>
               <td>HH-MAR-0001</td>
-              <td>Marawoy</td>
+              <td>Marauoy</td>
               <td><span class="bento-badge success">🌳 Tree</span></td>
               <td>1,245 pts</td>
               <td><span class="bento-badge success">Active</span></td>
@@ -147,7 +140,7 @@
             <tr>
               <td><strong>Ana L.</strong></td>
               <td>HH-SAN-0078</td>
-              <td>San Sebastian</td>
+              <td>San Sebastian (Balagbag)</td>
               <td><span class="bento-badge warning">🌿 Sprout</span></td>
               <td>540 pts</td>
               <td><span class="bento-badge danger">Suspended</span></td>
@@ -223,7 +216,7 @@
               <td><strong>COL-001</strong></td>
               <td>Juan dela Cruz</td>
               <td>0917-XXX-1234</td>
-              <td>Marawoy A, B</td>
+              <td>Marauoy A, B</td>
               <td>12,450</td>
               <td><span class="bento-badge success">Active</span></td>
               <td>
@@ -238,7 +231,7 @@
               <td><strong>COL-002</strong></td>
               <td>Pedro Santos</td>
               <td>0918-XXX-5678</td>
-              <td>San Sebastian A</td>
+              <td>San Sebastian (Balagbag) A</td>
               <td>9,870</td>
               <td><span class="bento-badge success">Active</span></td>
               <td>
@@ -315,7 +308,7 @@
               <td><strong>Kap. Jose Reyes</strong></td>
               <td>j.reyes@marawoy.gov.ph</td>
               <td><span class="bento-badge success">Barangay Captain</span></td>
-              <td>Marawoy</td>
+              <td>Marauoy</td>
               <td>Apr 13, 2025 2:30 PM</td>
               <td><span class="bento-badge success">Active</span></td>
               <td>
@@ -330,7 +323,7 @@
               <td><strong>Ana Mendoza</strong></td>
               <td>a.mendoza@lipa.gov.ph</td>
               <td><span class="bento-badge neutral">LGU Staff</span></td>
-              <td>San Sebastian, Tambo</td>
+              <td>San Sebastian (Balagbag), Tambo</td>
               <td>Apr 14, 2025 8:45 AM</td>
               <td><span class="bento-badge success">Active</span></td>
               <td>
@@ -380,7 +373,7 @@
           </div>
           <div>
             <div class="text-overline">Barangay</div>
-            <div class="text-body">Marawoy, Lipa City</div>
+            <div class="text-body">Marauoy, Lipa City</div>
           </div>
           <div>
             <div class="text-overline">Registration Date</div>
@@ -431,6 +424,8 @@
     <p>🌿 BAGO.PH | In compliance with RA 9003 and RA 10173 | Aligned with UN SDGs 11, 12, and 13</p>
   </footer>
 
+  <script src="js/lipa-barangays.js"></script>
+  <script src="js/lipa-barangays-select.js"></script>
   <script src="role-access.js"></script>
   <script>
     function toggleNav() {

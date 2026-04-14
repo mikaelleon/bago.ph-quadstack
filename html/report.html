@@ -166,14 +166,7 @@
           <option value="resolved">Resolved</option>
           <option value="rejected">Rejected</option>
         </select>
-        <select>
-          <option value="all">All Barangays</option>
-          <option value="marawoy">Marawoy</option>
-          <option value="sanseb">San Sebastian</option>
-          <option value="balintawak">Balintawak</option>
-          <option value="tambo">Tambo</option>
-          <option value="dagatan">Dagatan</option>
-        </select>
+        <select data-lipa-barangays data-include-all="true" aria-label="Filter by barangay"></select>
         <select>
           <option value="recent">Most Recent</option>
           <option value="oldest">Oldest First</option>
@@ -222,7 +215,7 @@
               <td><input type="checkbox" /></td>
               <td><strong>RPT-2025-00141</strong></td>
               <td>Missed Pickup</td>
-              <td>Marawoy, Purok 2</td>
+              <td>Marauoy, Purok 2</td>
               <td>Apr 13, 8:15 AM</td>
               <td><span class="bento-badge info">In Progress</span></td>
               <td><span style="color: #E65100;">🟠 Medium</span></td>
@@ -238,7 +231,7 @@
               <td><input type="checkbox" /></td>
               <td><strong>RPT-2025-00140</strong></td>
               <td>Overflowing Bin</td>
-              <td>San Sebastian, Main St</td>
+              <td>San Sebastian (Balagbag), Main St</td>
               <td>Apr 13, 7:00 AM</td>
               <td><span class="bento-badge warning">Acknowledged</span></td>
               <td><span style="color: #9E9E9E;">⚪ Low</span></td>
@@ -333,16 +326,10 @@
             <div class="form-group">
               <label for="barangay-select">Barangay</label>
               <select id="barangay-select"
-                      name="barangay" required>
-                <option value="" disabled selected>
-                  Select your barangay
-                </option>
-                <option>Marawoy</option>
-                <option>San Sebastian</option>
-                <option>Balintawak</option>
-                <option>Tambo</option>
-                <option>Dagatan</option>
-              </select>
+                      name="barangay"
+                      required
+                      data-lipa-barangays
+                      data-placeholder-option="Select your barangay"></select>
             </div>
 
             <p class="helper-text" style="margin-bottom:16px;">
@@ -554,6 +541,8 @@
     </p>
   </footer>
 
+  <script src="js/lipa-barangays.js"></script>
+  <script src="js/lipa-barangays-select.js"></script>
   <script src="role-access.js"></script>
   <script>
     function toggleNav() {
