@@ -8,12 +8,18 @@
 - [Group Members](#group-members)
 - [Description of the System](#description-of-the-system)
 - [Features Completed (30%)](#features-completed-30)
+- [Progress Since the 30% Milestone](#progress-since-the-30-milestone)
 - [Who This Is For](#who-this-is-for)
 - [Feature Overview](#feature-overview)
+- [Auth, Registration & Navigation](#auth-registration--navigation)
 - [Role-Based Pages](#role-based-pages)
+- [Lipa City Barangays (Data)](#lipa-city-barangays-data)
+- [XML, XSLT & Interactive Editors](#xml-xslt--interactive-editors)
 - [Can Do / Cannot Do Yet](#can-do--cannot-do-yet)
 - [Setup Walkthrough](#setup-walkthrough)
+- [Folder Structure (high level)](#folder-structure-high-level)
 - [Notes](#notes)
+- [Future / Missing Improvements](#future--missing-improvements)
 
 ---
 
@@ -37,14 +43,14 @@
 ## Description of the System
 BAGO.PH is a **web-based prototype** of a waste management platform meant to connect **residents**, **garbage collectors**, and **LGU officers** in one place. It is designed to reduce confusion around schedules, make reporting easier, and give local government a clearer picture of collection, compliance, and community engagement.
 
-The prototype focuses on **clear screens and flows** rather than live production services: schedules and reports are shown as **demonstration content**, and **role selection at login** controls which pages each user type can open. The goal is to show how a full system could work—schedules, issue reports, eco-points motivation, QR-related oversight, and LGU dashboards—before backend and mobile apps are fully built.
+The prototype focuses on **clear screens and flows** rather than live production services: schedules and reports are shown as **demonstration content**. **Login or registration** stores a **role** in the browser (`localStorage`) and **unlocks the main app navbar**; until then, login and registration screens stay **without the main navigation bar**. Role-based rules control which HTML pages appear in the menu and which URLs are allowed.
 
 ---
 
 ## Features Completed (30%)
-Work finished at the **30% milestone** includes:
+Baseline milestone work includes:
 
-**Done**
+**Done (original 30% scope)**
 - [x] Landing page and login form (HTML + CSS)
 - [x] Collection schedule viewer with XML data display
 - [x] XML schedule data structured and valid
@@ -56,12 +62,23 @@ Work finished at the **30% milestone** includes:
 - [x] Consistent CSS design system across pages
 - [x] Barangay XML data file with XSL transformation
 
-**Planned for later milestones**
-- [ ] Eco-points wallet dashboard (target — 60% milestone)
-- [ ] QR code verification system (target — 60% milestone)
-- [ ] LGU analytics charts (target — 60% milestone)
-- [ ] Push notification simulation (target — 100% milestone)
-- [ ] Full database connection and backend logic (target — 100% milestone)
+**Originally planned for later milestones (see also [Future / Missing Improvements](#future--missing-improvements))**
+- [ ] Eco-points wallet dashboard (deeper than current mock screens)
+- [ ] QR code verification system (production-grade)
+- [ ] LGU analytics charts (live charts)
+- [ ] Push notification simulation
+- [ ] Full database connection and backend logic
+
+---
+
+## Progress Since the 30% Milestone
+Implemented on top of the baseline above:
+
+- **Dedicated login & registration** — `index.html` (login) and `register.html` (sign-up) with role selection; **no main navbar** on these screens until the user completes login or registration.
+- **Client-side access control** — `html/role-access.js` stores role in `localStorage`, hides disallowed nav links, redirects unauthorized URLs, adds **Logout**, and sends already-logged-in users away from login/register toward the dashboard.
+- **Official Lipa City barangay list** — all **72 barangays** in `html/js/lipa-barangays.js`, populated into relevant dropdowns via `lipa-barangays-select.js`; `xml/barangays.xml` regenerated with 72 rows (helper: `scripts/gen-barangays-xml.mjs`).
+- **XML / XSLT layout** — stylesheets under `xsl/` (e.g. `ecolinisph-schedules.xsl`, `barangays.xsl`); XML files reference them for browser transform (Firefox works best for opening raw `.xml`).
+- **Interactive XML pages** — `xml-schedules-editor.html` and `xml-barangays-editor.html`: filter, **column sort**, add/edit/delete in memory, **Save to browser** (`localStorage`), **Export** downloaded XML, **Reload from file** / clear storage; **`?mode=view`** for read-only browse (sort & filter, no CRUD). Raw `.xml` files on disk are **not** overwritten automatically (browser security); replace files manually after export if needed.
 
 ---
 
@@ -73,7 +90,7 @@ Work finished at the **30% milestone** includes:
 ---
 
 ## Feature Overview
-- **Home & Login**: entry point with role selection.
+- **Login & Register** — role selection; registration stores display/mobile strings locally (prototype only).
 - **Dashboard**: high-level waste operations snapshot.
 - **Collection Schedule**: planned routes and collection timing.
 - **Report Management**: issue reporting and follow-up workflow.
@@ -82,86 +99,134 @@ Work finished at the **30% milestone** includes:
 - **Eco-Points**: community incentives and point tracking.
 - **Announcements**: updates and information broadcast.
 - **DENR Reports**: compliance-oriented report generation.
-- **User Management**: resident, collector, and officer account management.
+- **User Management**: resident, collector, and officer account management (mock).
 - **QR Audit**: QR-related validation and audit page.
+- **XML tools**: schedule & barangay data editors / viewers (see below).
+
+---
+
+## Auth, Registration & Navigation
+- Open **`html/index.html`** to log in, or **`html/register.html`** to register. Both pages intentionally **omit** the main app navbar.
+- After login or successful registration, the app stores **`bagoRole`** (`user` | `collector` | `lgu_officer`) and opens the **dashboard**.
+- If a role is already stored, visiting login or register **redirects to the dashboard**.
+- Inside the app, use **Logout** (injected on authenticated pages) to clear the role and return to login.
+- **Security note:** this is a **front-end prototype**. There is no real server-side authentication or password hashing.
 
 ---
 
 ## Role-Based Pages
-Pages shown in navigation depend on the role selected at login.
+Navigation and direct URL access follow `role-access.js`. Typical allowed pages:
 
 ### Resident (`user`)
-Can access:
-- `index.html`
-- `dashboard.html`
-- `schedule.html`
-- `report.html`
-- `eco-points.html`
-- `announcements.html`
+`index.html`, `register.html`, `dashboard.html`, `schedule.html`, `report.html`, `eco-points.html`, `announcements.html`
 
 ### Collector (`collector`)
-Can access:
-- `index.html`
-- `dashboard.html`
-- `schedule.html`
-- `report.html`
-- `collectors.html`
-- `announcements.html`
-- `qr-audit.html`
+Above, plus: `collectors.html`, `qr-audit.html`, **`xml-schedules-editor.html`** (and `?mode=view`)
 
 ### LGU Officer (`lgu_officer`)
-Can access:
-- `index.html`
-- `dashboard.html`
-- `schedule.html`
-- `report.html`
-- `collectors.html`
-- `compliance.html`
-- `eco-points.html`
-- `announcements.html`
-- `denr-reports.html`
-- `users.html`
-- `qr-audit.html`
+All collector pages, plus: `compliance.html`, `denr-reports.html`, `users.html`, **`xml-barangays-editor.html`** (and `?mode=view`)
 
-If someone opens a disallowed page directly, the app redirects to an allowed page.
+If a page is not allowed for the current role, the app redirects to an allowed page (usually the dashboard).
+
+---
+
+## Lipa City Barangays (Data)
+- **72 barangays** — official-style list in `html/js/lipa-barangays.js` (alphabetical / standard listing).
+- **Dashboard / forms** — dropdowns that use `data-lipa-barangays` load this list automatically.
+- **`xml/barangays.xml`** — one `<barangay>` per barangay with sample metrics (regenerate with `node scripts/gen-barangays-xml.mjs` after editing the JS list).
+
+---
+
+## XML, XSLT & Interactive Editors
+| Item | Purpose |
+|------|--------|
+| `xml/schedules.xml`, `xml/barangays.xml` | Source data; `<?xml-stylesheet?>` points to `xsl/*.xsl` for **static** HTML-like view in supporting browsers. |
+| `xsl/*.xsl` | XSLT 1.0 transforms (tables, styling). |
+| `html/xml-schedules-editor.html` | Edit/browse schedule XML: filters, **sortable columns**, CRUD (unless `?mode=view`). |
+| `html/xml-barangays-editor.html` | Same for barangay performance XML. |
+| `html/js/xml-data-core.js` | Load/save XML string, `localStorage`, export file. |
+
+**Sort/filter on raw XML in Firefox:** XSLT output is static. **Sort, filter, and CRUD** are provided by the **HTML editor** pages, not inside the `.xsl` files themselves.
 
 ---
 
 ## Can Do / Cannot Do Yet
 
 ### Can Do
-- Role-based page visibility for resident, collector, and LGU officer.
-- Frontend navigation across all major feature pages.
-- Static workflows for schedule viewing, reporting, monitoring, and management.
-- Prototype-level dashboard and operational views.
-- XML/XSL and SQL files included for academic and demonstration use.
+- Role-based menus and URL guards; login, register, logout (client-side).
+- Full prototype navigation and mock workflows.
+- 72-barangay dropdowns and barangays XML sample.
+- XML editors: filter, sort, CRUD, export, browser persistence (schedules & barangays).
+- XSL transformation when opening XML files in a suitable browser.
 
 ### Cannot Do Yet
-- No full backend/API integration for live production data.
-- No real authentication server (role selection is frontend prototype behavior).
-- No full push notification delivery system.
-- No complete end-to-end QR scanning service integration.
-- No production deployment hardening yet (security, monitoring, scaling).
+- No server API or database connection from these HTML pages.
+- No real identity provider; PINs are not verified or hashed on a server.
+- No automatic write-back of exported XML into the repository (manual file replace).
+- XSLT in the browser is **not** extended with interactive sorting; use the HTML tools instead.
 
 ---
 
 ## Setup Walkthrough
-This project runs as a prototype in the browser.
+1. Clone or download this repository.
+2. Open `bago.ph-quadstack/html/`.
+3. Open **`index.html`** in a modern browser (Chrome is fine for the app; **Firefox** is recommended if you open **`xml/*.xml`** directly to see XSLT).
+4. **Log in** or go to **`register.html`** to create a session with a role.
+5. Explore pages from the navbar; use **Logout** to return to login.
+6. Optional: open **`xml-schedules-editor.html`** / **`xml-barangays-editor.html`** from the Schedule page links or dashboard (role permitting). Append **`?mode=view`** for read-only.
+7. Optional: serve the folder with a simple HTTP server if you need `fetch()` to load `../xml/*.xml` without file-scheme restrictions (otherwise embedded fallbacks still work).
 
-1. Download or clone this repository.
-2. Open the folder `bago.ph-quadstack`.
-3. Go to the `html` folder.
-4. Open `index.html` in a browser.
-5. Pick a role (Resident, Collector, or LGU Officer).
-6. Click **Login to BAGO.PH** to enter the role-based view.
-7. Use the top navigation to explore the pages allowed for that role.
+For class review: **`sql/`** (schema and queries), **`xml/`** + **`xsl/`**, **`prompt/`** docs.
 
-Optional files for class or demo review:
-- `xml` and `xsl` folders for XML/XSL outputs.
-- `sql` folder for schema and sample SQL artifacts.
+---
+
+## Folder Structure (high level)
+| Path | Contents |
+|------|----------|
+| `html/` | Pages, `role-access.js`, `js/` (barangay list, XML helpers, editors) |
+| `css/` | Stylesheets |
+| `xml/` | `schedules.xml`, `barangays.xml` |
+| `xsl/` | XSLT transforms |
+| `sql/` | Database scripts |
+| `scripts/` | e.g. `gen-barangays-xml.mjs` to rebuild `xml/barangays.xml` from the JS list |
 
 ---
 
 ## Notes
-- Prototype aligns with RA 9003 goals and SDGs 11, 12, and 13 direction.
-- Current build is intended for demonstration, validation, and milestone progression.
+- Prototype aligns with RA 9003 and SDGs 11, 12, and 13 direction.
+- Build is for demonstration and milestone progression, not production deployment.
+
+---
+
+## Future / Missing Improvements
+Work that still **needs** or **would benefit from** implementation for a production or thesis-final system:
+
+**Backend & data**
+- Real **authentication** (hashed passwords, sessions or tokens, optional OAuth), server-side role checks.
+- **Database connection** and CRUD APIs replacing `localStorage` and manual XML export.
+- **Server-side** or controlled **write path** for schedule/barangay XML or JSON if that remains a source format.
+
+**Features called out in earlier milestones**
+- Deeper **eco-points wallet** and redemption flows tied to real balances.
+- **QR verification** pipeline (scan → validate → audit log) with hardware integration.
+- **LGU analytics** with live charts and export pipelines.
+- **Push notifications** (or email/SMS) when schedules or announcements change.
+
+**XML / XSLT**
+- Optional **single backend** that serves transformed XML or JSON so all browsers behave consistently without `file://` limits.
+- If interactive sorting is ever required **inside** raw XSLT output without JavaScript, that would need a **different architecture** (e.g. server-rendered pages or a SPA); current approach uses **HTML editors** for interactivity.
+
+**Security, compliance & ops**
+- **HTTPS**, CSRF protection, rate limiting, and audit logs for LGU actions.
+- **RA 10173**-aligned consent and data-minimization for any production deployment.
+- **Monitoring, backups, and deployment** hardening.
+
+**UX & content**
+- Replace **prompt dialogs** in XML editors with proper modals/forms.
+- **Validation** rules for mobile/PIN/barangay fields aligned to LGU policies.
+- **Internationalization** (Filipino/English toggles) if required by stakeholders.
+
+**Testing & quality**
+- Automated tests (unit/e2e), accessibility audit (WCAG), and cross-browser QA beyond the prototype happy path.
+
+This list is not exhaustive; it reflects the gap between the **current static + client-side prototype** and a **deployable municipal system**.
