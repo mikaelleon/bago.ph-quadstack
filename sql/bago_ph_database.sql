@@ -1,32 +1,52 @@
--- BAGO.PH — MySQL/MariaDB schema, sample data, and example queries
+-- =============================================================================
+-- BAGO.PH — MySQL / MariaDB: DDL + DML
 -- Encoding: UTF-8
+--
+-- Structure:
+--   A. DDL     — database + tables (CREATE)
+--   B. DML     — seed data (INSERT)
+--   C. DML     — example SELECT (read)
+--   D. DML     — example INSERT / UPDATE / DELETE (write)
+--
+-- Run A then B for a working schema with sample rows. Section C–D are teaching
+-- examples; run them in order. Some DELETE/UPDATE examples assume prior INSERT
+-- rows exist (see comments).
+-- =============================================================================
+
 
 -- =============================================================================
--- 1. CREATE DATABASE
+-- A. DDL — CREATE DATABASE & TABLES
 -- =============================================================================
 
-CREATE DATABASE IF NOT EXISTS bago_ph;
-
--- =============================================================================
--- 2. USE DATABASE
--- =============================================================================
+CREATE DATABASE IF NOT EXISTS bago_ph
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
 
 USE bago_ph;
 
--- =============================================================================
--- 3. CREATE TABLE (all tables)
--- =============================================================================
+-- Optional: wipe and recreate (uncomment for clean reinstall — destroys data)
+-- SET FOREIGN_KEY_CHECKS = 0;
+-- DROP TABLE IF EXISTS eco_points_transactions;
+-- DROP TABLE IF EXISTS waste_reports;
+-- DROP TABLE IF EXISTS collection_schedules;
+-- DROP TABLE IF EXISTS qr_codes;
+-- DROP TABLE IF EXISTS residents;
+-- DROP TABLE IF EXISTS collectors;
+-- DROP TABLE IF EXISTS lgu_admins;
+-- DROP TABLE IF EXISTS barangays;
+-- SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE barangays (
-    barangay_id       INT AUTO_INCREMENT PRIMARY KEY,
-    barangay_name     VARCHAR(100) NOT NULL,
-    city              VARCHAR(100) NOT NULL DEFAULT 'Lipa City',
-    province          VARCHAR(100) NOT NULL DEFAULT 'Batangas',
-    registered_households INT DEFAULT 0,
-    compliance_rate   DECIMAL(5,2) DEFAULT 0.00,
-    status            ENUM('On Track','Monitor','Urgent')
-                      DEFAULT 'On Track',
-    created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    barangay_id             INT AUTO_INCREMENT PRIMARY KEY,
+    barangay_name           VARCHAR(100) NOT NULL,
+    city                    VARCHAR(100) NOT NULL DEFAULT 'Lipa City',
+    province                VARCHAR(100) NOT NULL DEFAULT 'Batangas',
+    registered_households   INT DEFAULT 0,
+    compliance_rate         DECIMAL(5,2) DEFAULT 0.00,
+    status                  ENUM('On Track','Monitor','Urgent')
+                            DEFAULT 'On Track',
+    created_at              TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_barangay_name (barangay_name)
 );
 
 CREATE TABLE residents (
@@ -44,7 +64,8 @@ CREATE TABLE residents (
     is_active         BOOLEAN DEFAULT TRUE,
     registration_date DATE NOT NULL,
     FOREIGN KEY (barangay_id)
-        REFERENCES barangays(barangay_id)
+        REFERENCES barangays(barangay_id),
+    INDEX idx_residents_barangay (barangay_id)
 );
 
 CREATE TABLE lgu_admins (
@@ -87,7 +108,8 @@ CREATE TABLE collection_schedules (
     FOREIGN KEY (barangay_id)
         REFERENCES barangays(barangay_id),
     FOREIGN KEY (created_by)
-        REFERENCES lgu_admins(admin_id)
+        REFERENCES lgu_admins(admin_id),
+    INDEX idx_schedules_barangay_date (barangay_id, collection_date)
 );
 
 CREATE TABLE waste_reports (
@@ -113,7 +135,8 @@ CREATE TABLE waste_reports (
     FOREIGN KEY (barangay_id)
         REFERENCES barangays(barangay_id),
     FOREIGN KEY (assigned_to)
-        REFERENCES collectors(collector_id)
+        REFERENCES collectors(collector_id),
+    INDEX idx_reports_status (status)
 );
 
 CREATE TABLE eco_points_transactions (
@@ -131,7 +154,8 @@ CREATE TABLE eco_points_transactions (
     transaction_date  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     notes             VARCHAR(255),
     FOREIGN KEY (resident_id)
-        REFERENCES residents(resident_id)
+        REFERENCES residents(resident_id),
+    INDEX idx_eco_resident (resident_id)
 );
 
 CREATE TABLE qr_codes (
@@ -147,22 +171,24 @@ CREATE TABLE qr_codes (
     expiry_date       DATE NULL,
     issued_by         INT,
     FOREIGN KEY (issued_by)
-        REFERENCES lgu_admins(admin_id)
+        REFERENCES lgu_admins(admin_id),
+    INDEX idx_qr_token (secure_token)
 );
 
+
 -- =============================================================================
--- 4. INSERT INTO (sample data for all tables)
+-- B. DML — SEED DATA (INSERT)
 -- =============================================================================
 
 INSERT INTO barangays
     (barangay_name, city, province,
      registered_households, compliance_rate, status)
 VALUES
-    ('Marawoy',      'Lipa City', 'Batangas', 342, 89.50, 'On Track'),
-    ('San Sebastian','Lipa City', 'Batangas', 278, 74.20, 'Monitor'),
-    ('Balintawak',   'Lipa City', 'Batangas', 195, 93.10, 'On Track'),
-    ('Tambo',        'Lipa City', 'Batangas', 412, 61.80, 'Urgent'),
-    ('Dagatan',      'Lipa City', 'Batangas', 223, 85.00, 'On Track');
+    ('Marauoy',         'Lipa City', 'Batangas', 342, 89.50, 'On Track'),
+    ('San Sebastian (Balagbag)', 'Lipa City', 'Batangas', 278, 74.20, 'Monitor'),
+    ('Balintawak',      'Lipa City', 'Batangas', 195, 93.10, 'On Track'),
+    ('Tambo',           'Lipa City', 'Batangas', 412, 61.80, 'Urgent'),
+    ('Dagatan',         'Lipa City', 'Batangas', 223, 85.00, 'On Track');
 
 INSERT INTO lgu_admins
     (full_name, position, email, barangay_id)
@@ -170,7 +196,7 @@ VALUES
     ('Engr. Juan dela Cruz',
      'CENRO Chief', 'jdelacruz@lipa.gov.ph', NULL),
     ('Maria Reyes',
-     'Barangay Captain', 'mreyes@marawoy.lipa.gov.ph', 1),
+     'Barangay Captain', 'mreyes@marauoy.lipa.gov.ph', 1),
     ('Jose Santos',
      'Barangay Captain', 'jsantos@sanseb.lipa.gov.ph', 2),
     ('Ana Mendoza',
@@ -311,11 +337,12 @@ VALUES
      'BAGO-K8M2N6', 'Household',
      'Active', '2025-02-01', NULL, 4);
 
+
 -- =============================================================================
--- 5. SELECT queries
+-- C. DML — READ (SELECT)
 -- =============================================================================
 
--- 1. Get all scheduled collections for Barangay Marawoy
+-- Read: scheduled collections for Barangay Marauoy
 SELECT
     cs.schedule_id,
     b.barangay_name,
@@ -327,10 +354,10 @@ SELECT
 FROM collection_schedules cs
 JOIN barangays b
     ON cs.barangay_id = b.barangay_id
-WHERE b.barangay_name = 'Marawoy'
+WHERE b.barangay_name = 'Marauoy'
 ORDER BY cs.collection_date ASC;
 
--- 2. Get all open waste reports with resident details
+-- Read: open waste reports with resident + barangay
 SELECT
     wr.reference_number,
     r.full_name       AS resident,
@@ -346,7 +373,7 @@ JOIN barangays b
 WHERE wr.status = 'Open'
 ORDER BY wr.submitted_at DESC;
 
--- 3. Top 5 residents by eco-points (leaderboard)
+-- Read: top residents by eco-points
 SELECT
     r.full_name,
     b.barangay_name,
@@ -358,7 +385,7 @@ JOIN barangays b
 ORDER BY r.eco_points DESC
 LIMIT 5;
 
--- 4. Get compliance rate per barangay
+-- Read: compliance by barangay
 SELECT
     barangay_name,
     compliance_rate,
@@ -366,7 +393,7 @@ SELECT
 FROM barangays
 ORDER BY compliance_rate DESC;
 
--- 5. Get eco-points transaction history for one resident
+-- Read: eco-points history for resident_id = 1
 SELECT
     action_type,
     points_change,
@@ -377,11 +404,12 @@ FROM eco_points_transactions
 WHERE resident_id = 1
 ORDER BY transaction_date DESC;
 
+
 -- =============================================================================
--- 6. INSERT queries
+-- D. DML — WRITE: INSERT (additional examples)
 -- =============================================================================
 
--- 1. Add a new waste report
+-- Insert: new waste report
 INSERT INTO waste_reports
     (reference_number, resident_id, barangay_id,
      issue_type, description, street_address,
@@ -393,7 +421,7 @@ VALUES
      '45 Mabini Street, Purok 1',
      13.94150000, 121.16370000, 'Open');
 
--- 2. Add an eco-points transaction after QR scan
+-- Insert: eco-points line after activity
 INSERT INTO eco_points_transactions
     (resident_id, action_type,
      points_change, balance_after, notes)
@@ -401,7 +429,7 @@ VALUES
     (2, 'Segregation Mission', +10, 95,
      'Collector COL-LIPA-001 QR scan confirmed');
 
--- 3. Register a new resident
+-- Insert: new resident
 INSERT INTO residents
     (household_id, full_name, mobile_number,
      barangay_id, street_address, pin_hash,
@@ -412,18 +440,19 @@ VALUES
      '3 Aguinaldo Street, Purok 2',
      'hashed_pin_6', 0, 'Seedling', CURDATE());
 
+
 -- =============================================================================
--- 7. UPDATE queries
+-- D. DML — WRITE: UPDATE
 -- =============================================================================
 
--- 1. Resolve a waste report
+-- Update: resolve a report
 UPDATE waste_reports
 SET
     status      = 'Resolved',
     resolved_at = NOW()
 WHERE reference_number = 'RPT-2025-00142';
 
--- 2. Add eco-points and update tier for a resident
+-- Update: bump eco-points and tier for a resident
 UPDATE residents
 SET
     eco_points = eco_points + 10,
@@ -438,36 +467,47 @@ SET
     END
 WHERE household_id = 'BAGO-MARA-2025-00002';
 
--- 3. Update a collection schedule status
+-- Update: mark schedule cancelled
 UPDATE collection_schedules
 SET status = 'Cancelled'
 WHERE schedule_id = 5;
 
--- 4. Deactivate a collector
+-- Update: deactivate collector
 UPDATE collectors
 SET is_active = FALSE
 WHERE collector_code = 'COL-LIPA-003';
 
--- 5. Invalidate an old QR token
+-- Update: invalidate QR token
 UPDATE qr_codes
 SET status = 'Invalidated'
 WHERE secure_token = 'BAGO-A7F2K9';
 
+
 -- =============================================================================
--- 8. DELETE queries
+-- D. DML — WRITE: DELETE
 -- =============================================================================
 
--- 1. Delete a cancelled schedule entry
+-- Delete: remove cancelled schedule row (after UPDATE above, schedule 5 is Cancelled)
 DELETE FROM collection_schedules
 WHERE schedule_id = 5
   AND status = 'Cancelled';
 
--- 2. Delete a rejected waste report
+-- Delete: remove demo report inserted as RPT-2025-00147 (from INSERT examples)
 DELETE FROM waste_reports
-WHERE reference_number = 'RPT-2025-00146'
-  AND status = 'Rejected';
+WHERE reference_number = 'RPT-2025-00147';
 
--- 3. Delete an invalidated QR code record
+-- Delete: remove demo resident BAGO-MARA-2025-00006 (eco rows first, then resident)
+SET @demo_resident_id := (
+    SELECT resident_id FROM residents
+    WHERE household_id = 'BAGO-MARA-2025-00006'
+    LIMIT 1
+);
+DELETE FROM eco_points_transactions
+WHERE resident_id <=> @demo_resident_id;
+DELETE FROM residents
+WHERE household_id = 'BAGO-MARA-2025-00006';
+
+-- Delete: one redeemed redemption QR row (demo cleanup)
 DELETE FROM qr_codes
-WHERE status = 'Invalidated'
+WHERE secure_token = 'BAGO-RX-C9D2E5'
   AND qr_type = 'Redemption';
