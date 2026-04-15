@@ -7,25 +7,24 @@
 
 - File name: `bago_ph_database.sql`
 - Location: `/sql/` folder
-- Must include: database creation, all table schemas, sample data, and all 4 query types (SELECT, INSERT, UPDATE, DELETE)
+- Must include: database creation, all table schemas, sample data, and full DML CRUD examples (SELECT, INSERT, UPDATE, DELETE)
 - Database: MySQL / MariaDB syntax
-- Encoding: UTF-8
+- Encoding: UTF-8 / `utf8mb4`
 
 ---
 
 ## STRUCTURE ORDER
 
-Write the file in this exact order:
+Write file in this exact order:
 
 ```
-1. CREATE DATABASE
-2. USE DATABASE
-3. CREATE TABLE (all tables)
-4. INSERT INTO (sample data for all tables)
-5. SELECT queries
-6. INSERT queries
-7. UPDATE queries
-8. DELETE queries
+A. DDL: CREATE DATABASE + USE DATABASE
+B. DDL: CREATE TABLE (all tables) + helpful indexes
+C. DML Seed: INSERT INTO (sample data for all tables)
+D. DML READ: SELECT queries
+E. DML WRITE: INSERT queries
+F. DML WRITE: UPDATE queries
+G. DML WRITE: DELETE queries
 ```
 
 ---
@@ -33,7 +32,9 @@ Write the file in this exact order:
 ## STEP 1 — CREATE AND SELECT DATABASE
 
 ```sql
-CREATE DATABASE IF NOT EXISTS bago_ph;
+CREATE DATABASE IF NOT EXISTS bago_ph
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
 USE bago_ph;
 ```
 
@@ -239,8 +240,8 @@ INSERT INTO barangays
     (barangay_name, city, province,
      registered_households, compliance_rate, status)
 VALUES
-    ('Marawoy',      'Lipa City', 'Batangas', 342, 89.50, 'On Track'),
-    ('San Sebastian','Lipa City', 'Batangas', 278, 74.20, 'Monitor'),
+    ('Marauoy',      'Lipa City', 'Batangas', 342, 89.50, 'On Track'),
+    ('San Sebastian (Balagbag)','Lipa City', 'Batangas', 278, 74.20, 'Monitor'),
     ('Balintawak',   'Lipa City', 'Batangas', 195, 93.10, 'On Track'),
     ('Tambo',        'Lipa City', 'Batangas', 412, 61.80, 'Urgent'),
     ('Dagatan',      'Lipa City', 'Batangas', 223, 85.00, 'On Track');
@@ -444,7 +445,7 @@ VALUES
 ### SELECT Queries
 
 ```sql
--- 1. Get all scheduled collections for Barangay Marawoy
+-- 1. Get all scheduled collections for Barangay Marauoy
 SELECT
     cs.schedule_id,
     b.barangay_name,
@@ -456,7 +457,7 @@ SELECT
 FROM collection_schedules cs
 JOIN barangays b
     ON cs.barangay_id = b.barangay_id
-WHERE b.barangay_name = 'Marawoy'
+WHERE b.barangay_name = 'Marauoy'
 ORDER BY cs.collection_date ASC;
 
 -- 2. Get all open waste reports with resident details
@@ -597,14 +598,13 @@ DELETE FROM collection_schedules
 WHERE schedule_id = 5
   AND status = 'Cancelled';
 
--- 2. Delete a rejected waste report
+-- 2. Delete demo report inserted in INSERT queries
 DELETE FROM waste_reports
-WHERE reference_number = 'RPT-2025-00146'
-  AND status = 'Rejected';
+WHERE reference_number = 'RPT-2025-00147';
 
--- 3. Delete an invalidated QR code record
+-- 3. Delete redeemed redemption QR demo row
 DELETE FROM qr_codes
-WHERE status = 'Invalidated'
+WHERE secure_token = 'BAGO-RX-C9D2E5'
   AND qr_type = 'Redemption';
 ```
 
@@ -612,14 +612,14 @@ WHERE status = 'Invalidated'
 
 ## CHECKLIST
 
-- [ ] File starts with `CREATE DATABASE` and `USE` statement
+- [ ] File starts with `CREATE DATABASE` and `USE` statements using `utf8mb4`
 - [ ] All 8 tables created in correct order (no foreign key errors)
 - [ ] Every table has a PRIMARY KEY
 - [ ] All FOREIGN KEY references point to already-created tables
 - [ ] At least 5 INSERT rows per table
 - [ ] Sample data uses real Lipa City barangay names
-- [ ] At least 5 SELECT queries included
-- [ ] At least 3 INSERT queries included
+- [ ] At least 5 SELECT queries included (READ)
+- [ ] At least 3 INSERT queries included (CREATE rows)
 - [ ] At least 5 UPDATE queries included
 - [ ] At least 3 DELETE queries included
 - [ ] File saved as `bago_ph_database.sql` inside the `/sql/` folder

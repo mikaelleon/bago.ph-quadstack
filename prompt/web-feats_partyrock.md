@@ -24,7 +24,7 @@ Establishes the user's role and location so that every subsequent widget persona
 | Field | Placeholder Example |
 |---|---|
 | Your Role | "Resident", "Collector", or "LGU Admin" |
-| Barangay and City | "Barangay Marawoy, Lipa City, Batangas" |
+| Barangay and City | "Barangay Marauoy, Lipa City, Batangas" |
 
 ### Output
 A welcome card that confirms the selected role and barangay, briefly describes what features are available for that role, and directs the user to the next relevant widget.
@@ -90,7 +90,7 @@ Collects the resident's description of a waste problem for the issue reporting s
 | Reporter Name (Optional) | First name and last name for the ticket. |
 
 ### Placeholder Example
-"There is an overflowing garbage bin on Rizal Street corner Mabini Street, Barangay Marawoy, Lipa City. The bin has not been collected in 3 days and is attracting flies near a school."
+"There is an overflowing garbage bin on Rizal Street corner Mabini Street, Barangay Marauoy, Lipa City. The bin has not been collected in 3 days and is attracting flies near a school."
 
 ### Feeds Into
 Widget 4 — Issue Report Confirmation Card
@@ -173,8 +173,8 @@ Simulates the one-time wallet registration process for new BAGO.PH residents. Co
 |---|---|
 | Full Name | "Maria Clara Santos" |
 | Mobile Number | "09171234567" |
-| Barangay and City | "Barangay Marawoy, Lipa City, Batangas" |
-| Street Address | "12 Rizal Street, Purok 3, Barangay Marawoy" |
+| Barangay and City | "Barangay Marauoy, Lipa City, Batangas" |
+| Street Address | "12 Rizal Street, Purok 3, Barangay Marauoy" |
 | 4-Digit PIN | "4872 (choose any 4 digits you will remember)" |
 
 ### Feeds Into

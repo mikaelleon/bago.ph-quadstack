@@ -57,8 +57,8 @@ Baseline milestone work includes:
 - [x] XSL transformation of `schedules.xml` to an HTML table
 - [x] Waste issue report submission form
 - [x] Basic LGU overview / dashboard page
-- [x] SQL database schema with 5 tables
-- [x] Sample SQL queries (SELECT, INSERT, UPDATE, DELETE)
+- [x] SQL database schema and full DDL (8-table design)
+- [x] Sample SQL DML queries (SELECT, INSERT, UPDATE, DELETE)
 - [x] Consistent CSS design system across pages
 - [x] Barangay XML data file with XSL transformation
 
@@ -79,6 +79,7 @@ Implemented on top of the baseline above:
 - **Official Lipa City barangay list** — all **72 barangays** in `html/js/lipa-barangays.js`, populated into relevant dropdowns via `lipa-barangays-select.js`; `xml/barangays.xml` regenerated with 72 rows (helper: `scripts/gen-barangays-xml.mjs`).
 - **XML / XSLT layout** — stylesheets under `xsl/` (e.g. `ecolinisph-schedules.xsl`, `barangays.xsl`); XML files reference them for browser transform (Firefox works best for opening raw `.xml`).
 - **Interactive XML pages** — `xml-schedules-editor.html` and `xml-barangays-editor.html`: filter, **column sort**, add/edit/delete in memory, **Save to browser** (`localStorage`), **Export** downloaded XML, **Reload from file** / clear storage; **`?mode=view`** for read-only browse (sort & filter, no CRUD). Raw `.xml` files on disk are **not** overwritten automatically (browser security); replace files manually after export if needed.
+- **SQL file fully structured for demo/import flow** — `sql/bago_ph_database.sql` now grouped into clear sections: **A) DDL** (database + tables + indexes), **B) seed INSERTs**, **C) READ queries**, **D) additional INSERT/UPDATE/DELETE examples** with matching demo keys.
 
 ---
 
