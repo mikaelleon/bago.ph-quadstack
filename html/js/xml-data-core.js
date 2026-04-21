@@ -61,10 +61,17 @@
     var xml = serializeDocument(doc, true, piLine);
     var blob = new Blob([xml], { type: "application/xml;charset=utf-8" });
     var a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
+    var url = URL.createObjectURL(blob);
+    a.href = url;
     a.download = filename;
+    a.style.display = "none";
+    document.body.appendChild(a);
     a.click();
-    URL.revokeObjectURL(a.href);
+    document.body.removeChild(a);
+    // Revoke after click tick so browser has time to start download.
+    setTimeout(function () {
+      URL.revokeObjectURL(url);
+    }, 0);
   }
 
   function clearStorage(storageKey) {
