@@ -282,14 +282,17 @@
   function init() {
     applyViewMode();
 
-    document.querySelector("main").addEventListener("click", function (e) {
-      var th = e.target.closest("th.sortable");
-      if (!th) return;
-      e.preventDefault();
-      var col = parseInt(th.getAttribute("data-col"), 10);
-      if (isNaN(col)) return;
-      toggleSort(col);
-    });
+    var main = document.querySelector("main");
+    if (main) {
+      main.addEventListener("click", function (e) {
+        var th = e.target.closest("th.sortable");
+        if (!th) return;
+        e.preventDefault();
+        var col = parseInt(th.getAttribute("data-col"), 10);
+        if (isNaN(col)) return;
+        toggleSort(col);
+      });
+    }
 
     C.loadXmlAsync({
       storageKey: C.STORAGE_BARANGAYS,

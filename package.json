@@ -15,6 +15,7 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
+<<<<<<< HEAD
     "dev": "node server/index.js",
     "start": "node server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -26,5 +27,9 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.22.2"
+=======
+    "start": "npx serve html -l $PORT"
+
+>>>>>>> 9af9733365f0ca535fdb86e5686549fcc121c7d5
   }
 }

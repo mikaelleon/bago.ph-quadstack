@@ -651,7 +651,9 @@
   }
 
   function bindSortClicks() {
-    document.querySelector("main").addEventListener("click", function (e) {
+    var main = document.querySelector("main");
+    if (!main) return;
+    main.addEventListener("click", function (e) {
       var th = e.target.closest("th.sortable");
       if (!th) return;
       e.preventDefault();
@@ -670,10 +672,6 @@
     ["meta-title", "meta-tagline", "meta-proponent", "meta-coverage", "stat-routes", "stat-ontime", "stat-barangays", "stat-exceptions"].forEach(function (id) {
       var n = el(id);
       if (n) n.readOnly = true;
-    });
-    ["filter-route-day", "filter-route-q", "filter-barangay-day", "filter-barangay-q", "filter-special-q", "filter-shift-q"].forEach(function (id) {
-      var n = el(id);
-      if (n) n.removeAttribute("readonly");
     });
   }
 
