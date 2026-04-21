@@ -1,7 +1,7 @@
 {
   "name": "bago.ph-quadstack",
   "version": "1.0.0",
-  "description": "===========================================\r BAGO.PH — Barangay App for Garbage Operations in the Philippines\r Final Project Milestone Submission — 30% Progress\r ===========================================",
+  "description": "BAGO.PH — Barangay App for Garbage Operations (PH). Static HTML/CSS prototype + Express/MySQL API.",
   "homepage": "https://github.com/mikaelleon/bago.ph-quadstack#readme",
   "bugs": {
     "url": "https://github.com/mikaelleon/bago.ph-quadstack/issues"
@@ -13,12 +13,14 @@
   "license": "ISC",
   "author": "",
   "type": "commonjs",
-  "main": "index.js",
+  "main": "server/index.js",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
-<<<<<<< HEAD
     "dev": "node server/index.js",
     "start": "node server/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node -e \"console.log('No tests configured.'); process.exit(0)\""
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -27,9 +29,5 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.22.2"
-=======
-    "start": "npx serve html -l $PORT"
-
->>>>>>> 9af9733365f0ca535fdb86e5686549fcc121c7d5
   }
 }
