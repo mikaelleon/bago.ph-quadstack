@@ -119,7 +119,7 @@
 
     <!-- ADMIN ACTION BAR -->
     <div class="bento-filter-bar" style="margin-bottom: 16px;">
-      <button class="bento-btn bento-btn-primary" onclick="openAddModal()">
+      <button type="button" id="schedule-add-btn" class="bento-btn bento-btn-primary" onclick="openAddModal()">
         + Add New Schedule
       </button>
       <div class="bento-btn-group">
@@ -144,124 +144,24 @@
       <label style="font-weight:600; font-size:13px;">
         Filter by Barangay:
       </label>
-      <select aria-label="Filter by barangay" data-lipa-barangays data-include-all="true"></select>
+      <select id="schedule-filter-barangay" aria-label="Filter by barangay" data-lipa-barangays data-include-all="true"></select>
 
       <label style="font-weight:600; font-size:13px;">
         Waste Type:
       </label>
-      <select aria-label="Filter by waste type">
+      <select id="schedule-filter-waste" aria-label="Filter by waste type">
         <option value="all">All Types</option>
-        <option value="bio">Biodegradable</option>
-        <option value="nonbio">Non-Biodegradable</option>
-        <option value="rec">Recyclable</option>
-        <option value="res">Residual</option>
+        <option value="Biodegradable">Biodegradable</option>
+        <option value="Non-Biodegradable">Non-Biodegradable</option>
+        <option value="Recyclable">Recyclable</option>
+        <option value="Residual">Residual</option>
       </select>
     </div>
 
-    <!-- SCHEDULE CARDS -->
-    <div class="schedule-grid">
+    <p id="schedule-api-status" class="helper-text" style="margin-bottom:12px; display:none;"></p>
 
-      <!-- MARAWOY -->
-      <div class="schedule-card">
-        <div class="schedule-card-header">
-          📍 Barangay Marauoy
-        </div>
-        <div class="schedule-card-body">
-
-          <div class="schedule-row">
-            <div class="waste-type">🟢 Biodegradable</div>
-            <div>
-              <div>Monday, Apr 7</div>
-              <div style="color:#757575; font-size:12px;">
-                6:00 AM – 10:00 AM
-              </div>
-            </div>
-            <span class="badge badge-scheduled">
-              Scheduled
-            </span>
-          </div>
-
-          <div class="schedule-row">
-            <div class="waste-type">🔵 Non-Biodegradable</div>
-            <div>
-              <div>Thursday, Apr 10</div>
-              <div style="color:#757575; font-size:12px;">
-                7:00 AM – 11:00 AM
-              </div>
-            </div>
-            <span class="badge badge-updated">Updated</span>
-          </div>
-
-          <div class="schedule-row">
-            <div class="waste-type">♻️ Recyclable</div>
-            <div>
-              <div>Friday, Apr 11</div>
-              <div style="color:#757575; font-size:12px;">
-                6:00 AM – 10:00 AM
-              </div>
-            </div>
-            <span class="badge badge-scheduled">
-              Scheduled
-            </span>
-            <div class="table-actions" style="margin-left: 8px;">
-              <button class="table-action-btn" title="Edit" onclick="openEditModal()">✏️</button>
-              <button class="table-action-btn" title="Cancel" onclick="cancelSchedule()">❌</button>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- SAN SEBASTIAN -->
-      <div class="schedule-card">
-        <div class="schedule-card-header">
-          📍 Barangay San Sebastian (Balagbag)
-        </div>
-        <div class="schedule-card-body">
-
-          <div class="schedule-row">
-            <div class="waste-type">🟢 Biodegradable</div>
-            <div>
-              <div>Tuesday, Apr 8</div>
-              <div style="color:#757575; font-size:12px;">
-                6:00 AM – 10:00 AM
-              </div>
-            </div>
-            <span class="badge badge-scheduled">
-              Scheduled
-            </span>
-          </div>
-
-          <div class="schedule-row">
-            <div class="waste-type">🔵 Non-Biodegradable</div>
-            <div>
-              <div>Thursday, Apr 10</div>
-              <div style="color:#757575; font-size:12px;">
-                7:00 AM – 11:00 AM
-              </div>
-            </div>
-            <span class="badge badge-cancelled">
-              Cancelled
-            </span>
-          </div>
-
-          <div class="schedule-row">
-            <div class="waste-type">♻️ Recyclable</div>
-            <div>
-              <div>Saturday, Apr 12</div>
-              <div style="color:#757575; font-size:12px;">
-                6:00 AM – 9:00 AM
-              </div>
-            </div>
-            <span class="badge badge-scheduled">
-              Scheduled
-            </span>
-          </div>
-
-        </div>
-      </div>
-
-    </div><!-- end schedule-grid -->
+    <!-- SCHEDULE CARDS (filled from API when token + server available) -->
+    <div class="schedule-grid" id="schedule-grid-root"></div>
 
     <!-- XML DATA LINK -->
     <div class="card" style="margin-top: 24px;">
@@ -295,30 +195,30 @@
         <button class="bento-modal-close" onclick="closeAddModal()">✕</button>
       </div>
       <div class="bento-modal-body">
-        <form>
+        <form id="add-schedule-form" action="#" method="post" onsubmit="return false;">
           <div class="form-group">
-            <label>Target Barangay(s)</label>
-            <select multiple style="height: 100px;" data-lipa-barangays aria-label="Target barangays"></select>
-            <span class="helper-text">Hold Ctrl/Cmd for multiple selection</span>
+            <label>Target barangay</label>
+            <select id="add-schedule-barangay" style="height: 44px;" aria-label="Target barangay"></select>
+            <span class="helper-text">Pick one barangay for this collection window.</span>
           </div>
 
           <div class="form-group">
             <label>Waste Type</label>
             <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px;">
               <label class="bento-checkbox">
-                <input type="checkbox" name="waste" value="bio" />
+                <input type="radio" name="add-waste" value="Biodegradable" checked />
                 🟢 Biodegradable
               </label>
               <label class="bento-checkbox">
-                <input type="checkbox" name="waste" value="nonbio" />
+                <input type="radio" name="add-waste" value="Non-Biodegradable" />
                 🔵 Non-Biodegradable
               </label>
               <label class="bento-checkbox">
-                <input type="checkbox" name="waste" value="rec" />
+                <input type="radio" name="add-waste" value="Recyclable" />
                 ♻️ Recyclable
               </label>
               <label class="bento-checkbox">
-                <input type="checkbox" name="waste" value="res" />
+                <input type="radio" name="add-waste" value="Residual" />
                 ⚫ Residual
               </label>
             </div>
@@ -326,15 +226,15 @@
 
           <div class="form-group">
             <label>Collection Date</label>
-            <input type="date" min="2025-04-15" />
+            <input id="add-schedule-date" type="date" required />
           </div>
 
           <div class="form-group">
             <label>Time Window</label>
             <div style="display: flex; gap: 12px; align-items: center;">
-              <input type="time" value="06:00" style="flex: 1;" />
+              <input id="add-schedule-time-start" type="time" value="06:00" style="flex: 1;" />
               <span>to</span>
-              <input type="time" value="10:00" style="flex: 1;" />
+              <input id="add-schedule-time-end" type="time" value="10:00" style="flex: 1;" />
             </div>
           </div>
 
@@ -368,9 +268,13 @@
 
   <script src="js/lipa-barangays.js"></script>
   <script src="js/lipa-barangays-select.js"></script>
+  <script src="js/bago-env.js"></script>
+  <script src="js/bago-api.js"></script>
   <script src="role-access.js"></script>
   <script src="nav-ui.js"></script>
   <script>
+    var __scheduleRows = [];
+
     function openAddModal() {
       document.getElementById('add-schedule-modal').classList.add('active');
     }
@@ -380,7 +284,7 @@
     }
 
     function openEditModal() {
-      alert('Edit schedule modal would open here');
+      alert('Edit schedule: use API PATCH /api/schedules/:id (LGU) — UI hook optional.');
     }
 
     function cancelSchedule() {
@@ -389,10 +293,184 @@
       }
     }
 
-    function saveSchedule() {
-      alert('Schedule saved! Notifications sent.');
-      closeAddModal();
+    function badgeClass(status) {
+      if (status === 'Updated') return 'badge-updated';
+      if (status === 'Cancelled') return 'badge-cancelled';
+      return 'badge-scheduled';
     }
+
+    function fmtDate(iso) {
+      if (!iso) return '';
+      var d = new Date(iso + 'T00:00:00');
+      return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+    }
+
+    function fmtTime(t) {
+      if (!t) return '';
+      var p = String(t).slice(0, 5);
+      var parts = p.split(':');
+      var h = parseInt(parts[0], 10);
+      var m = parts[1] || '00';
+      var am = h >= 12 ? 'PM' : 'AM';
+      var hh = h % 12 || 12;
+      return hh + ':' + m + ' ' + am;
+    }
+
+    function wasteEmoji(w) {
+      if (w === 'Biodegradable') return '🟢';
+      if (w === 'Non-Biodegradable') return '🔵';
+      if (w === 'Recyclable') return '♻️';
+      return '⚫';
+    }
+
+    function renderScheduleGrid(rows) {
+      var root = document.getElementById('schedule-grid-root');
+      if (!root) return;
+      root.innerHTML = '';
+      var byName = {};
+      rows.forEach(function (r) {
+        var k = r.barangay_name || ('Barangay ' + r.barangay_id);
+        if (!byName[k]) byName[k] = [];
+        byName[k].push(r);
+      });
+      Object.keys(byName).sort().forEach(function (name) {
+        var card = document.createElement('div');
+        card.className = 'schedule-card';
+        var head = document.createElement('div');
+        head.className = 'schedule-card-header';
+        head.textContent = '📍 ' + name;
+        var body = document.createElement('div');
+        body.className = 'schedule-card-body';
+        byName[name].forEach(function (r) {
+          var row = document.createElement('div');
+          row.className = 'schedule-row';
+          row.innerHTML =
+            '<div class="waste-type">' + wasteEmoji(r.waste_type) + ' ' + r.waste_type + '</div>' +
+            '<div><div>' + fmtDate(r.collection_date) + '</div>' +
+            '<div style="color:#757575; font-size:12px;">' +
+            fmtTime(r.time_start) + ' – ' + fmtTime(r.time_end) +
+            '</div></div>' +
+            '<span class="badge ' + badgeClass(r.status) + '">' + r.status + '</span>';
+          body.appendChild(row);
+        });
+        card.appendChild(head);
+        card.appendChild(body);
+        root.appendChild(card);
+      });
+      if (!rows.length) {
+        var p = document.createElement('p');
+        p.className = 'helper-text';
+        p.textContent = 'No schedules match filters (or database empty).';
+        root.appendChild(p);
+      }
+    }
+
+    function applyScheduleFilters() {
+      var bSel = document.getElementById('schedule-filter-barangay');
+      var wSel = document.getElementById('schedule-filter-waste');
+      var bVal = bSel ? bSel.value : 'all';
+      var wVal = wSel ? wSel.value : 'all';
+      var filtered = __scheduleRows.filter(function (r) {
+        if (bVal && bVal !== 'all') {
+          if (String(r.barangay_id) !== String(bVal)) return false;
+        }
+        if (wVal && wVal !== 'all' && r.waste_type !== wVal) return false;
+        return true;
+      });
+      renderScheduleGrid(filtered);
+    }
+
+    async function loadSchedulesFromApi() {
+      var statusEl = document.getElementById('schedule-api-status');
+      if (!window.BAGOApi || !window.BAGOApi.getToken()) {
+        if (statusEl) {
+          statusEl.style.display = '';
+          statusEl.textContent = 'Log in with API running to load live schedules from MySQL.';
+        }
+        return;
+      }
+      if (statusEl) statusEl.style.display = 'none';
+      try {
+        var rows = await window.BAGOApi.request('GET', '/api/schedules');
+        __scheduleRows = rows || [];
+        applyScheduleFilters();
+      } catch (e) {
+        if (statusEl) {
+          statusEl.style.display = '';
+          statusEl.textContent = 'Could not load schedules from API: ' + (e.message || e);
+        }
+      }
+    }
+
+    async function saveSchedule() {
+      if (!window.BAGOApi || !window.BAGOApi.getToken()) {
+        alert('Log in (LGU) with API + DB to save schedules.');
+        closeAddModal();
+        return;
+      }
+      if (window.BAGOAccess && window.BAGOAccess.getStoredRole() !== 'lgu_officer') {
+        alert('Only LGU officers can create schedules on the server.');
+        closeAddModal();
+        return;
+      }
+      var barangayId = document.getElementById('add-schedule-barangay').value;
+      var waste = (document.querySelector('input[name="add-waste"]:checked') || {}).value;
+      var date = document.getElementById('add-schedule-date').value;
+      var ts = document.getElementById('add-schedule-time-start').value;
+      var te = document.getElementById('add-schedule-time-end').value;
+      if (!barangayId || !waste || !date) {
+        alert('Barangay, waste type, and date are required.');
+        return;
+      }
+      try {
+        await window.BAGOApi.request('POST', '/api/schedules', {
+          barangay_id: Number(barangayId),
+          waste_type: waste,
+          collection_date: date,
+          time_start: ts || '06:00',
+          time_end: te || '10:00',
+          status: 'Scheduled'
+        });
+        await loadSchedulesFromApi();
+        closeAddModal();
+      } catch (e) {
+        alert((e.body && e.body.error) || e.message || 'Save failed');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var role = window.BAGOAccess ? window.BAGOAccess.getStoredRole() : 'user';
+      var addBtn = document.getElementById('schedule-add-btn');
+      if (addBtn && role !== 'lgu_officer') addBtn.style.display = 'none';
+
+      var fb = document.getElementById('schedule-filter-barangay');
+      var fw = document.getElementById('schedule-filter-waste');
+      if (fb) fb.addEventListener('change', applyScheduleFilters);
+      if (fw) fw.addEventListener('change', applyScheduleFilters);
+
+      setTimeout(function () {
+        if (!window.BAGOApi || !window.BAGOApi.getToken() || !window.BAGOApi.hasBase()) return;
+        var filterSel = document.getElementById('schedule-filter-barangay');
+        if (filterSel) {
+          filterSel.removeAttribute('data-lipa-barangays');
+          filterSel.innerHTML = '';
+          var all = document.createElement('option');
+          all.value = 'all';
+          all.textContent = 'All Barangays';
+          filterSel.appendChild(all);
+          window.BAGOApi.request('GET', '/api/barangays').then(function (rows) {
+            rows.forEach(function (b) {
+              var o = document.createElement('option');
+              o.value = String(b.barangay_id);
+              o.textContent = b.barangay_name;
+              filterSel.appendChild(o);
+            });
+          }).catch(function () {});
+        }
+        window.BAGOApi.loadBarangaysIntoSelect(document.getElementById('add-schedule-barangay')).catch(function () {});
+        loadSchedulesFromApi();
+      }, 0);
+    });
   </script>
 
 </body>

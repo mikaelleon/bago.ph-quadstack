@@ -175,6 +175,28 @@ CREATE TABLE qr_codes (
     INDEX idx_qr_token (secure_token)
 );
 
+-- Auth bridge: mobile + PIN (bcrypt) maps to resident, collector, or LGU admin row.
+CREATE TABLE app_identity (
+    identity_id       INT AUTO_INCREMENT PRIMARY KEY,
+    mobile_number     VARCHAR(15) NOT NULL UNIQUE,
+    pin_hash          VARCHAR(255) NOT NULL,
+    role              ENUM('user','collector','lgu_officer') NOT NULL,
+    resident_id       INT NULL,
+    collector_id      INT NULL,
+    lgu_admin_id      INT NULL,
+    created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (resident_id)
+        REFERENCES residents(resident_id)
+        ON DELETE CASCADE,
+    FOREIGN KEY (collector_id)
+        REFERENCES collectors(collector_id)
+        ON DELETE CASCADE,
+    FOREIGN KEY (lgu_admin_id)
+        REFERENCES lgu_admins(admin_id)
+        ON DELETE CASCADE,
+    INDEX idx_identity_mobile (mobile_number)
+);
+
 
 -- =============================================================================
 -- B. DML — SEED DATA (INSERT)
@@ -222,27 +244,82 @@ VALUES
     ('BAGO-MARA-2025-00001',
      'Maria Santos',     '09181234501', 1,
      '12 Rizal Street, Purok 3',
-     'hashed_pin_1', 240, 'Eco-Saver',  '2025-01-10'),
+     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     240, 'Eco-Saver',  '2025-01-10'),
 
     ('BAGO-MARA-2025-00002',
      'Jose dela Cruz',   '09181234502', 1,
      '45 Mabini Street, Purok 1',
-     'hashed_pin_2', 85,  'Seedling',   '2025-01-15'),
+     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     85,  'Seedling',   '2025-01-15'),
 
     ('BAGO-SEBA-2025-00001',
      'Ana Reyes',        '09181234503', 2,
      '7 Bonifacio Ave, Purok 2',
-     'hashed_pin_3', 310, 'Green Guardian', '2025-01-20'),
+     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     310, 'Green Guardian', '2025-01-20'),
 
     ('BAGO-BALI-2025-00001',
      'Liza Mendoza',     '09181234504', 3,
      '23 Luna Street, Purok 4',
-     'hashed_pin_4', 620, 'Eco-Champion','2025-02-01'),
+     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     620, 'Eco-Champion','2025-02-01'),
 
     ('BAGO-TAMB-2025-00001',
      'Roberto Garcia',   '09181234505', 4,
      '89 Quezon Street, Purok 5',
-     'hashed_pin_5', 50,  'Seedling',   '2025-02-10');
+     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     50,  'Seedling',   '2025-02-10');
+
+-- Demo logins (PIN for all: 1234) — mobile maps to role + linked row.
+INSERT INTO app_identity
+    (mobile_number, pin_hash, role, resident_id, collector_id, lgu_admin_id)
+VALUES
+    ('09181234501',
+     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     'user', 1, NULL, NULL),
+    ('09181234502',
+     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     'user', 2, NULL, NULL),
+    ('09181234503',
+     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     'user', 3, NULL, NULL),
+    ('09181234504',
+     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     'user', 4, NULL, NULL),
+    ('09181234505',
+     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     'user', 5, NULL, NULL),
+    ('09171111001',
+     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     'collector', NULL, 1, NULL),
+    ('09171111002',
+     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     'collector', NULL, 2, NULL),
+    ('09171111003',
+     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     'collector', NULL, 3, NULL),
+    ('09171111004',
+     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     'collector', NULL, 4, NULL),
+    ('09171111005',
+     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     'collector', NULL, 5, NULL),
+    ('09230000001',
+     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     'lgu_officer', NULL, NULL, 1),
+    ('09230000002',
+     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     'lgu_officer', NULL, NULL, 2),
+    ('09230000003',
+     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     'lgu_officer', NULL, NULL, 3),
+    ('09230000004',
+     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     'lgu_officer', NULL, NULL, 4),
+    ('09230000005',
+     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     'lgu_officer', NULL, NULL, 5);
 
 INSERT INTO collection_schedules
     (barangay_id, waste_type, collection_date,

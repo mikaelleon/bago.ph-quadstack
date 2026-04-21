@@ -145,15 +145,28 @@
     </p>
   </footer>
 
+  <script src="js/bago-env.js"></script>
+  <script src="js/bago-api.js"></script>
   <script src="role-access.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      document.getElementById("login-form").addEventListener("submit", function (event) {
+      document.getElementById("login-form").addEventListener("submit", async function (event) {
         event.preventDefault();
-        var check = window.BAGOAccess.validateLoginAttempt(
-          document.getElementById("mobile").value,
-          document.getElementById("pin").value
-        );
+        var mobile = document.getElementById("mobile").value;
+        var pin = document.getElementById("pin").value;
+        if (window.BAGOApi && window.BAGOApi.hasBase()) {
+          var api = await window.BAGOApi.tryLogin(mobile, pin);
+          if (api && api.ok) {
+            window.BAGOAccess.setCurrentRole(api.role);
+            window.location.href = window.BAGOAccess.getDashboardHome();
+            return;
+          }
+          if (api && !api.ok && api.message) {
+            alert(api.message);
+            return;
+          }
+        }
+        var check = window.BAGOAccess.validateLoginAttempt(mobile, pin);
         if (!check.ok) {
           alert(check.message);
           return;

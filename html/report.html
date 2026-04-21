@@ -139,19 +139,19 @@
       <!-- Stats Row -->
       <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px;">
         <div class="bento-metric">
-          <div class="bento-metric-value" style="color: var(--error);">14</div>
+          <div class="bento-metric-value" id="metric-open" style="color: var(--error);">—</div>
           <div class="bento-metric-label">Open</div>
         </div>
         <div class="bento-metric blue">
-          <div class="bento-metric-value">8</div>
+          <div class="bento-metric-value" id="metric-progress">—</div>
           <div class="bento-metric-label">In Progress</div>
         </div>
         <div class="bento-metric">
-          <div class="bento-metric-value" style="color: var(--green-dark);">156</div>
-          <div class="bento-metric-label">Resolved (30d)</div>
+          <div class="bento-metric-value" id="metric-resolved" style="color: var(--green-dark);">—</div>
+          <div class="bento-metric-label">Resolved</div>
         </div>
         <div class="bento-metric orange">
-          <div class="bento-metric-value">2.1d</div>
+          <div class="bento-metric-value" id="metric-avg">—</div>
           <div class="bento-metric-label">Avg Resolution</div>
         </div>
       </div>
@@ -194,70 +194,7 @@
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody>
-            <tr style="background: #FFF8E1;">
-              <td><input type="checkbox" /></td>
-              <td><strong>RPT-2025-00142</strong></td>
-              <td>Illegal Dumping</td>
-              <td>Tambo, Purok 5</td>
-              <td>Apr 14, 6:30 AM</td>
-              <td><span class="bento-badge danger">Open</span></td>
-              <td><span style="color: var(--error);">🔴 High</span></td>
-              <td>
-                <div class="table-actions">
-                  <button class="table-action-btn" title="View" onclick="openReportModal()">👁️</button>
-                  <button class="table-action-btn" title="Assign">👤</button>
-                  <button class="table-action-btn" title="Update Status">📝</button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td><input type="checkbox" /></td>
-              <td><strong>RPT-2025-00141</strong></td>
-              <td>Missed Pickup</td>
-              <td>Marauoy, Purok 2</td>
-              <td>Apr 13, 8:15 AM</td>
-              <td><span class="bento-badge info">In Progress</span></td>
-              <td><span style="color: #E65100;">🟠 Medium</span></td>
-              <td>
-                <div class="table-actions">
-                  <button class="table-action-btn" title="View">👁️</button>
-                  <button class="table-action-btn" title="Assign">👤</button>
-                  <button class="table-action-btn" title="Update Status">📝</button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td><input type="checkbox" /></td>
-              <td><strong>RPT-2025-00140</strong></td>
-              <td>Overflowing Bin</td>
-              <td>San Sebastian (Balagbag), Main St</td>
-              <td>Apr 13, 7:00 AM</td>
-              <td><span class="bento-badge warning">Acknowledged</span></td>
-              <td><span style="color: #9E9E9E;">⚪ Low</span></td>
-              <td>
-                <div class="table-actions">
-                  <button class="table-action-btn" title="View">👁️</button>
-                  <button class="table-action-btn" title="Assign">👤</button>
-                  <button class="table-action-btn" title="Update Status">📝</button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td><input type="checkbox" /></td>
-              <td><strong>RPT-2025-00139</strong></td>
-              <td>Blocked Road</td>
-              <td>Balintawak, Purok 1</td>
-              <td>Apr 12, 3:45 PM</td>
-              <td><span class="bento-badge success">Resolved</span></td>
-              <td><span style="color: #E65100;">🟠 Medium</span></td>
-              <td>
-                <div class="table-actions">
-                  <button class="table-action-btn" title="View">👁️</button>
-                  <button class="table-action-btn" title="Export PDF">📄</button>
-                </div>
-              </td>
-            </tr>
+          <tbody id="reports-api-tbody">
           </tbody>
         </table>
       </div>
@@ -282,7 +219,7 @@
         </div>
 
         <div class="card">
-          <form action="#" method="post">
+          <form id="resident-report-form" action="#" method="post">
 
             <div class="form-group">
               <label for="issue-type">Issue Type</label>
@@ -291,11 +228,11 @@
                 <option value="" disabled selected>
                   Select the type of issue
                 </option>
-                <option>Missed Pickup</option>
-                <option>Overflowing Bin</option>
-                <option>Illegal Dumping</option>
-                <option>Blocked Road</option>
-                <option>Other</option>
+                <option value="Missed Pickup">Missed Pickup</option>
+                <option value="Overflowing Bin">Overflowing Bin</option>
+                <option value="Illegal Dumping">Illegal Dumping</option>
+                <option value="Blocked Road">Blocked Road</option>
+                <option value="Other">Other</option>
               </select>
             </div>
 
@@ -543,6 +480,8 @@
 
   <script src="js/lipa-barangays.js"></script>
   <script src="js/lipa-barangays-select.js"></script>
+  <script src="js/bago-env.js"></script>
+  <script src="js/bago-api.js"></script>
   <script src="role-access.js"></script>
   <script src="nav-ui.js"></script>
   <script>
@@ -566,6 +505,118 @@
     function closeReportModal() {
       document.getElementById('report-modal').classList.remove('active');
     }
+
+    function badgeForStatus(st) {
+      if (st === 'Open') return 'bento-badge danger';
+      if (st === 'In Progress') return 'bento-badge info';
+      if (st === 'Acknowledged') return 'bento-badge warning';
+      if (st === 'Resolved') return 'bento-badge success';
+      return 'bento-badge';
+    }
+
+    function fmtSubmitted(ts) {
+      if (!ts) return '—';
+      var d = new Date(ts);
+      return d.toLocaleString();
+    }
+
+    function renderReportsTable(rows) {
+      var tb = document.getElementById('reports-api-tbody');
+      if (!tb) return;
+      tb.innerHTML = '';
+      var open = 0, prog = 0, resolved = 0;
+      rows.forEach(function (r) {
+        if (r.status === 'Open') open++;
+        else if (r.status === 'In Progress') prog++;
+        else if (r.status === 'Resolved') resolved++;
+      });
+      var mo = document.getElementById('metric-open');
+      var mp = document.getElementById('metric-progress');
+      var mr = document.getElementById('metric-resolved');
+      if (mo) mo.textContent = String(open);
+      if (mp) mp.textContent = String(prog);
+      if (mr) mr.textContent = String(resolved);
+      var ma = document.getElementById('metric-avg');
+      if (ma) ma.textContent = rows.length ? '—' : '—';
+
+      rows.forEach(function (r) {
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td><input type="checkbox" /></td>' +
+          '<td><strong>' + r.reference_number + '</strong></td>' +
+          '<td>' + r.issue_type + '</td>' +
+          '<td>' + (r.street_address || r.barangay_name || '') + '</td>' +
+          '<td>' + fmtSubmitted(r.submitted_at) + '</td>' +
+          '<td><span class="' + badgeForStatus(r.status) + '">' + r.status + '</span></td>' +
+          '<td><span style="color:#9E9E9E;">—</span></td>' +
+          '<td><div class="table-actions">' +
+          '<button type="button" class="table-action-btn" title="View" onclick="openReportModal()">👁️</button>' +
+          '</div></td>';
+        tb.appendChild(tr);
+      });
+      if (!rows.length) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td colspan="8" style="padding:16px;">No reports loaded. Log in with API + DB, or submit as resident.</td>';
+        tb.appendChild(tr);
+      }
+    }
+
+    async function loadReportsFromApi() {
+      if (!window.BAGOApi || !window.BAGOApi.getToken()) return;
+      try {
+        var rows = await window.BAGOApi.request('GET', '/api/reports');
+        renderReportsTable(rows || []);
+      } catch (e) {
+        renderReportsTable([]);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(function () {
+        if (window.BAGOApi && window.BAGOApi.getToken() && window.BAGOApi.hasBase()) {
+          window.BAGOApi.loadBarangaysIntoSelect(document.getElementById('barangay-select')).catch(function () {});
+          loadReportsFromApi();
+        }
+      }, 0);
+
+      var rf = document.getElementById('resident-report-form');
+      if (rf) {
+        rf.addEventListener('submit', async function (ev) {
+          ev.preventDefault();
+          if (!window.BAGOApi || !window.BAGOApi.getToken()) {
+            alert('Log in as a resident with API + database to submit reports to MySQL.');
+            return;
+          }
+          if (window.BAGOAccess && window.BAGOAccess.getStoredRole() !== 'user') {
+            alert('Only resident accounts can file new reports via this form.');
+            return;
+          }
+          var issue = document.getElementById('issue-type').value;
+          var desc = document.getElementById('description').value;
+          var street = document.getElementById('street').value;
+          var barangayId = document.getElementById('barangay-select').value;
+          if (!barangayId) {
+            alert('Select a barangay.');
+            return;
+          }
+          try {
+            await window.BAGOApi.request('POST', '/api/reports', {
+              issue_type: issue,
+              description: desc,
+              street_address: street,
+              barangay_id: Number(barangayId)
+            });
+            alert('Report submitted.');
+            rf.reset();
+            updateCount(document.getElementById('description'));
+            await loadReportsFromApi();
+            switchView('admin');
+          } catch (e) {
+            alert((e.body && e.body.error) || e.message || 'Submit failed');
+          }
+        });
+      }
+    });
   </script>
 
 </body>

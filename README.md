@@ -17,6 +17,7 @@
 - [XML, XSLT & Interactive Editors](#xml-xslt--interactive-editors)
 - [Can Do / Cannot Do Yet](#can-do--cannot-do-yet)
 - [Setup Walkthrough](#setup-walkthrough)
+- [API & database (Node + MySQL)](#api--database-node--mysql)
 - [Folder Structure (high level)](#folder-structure-high-level)
 - [Notes](#notes)
 - [Future / Missing Improvements](#future--missing-improvements)
@@ -169,8 +170,9 @@ If a page is not allowed for the current role, the app redirects to that role’
 - XSL transformation when opening XML files in a suitable browser.
 
 ### Cannot Do Yet
-- No server API or database connection from these HTML pages.
-- No real identity provider; PINs are not verified or hashed on a server.
+- **With API off:** same as before — no live DB (static / `localStorage` only).
+- **With API on:** JWT auth, hashed PINs, and MySQL-backed schedules/reports for wired pages; other screens remain mock until migrated.
+- No production identity provider (OAuth, etc.); prototype JWT + bcrypt only.
 - No automatic write-back of exported XML into the repository (manual file replace).
 - XSLT in the browser is **not** extended with interactive sorting; use the HTML tools instead.
 
@@ -189,10 +191,32 @@ For class review: **`sql/`** (schema and queries), **`xml/`** + **`xsl/`**, **`p
 
 ---
 
+## API & database (Node + MySQL)
+
+**Stack (Priority 1):** Node.js **20+**, **Express 5**, **mysql2**, **bcryptjs** (PIN hash), **jsonwebtoken** (JWT), **CORS**. Schema source of truth: **`sql/bago_ph_database.sql`** (includes `app_identity` for mobile + PIN auth).
+
+1. Install **MySQL / MariaDB** locally and create the database from the repo file (run **Section A + B** at minimum):
+   ```bash
+   mysql -u root -p < sql/bago_ph_database.sql
+   ```
+2. From the project root: `npm install` (once).
+3. Copy **`.env.example`** to **`.env`** and set `DATABASE_URL` or `DB_*` variables. Set a long **`JWT_SECRET`** for anything beyond local demos.
+4. Start the API: **`npm run dev`** (default **http://localhost:3000**). Check **`GET /health`**.
+5. Serve **`html/`** over HTTP (e.g. VS Code Live Server on port **5500**) so `fetch()` to the API is not blocked. The default API base in **`html/js/bago-env.js`** is `http://localhost:3000`; change **`window.__BAGO_API_BASE__`** there if your API port differs.
+
+**Endpoints (summary):** `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me`, `GET /api/barangays`, `GET|POST|PATCH /api/schedules` (LGU writes), `GET|POST|PATCH /api/reports` (resident creates; LGU/collector updates). All protected routes require **`Authorization: Bearer <token>`** except barangays list.
+
+**Demo seed logins (PIN `1234` for all):** residents `09181234501`–`09181234505`; collectors `09171111001`–`09171111005`; LGU `09230000001`–`09230000005`. With the API running, login/register use the server first; if the API is unreachable, the app falls back to the original **localStorage-only** demo.
+
+**Single migration file:** schema changes should be applied by editing **`sql/bago_ph_database.sql`** (and re-importing on fresh DBs) or by adding numbered scripts under **`sql/migrations/`** documented next to your deploy process—avoid hand-editing production DB without updating the repo.
+
+---
+
 ## Folder Structure (high level)
 | Path | Contents |
 |------|----------|
-| `html/` | Pages, `role-access.js`, `js/` (barangay list, XML helpers, editors) |
+| `server/` | Express API (`index.js`, routes, DB pool, JWT middleware) |
+| `html/` | Pages, `role-access.js`, `js/` (barangay list, XML helpers, editors, `bago-api.js`) |
 | `css/` | Stylesheets |
 | `xml/` | `schedules.xml`, `barangays.xml` |
 | `xsl/` | XSLT transforms |

@@ -167,6 +167,9 @@ function appendLogoutNav() {
   a.addEventListener("click", function (e) {
     e.preventDefault();
     localStorage.removeItem("bagoRole");
+    try {
+      localStorage.removeItem("bagoToken");
+    } catch (_err) {}
     window.location.href = "index.html";
   });
   li.appendChild(a);

@@ -120,12 +120,14 @@
   </main>
 
   <footer>
-    <p>🌿 BAGO.PH | Prototype — credentials stored locally in this browser only.</p>
+    <p>🌿 BAGO.PH | With API running, credentials are stored in MySQL + JWT; otherwise local demo only.</p>
   </footer>
 
+  <script src="js/bago-env.js"></script>
+  <script src="js/bago-api.js"></script>
   <script src="role-access.js"></script>
   <script>
-    document.getElementById("register-form").addEventListener("submit", function (e) {
+    document.getElementById("register-form").addEventListener("submit", async function (e) {
       e.preventDefault();
       var p1 = document.getElementById("pin").value;
       var p2 = document.getElementById("pin2").value;
@@ -134,8 +136,21 @@
         return;
       }
       var mobile = document.getElementById("mobile").value;
+      var fullName = document.getElementById("full-name").value;
       var active = document.querySelector(".role-btn.active");
       var role = window.BAGOAccess.roleFromSelectorButtonText(active ? active.textContent : "");
+      if (window.BAGOApi && window.BAGOApi.hasBase()) {
+        var api = await window.BAGOApi.tryRegister(fullName, mobile, p1, role);
+        if (api && api.ok) {
+          window.BAGOAccess.setCurrentRole(api.role);
+          window.location.href = window.BAGOAccess.getDashboardHome();
+          return;
+        }
+        if (api && !api.ok && api.message) {
+          alert(api.message);
+          return;
+        }
+      }
       window.BAGOAccess.saveRegisteredAccount(mobile, p1, role);
       window.BAGOAccess.setCurrentRole(role);
       window.location.href = window.BAGOAccess.getDashboardHome();
