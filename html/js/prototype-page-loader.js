@@ -1,5 +1,96 @@
 window.BAGOPrototype = (function () {
   var lastComponent = "";
+  var fallbackComponents = {};
+
+  function h(tag, props) {
+    var children = Array.prototype.slice.call(arguments, 2);
+    return React.createElement.apply(React, [tag, props || {}].concat(children));
+  }
+
+  function ensureFallbacks() {
+    if (fallbackComponents.LoginScreen) return;
+
+    function box(children) {
+      return h("div", {
+        style: {
+          width: "100%",
+          maxWidth: 560,
+          margin: "60px auto",
+          background: "white",
+          borderRadius: 12,
+          padding: 24,
+          boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+          fontFamily: "Poppins,sans-serif"
+        }
+      }, children);
+    }
+
+    fallbackComponents.LoginScreen = function LoginScreenFallback() {
+      return box(h("div", null,
+        h("h1", { style: { marginTop: 0 } }, "BAGO.PH Login"),
+        h("p", null, "Prototype asset not loaded. Fallback screen active."),
+        h("div", { style: { marginTop: 12 } },
+          h("label", null, "Mobile number"),
+          h("input", { type: "tel", placeholder: "09171234567", style: { width: "100%", height: 42, marginTop: 6, marginBottom: 10 } }),
+          h("label", null, "PIN"),
+          h("input", { type: "password", placeholder: "1234", style: { width: "100%", height: 42, marginTop: 6 } })
+        ),
+        h("button", { style: { marginTop: 14, width: "100%", height: 44 } }, "Log in"),
+        h("div", { style: { marginTop: 10 } }, "No account? ", h("a", { href: "#" }, "Register your household"))
+      ));
+    };
+
+    fallbackComponents.RegisterScreen = function RegisterFallback() {
+      return box(h("div", null,
+        h("h1", { style: { marginTop: 0 } }, "Register Household"),
+        h("input", { type: "text", placeholder: "Full name", style: { width: "100%", height: 42, marginBottom: 8 } }),
+        h("input", { type: "tel", placeholder: "09171234567", style: { width: "100%", height: 42, marginBottom: 8 } }),
+        h("input", { type: "password", placeholder: "Create PIN", style: { width: "100%", height: 42, marginBottom: 8 } }),
+        h("input", { type: "password", placeholder: "Confirm PIN", style: { width: "100%", height: 42, marginBottom: 8 } }),
+        h("button", { style: { marginTop: 6, width: "100%", height: 44 } }, "Continue to verification")
+      ));
+    };
+
+    fallbackComponents.OTPScreen = function OtpFallback() {
+      return box(h("div", null,
+        h("h1", { style: { marginTop: 0 } }, "Verify your number"),
+        h("p", null, "Enter OTP to continue"),
+        h("button", { style: { width: "100%", height: 44 } }, "Verify & finish registration"),
+        h("div", { style: { marginTop: 8 } }, h("a", { href: "#" }, "Go back"))
+      ));
+    };
+
+    function rolePage(title) {
+      return function RoleFallback() {
+        return box(h("div", null,
+          h("h1", { style: { marginTop: 0 } }, title),
+          h("p", null, "Prototype component missing in static build. Fallback screen active."),
+          h("p", null, "Auth/session flow still works.")
+        ));
+      };
+    }
+
+    fallbackComponents.ResidentHome = rolePage("Resident Dashboard");
+    fallbackComponents.ResidentSchedule = rolePage("Resident Schedule");
+    fallbackComponents.ResidentReport = rolePage("Resident Report");
+    fallbackComponents.ResidentWallet = rolePage("Resident Wallet");
+    fallbackComponents.ResidentMissions = rolePage("Resident Missions");
+    fallbackComponents.ResidentRewards = rolePage("Resident Rewards");
+    fallbackComponents.ResidentLeaderboard = rolePage("Resident Leaderboard");
+    fallbackComponents.ResidentMyReports = rolePage("Resident Reports");
+    fallbackComponents.ResidentReportDetail = rolePage("Resident Report Detail");
+    fallbackComponents.ResidentReportSubmitted = rolePage("Report Submitted");
+    fallbackComponents.CollectorHome = rolePage("Collector Dashboard");
+    fallbackComponents.CollectorRoute = rolePage("Collector Route");
+    fallbackComponents.CollectorScan = rolePage("Collector QR Scan");
+    fallbackComponents.CollectorReports = rolePage("Collector Reports");
+    fallbackComponents.CollectorReportUpdate = rolePage("Collector Report Update");
+    fallbackComponents.AdminLogin = rolePage("LGU Admin Login");
+    fallbackComponents.AdminDashboard = rolePage("LGU Admin Dashboard");
+    fallbackComponents.AdminSchedule = rolePage("LGU Admin Schedule");
+    fallbackComponents.AdminReports = rolePage("LGU Admin Reports");
+    fallbackComponents.AdminDENRReport = rolePage("DENR Report");
+  }
 
   function apiBase() {
     if (window.BAGOApi && typeof window.BAGOApi.base === "function") {
@@ -510,6 +601,7 @@ window.BAGOPrototype = (function () {
   enforceAccess();
 
   function render(componentName, tries) {
+    ensureFallbacks();
     var mount = document.getElementById("app");
     if (!mount) {
       return;
@@ -521,8 +613,11 @@ window.BAGOPrototype = (function () {
         setTimeout(function () { render(componentName, left - 1); }, 100);
         return;
       }
-      mount.innerHTML = "<p style='color:#b00020;font-family:sans-serif'>Prototype component not found: " + componentName + "</p>";
-      return;
+      component = fallbackComponents[componentName];
+      if (!component) {
+        mount.innerHTML = "<p style='color:#b00020;font-family:sans-serif'>Prototype component not found: " + componentName + "</p>";
+        return;
+      }
     }
     lastComponent = componentName;
     ReactDOM.createRoot(mount).render(React.createElement(component));
