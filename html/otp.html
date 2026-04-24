@@ -8,6 +8,15 @@
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
 <script>
   (function () {
+    function baseCandidates() {
+      var path = String(window.location.pathname || "/");
+      var out = ["./", "../", "/"];
+      if (path.indexOf("/html/") === 0 || path === "/html") out.unshift("/html/");
+      return out.filter(function (v, i, arr) { return arr.indexOf(v) === i; });
+    }
+    function withBases(relPath) {
+      return baseCandidates().map(function (base) { return base + relPath; });
+    }
     function loadScript(candidates, attrs) {
       return new Promise(function (resolve, reject) {
         var i = 0;
@@ -24,11 +33,11 @@
         next();
       });
     }
-    loadScript(["js/bago-env.js", "../js/bago-env.js"])
-      .then(function () { return loadScript(["js/bago-api.js", "../js/bago-api.js"]); })
-      .then(function () { return loadScript(["hf-prototype/components/shared.jsx", "../hf-prototype/components/shared.jsx"], { type: "text/babel" }); })
-      .then(function () { return loadScript(["hf-prototype/components/shared-screens.jsx", "../hf-prototype/components/shared-screens.jsx"], { type: "text/babel" }); })
-      .then(function () { return loadScript(["js/prototype-page-loader.js", "../js/prototype-page-loader.js"]); })
+    loadScript(withBases("js/bago-env.js"))
+      .then(function () { return loadScript(withBases("js/bago-api.js")); })
+      .then(function () { return loadScript(withBases("hf-prototype/components/shared.jsx"), { type: "text/babel" }); })
+      .then(function () { return loadScript(withBases("hf-prototype/components/shared-screens.jsx"), { type: "text/babel" }); })
+      .then(function () { return loadScript(withBases("js/prototype-page-loader.js")); })
       .then(function () { window.BAGOPrototype.render("OTPScreen"); })
       .catch(function (e) {
         var app = document.getElementById("app");
