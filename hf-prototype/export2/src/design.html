@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>BAGO.PH — Prototype</title>
+<link rel="stylesheet" href="styles/tokens.css"/>
+<template id="__bundler_thumbnail" data-bg-color="#2E7D32">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <rect width="400" height="400" fill="#2E7D32"/>
+  <circle cx="200" cy="160" r="80" fill="#A5D6A7" opacity="0.4"/>
+  <text x="200" y="185" font-family="sans-serif" font-size="90" text-anchor="middle">🌿</text>
+  <text x="200" y="280" font-family="sans-serif" font-size="42" font-weight="800" fill="white" text-anchor="middle">BAGO.PH</text>
+  <text x="200" y="310" font-family="sans-serif" font-size="14" fill="rgba(255,255,255,0.8)" text-anchor="middle">Civic Waste Platform</text>
+</svg>
+</template>
+<style>
+  html, body { margin: 0; padding: 0; background: #f0eee9; font-family: 'Poppins', sans-serif; }
+  * { box-sizing: border-box; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="components/shared.jsx"></script>
+<script type="text/babel" src="components/shared-screens.jsx"></script>
+<script type="text/babel" src="components/resident-screens.jsx"></script>
+<script type="text/babel" src="components/collector-screens.jsx"></script>
+<script type="text/babel" src="components/admin-screens.jsx"></script>
+
+<script type="text/babel">
+function App() {
+  return (
+    <DesignCanvas title="BAGO.PH" subtitle="Barangay App for Garbage Operations · 23 screens across 3 roles · RA 9003-compliant civic waste platform">
+      <DCSection id="shared" title="Shared · Authentication" subtitle="Three screens common to all roles">
+        <DCArtboard id="login" label="01 · Login" width={520} height={640}><LoginScreen/></DCArtboard>
+        <DCArtboard id="register" label="02 · Register" width={920} height={720}><RegisterScreen/></DCArtboard>
+        <DCArtboard id="otp" label="03 · OTP verification" width={460} height={540}><OTPScreen/></DCArtboard>
+      </DCSection>
+
+      <DCSection id="resident" title="Resident mobile app" subtitle="10 screens · Green #2E7D32 · 390 × 780 mobile frame">
+        <DCArtboard id="r-home" label="04 · Home dashboard" width={406} height={796}><ResidentHome/></DCArtboard>
+        <DCArtboard id="r-sched" label="05 · Collection schedule" width={406} height={796}><ResidentSchedule/></DCArtboard>
+        <DCArtboard id="r-report" label="06 · Submit report" width={406} height={796}><ResidentReport/></DCArtboard>
+        <DCArtboard id="r-submitted" label="07 · Report submitted" width={406} height={796}><ResidentReportSubmitted/></DCArtboard>
+        <DCArtboard id="r-myreports" label="08 · My reports" width={406} height={796}><ResidentMyReports/></DCArtboard>
+        <DCArtboard id="r-detail" label="09 · Report detail" width={406} height={796}><ResidentReportDetail/></DCArtboard>
+        <DCArtboard id="r-wallet" label="10 · Eco-points wallet" width={406} height={796}><ResidentWallet/></DCArtboard>
+        <DCArtboard id="r-missions" label="11 · Active missions" width={406} height={796}><ResidentMissions/></DCArtboard>
+        <DCArtboard id="r-rewards" label="12 · Rewards catalog" width={406} height={796}><ResidentRewards/></DCArtboard>
+        <DCArtboard id="r-leader" label="13 · Leaderboard" width={406} height={796}><ResidentLeaderboard/></DCArtboard>
+      </DCSection>
+
+      <DCSection id="collector" title="Collector mobile app" subtitle="5 screens · Blue #1565C0 · 390 × 780 mobile frame">
+        <DCArtboard id="c-home" label="14 · Collector home" width={406} height={796}><CollectorHome/></DCArtboard>
+        <DCArtboard id="c-route" label="15 · Route & stops" width={406} height={796}><CollectorRoute/></DCArtboard>
+        <DCArtboard id="c-scan" label="16 · QR scanner" width={406} height={796}><CollectorScan/></DCArtboard>
+        <DCArtboard id="c-reports" label="17 · Assigned reports" width={406} height={796}><CollectorReports/></DCArtboard>
+        <DCArtboard id="c-update" label="18 · Update report" width={406} height={796}><CollectorReportUpdate/></DCArtboard>
+      </DCSection>
+
+      <DCSection id="admin" title="LGU Admin desktop console" subtitle="5 screens · Navy #0D1B2A · 1280 × 860 desktop layout">
+        <DCArtboard id="a-login" label="19 · Admin login" width={900} height={600}><AdminLogin/></DCArtboard>
+        <DCArtboard id="a-dash" label="20 · Main dashboard" width={1280} height={860}><AdminDashboard/></DCArtboard>
+        <DCArtboard id="a-sched" label="21 · Schedule management" width={1280} height={860}><AdminSchedule/></DCArtboard>
+        <DCArtboard id="a-reports" label="22 · Report console" width={1280} height={860}><AdminReports/></DCArtboard>
+        <DCArtboard id="a-denr" label="23 · DENR report generator" width={1280} height={860}><AdminDENRReport/></DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('app')).render(<App/>);
+</script>
+</body>
+</html>

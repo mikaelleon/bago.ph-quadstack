@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>BAGO.PH — Print</title>
+<link rel="stylesheet" href="styles/tokens.css"/>
+<template id="__bundler_thumbnail">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <rect width="400" height="400" fill="#2E7D32"/>
+  <circle cx="200" cy="170" r="70" fill="#A5D6A7"/>
+  <text x="200" y="195" font-family="sans-serif" font-size="80" text-anchor="middle">🌿</text>
+  <text x="200" y="290" font-family="sans-serif" font-size="38" font-weight="800" fill="white" text-anchor="middle">BAGO.PH</text>
+  <text x="200" y="320" font-family="sans-serif" font-size="14" fill="rgba(255,255,255,0.8)" text-anchor="middle">Civic Waste Platform</text>
+</svg>
+</template>
+<style>
+  html, body { margin: 0; padding: 0; background: #ffffff; font-family: 'Poppins', sans-serif; }
+  * { box-sizing: border-box; }
+
+  .page {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 32px 24px 24px;
+    break-after: page;
+    break-inside: avoid;
+    page-break-after: always;
+    background: #ffffff;
+  }
+  .page:last-child { break-after: auto; page-break-after: auto; }
+
+  .page-header {
+    width: 100%;
+    max-width: 1280px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #E0E0E0;
+  }
+  .page-header .title { font-size: 14px; font-weight: 700; color: #212121; }
+  .page-header .section { font-size: 11px; color: #757575; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+  .page-header .num { font-size: 11px; color: #2E7D32; font-weight: 700; }
+
+  .page-artboard {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    width: 100%;
+  }
+
+  .mobile-wrap { display: flex; gap: 20px; align-items: flex-start; }
+  .mobile-wrap > div { flex-shrink: 0; }
+
+  .cover {
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(160deg, #1B5E20, #2E7D32, #388E3C);
+    color: white;
+    text-align: center;
+    padding: 60px;
+  }
+  .cover h1 { font-size: 72px; font-weight: 800; margin: 0; letter-spacing: -2px; }
+  .cover .tagline { font-size: 20px; font-weight: 600; margin-top: 12px; opacity: 0.95; }
+  .cover .meta { font-size: 14px; margin-top: 40px; opacity: 0.85; line-height: 1.8; }
+  .cover .pill { display: inline-block; background: rgba(255,255,255,0.2); padding: 8px 20px; border-radius: 30px; font-size: 13px; font-weight: 700; letter-spacing: 0.5px; margin-top: 24px; }
+
+  @page {
+    size: A4 landscape;
+    margin: 0.4cm;
+  }
+  @media print {
+    html, body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .page { min-height: auto; padding: 16px 12px; }
+    .cover { min-height: 19cm; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="components/shared.jsx"></script>
+<script type="text/babel" src="components/shared-screens.jsx"></script>
+<script type="text/babel" src="components/resident-screens.jsx"></script>
+<script type="text/babel" src="components/collector-screens.jsx"></script>
+<script type="text/babel" src="components/admin-screens.jsx"></script>
+
+<script type="text/babel">
+function Page({ section, title, num, total = 23, children, artboardStyle }) {
+  return (
+    <div className="page">
+      <div className="page-header">
+        <div className="title">🌿 BAGO.PH — {title}</div>
+        <div className="section">{section}</div>
+        <div className="num">{num} / {total}</div>
+      </div>
+      <div className="page-artboard" style={artboardStyle}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function Cover() {
+  return (
+    <div className="page cover">
+      <div style={{ fontSize: 80, marginBottom: 20 }}>🌿</div>
+      <h1>BAGO.PH</h1>
+      <div className="tagline">Barangay App for Garbage Operations</div>
+      <div className="pill">HIGH-FIDELITY PROTOTYPE · 23 SCREENS</div>
+      <div className="meta">
+        Resident mobile · Collector mobile · LGU Admin desktop<br/>
+        Lipa City, Batangas · April 2026<br/>
+        Compliant with RA 9003 & RA 10173
+      </div>
+    </div>
+  );
+}
+
+// Scale helper for mobile screens — shrink to fit landscape A4
+function MobileScale({ children }) {
+  return (
+    <div style={{ transform: 'scale(0.85)', transformOrigin: 'center center' }}>
+      {children}
+    </div>
+  );
+}
+
+function DesktopScale({ children, w = 1280, h = 860 }) {
+  // Scale desktop down to fit 1100px wide page
+  const scale = 1040 / w;
+  return (
+    <div style={{ width: w * scale, height: h * scale, position: 'relative' }}>
+      <div style={{ width: w, height: h, transform: `scale(${scale})`, transformOrigin: 'top left', position: 'absolute' }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <>
+      <Cover/>
+
+      {/* Shared */}
+      <Page section="Shared · Authentication" title="Login" num="01">
+        <LoginScreen/>
+      </Page>
+      <Page section="Shared · Authentication" title="Register" num="02">
+        <div style={{ transform: 'scale(0.78)', transformOrigin: 'center center' }}><RegisterScreen/></div>
+      </Page>
+      <Page section="Shared · Authentication" title="OTP verification" num="03">
+        <OTPScreen/>
+      </Page>
+
+      {/* Resident */}
+      <Page section="Resident mobile app" title="Home dashboard" num="04"><MobileScale><ResidentHome/></MobileScale></Page>
+      <Page section="Resident mobile app" title="Collection schedule" num="05"><MobileScale><ResidentSchedule/></MobileScale></Page>
+      <Page section="Resident mobile app" title="Submit report" num="06"><MobileScale><ResidentReport/></MobileScale></Page>
+      <Page section="Resident mobile app" title="Report submitted" num="07"><MobileScale><ResidentReportSubmitted/></MobileScale></Page>
+      <Page section="Resident mobile app" title="My reports" num="08"><MobileScale><ResidentMyReports/></MobileScale></Page>
+      <Page section="Resident mobile app" title="Report detail" num="09"><MobileScale><ResidentReportDetail/></MobileScale></Page>
+      <Page section="Resident mobile app" title="Eco-points wallet" num="10"><MobileScale><ResidentWallet/></MobileScale></Page>
+      <Page section="Resident mobile app" title="Active missions" num="11"><MobileScale><ResidentMissions/></MobileScale></Page>
+      <Page section="Resident mobile app" title="Rewards catalog" num="12"><MobileScale><ResidentRewards/></MobileScale></Page>
+      <Page section="Resident mobile app" title="Leaderboard" num="13"><MobileScale><ResidentLeaderboard/></MobileScale></Page>
+
+      {/* Collector */}
+      <Page section="Collector mobile app" title="Collector home" num="14"><MobileScale><CollectorHome/></MobileScale></Page>
+      <Page section="Collector mobile app" title="Route & stops" num="15"><MobileScale><CollectorRoute/></MobileScale></Page>
+      <Page section="Collector mobile app" title="QR scanner" num="16"><MobileScale><CollectorScan/></MobileScale></Page>
+      <Page section="Collector mobile app" title="Assigned reports" num="17"><MobileScale><CollectorReports/></MobileScale></Page>
+      <Page section="Collector mobile app" title="Update report" num="18"><MobileScale><CollectorReportUpdate/></MobileScale></Page>
+
+      {/* Admin */}
+      <Page section="LGU Admin desktop" title="Admin login" num="19">
+        <div style={{ transform: 'scale(0.9)', transformOrigin: 'center center' }}><AdminLogin/></div>
+      </Page>
+      <Page section="LGU Admin desktop" title="Main dashboard" num="20"><DesktopScale><AdminDashboard/></DesktopScale></Page>
+      <Page section="LGU Admin desktop" title="Schedule management" num="21"><DesktopScale><AdminSchedule/></DesktopScale></Page>
+      <Page section="LGU Admin desktop" title="Report console" num="22"><DesktopScale><AdminReports/></DesktopScale></Page>
+      <Page section="LGU Admin desktop" title="DENR report generator" num="23"><DesktopScale h={1100}><AdminDENRReport/></DesktopScale></Page>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('app')).render(<App/>);
+
+// (auto-print disabled for Canva export)
+</script>
+</body>
+</html>
