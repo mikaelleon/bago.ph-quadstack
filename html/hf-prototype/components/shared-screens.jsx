@@ -2,7 +2,7 @@
 
 function AuthShell({ leftTitle, leftBig, leftStat, leftStatSub, bullets, children }) {
   return (
-    <div style={{ width: 1280, minHeight: 820, background: "#fff", borderRadius: 10, overflow: "hidden", fontFamily: "Poppins", boxShadow: "0 10px 35px rgba(0,0,0,0.14)" }}>
+    <div style={{ width: "100vw", minHeight: "100vh", background: "#fff", overflow: "hidden", fontFamily: "Poppins" }}>
       <div style={{ height: 60, borderBottom: "1px solid #EAEAEA", display: "flex", alignItems: "center", padding: "0 26px", color: "#757575", fontSize: 14, gap: 30 }}>
         <Logo size={28} />
         <span>How it works</span>
@@ -73,6 +73,11 @@ function LoginScreen() {
   const [role, setRole] = React.useState("Resident");
   const [mobile, setMobile] = React.useState("917 543 8821");
   const [pin, setPin] = React.useState("1234");
+  const roleTheme = role === "Collector"
+    ? { accent: "#1565C0", deep: "#0D47A1", label: "collector crew · depot operators" }
+    : role === "LGU Admin"
+    ? { accent: "#0D1B2A", deep: "#0D1B2A", label: "city hall · barangay officers" }
+    : { accent: "#2E7D32", deep: "#1B5E20", label: "households · barangay residents" };
   return (
     <AuthShell leftTitle="Barangay app for garbage operations" leftBig={<>Clean barangays, built on data and community.</>} leftStat="142,850" leftStatSub={<>households already enrolled across 18 pilot barangays in Lipa City.</>} bullets={[{ icon: "📅", title: "Pickup schedules that never surprise you", sub: "SMS + push alerts evening before every collection." }, { icon: "🌿", title: "Earn eco-points for compliance", sub: "Redeem for GCash, mobile data, or groceries." }, { icon: "📸", title: "Report illegal dumping in 30 seconds", sub: "Photos, GPS, and status updates all in one place." }]}>
       <div style={{ maxWidth: 500, margin: "18px auto 0" }}>
@@ -83,16 +88,23 @@ function LoginScreen() {
           <RoleBtn icon="🚛" label="Collector" active={role === "Collector"} onClick={() => setRole("Collector")} />
           <RoleBtn icon="🏛️" label="LGU Admin" active={role === "LGU Admin"} onClick={() => setRole("LGU Admin")} />
         </div>
+        <div style={{ marginTop: 8, fontSize: 12, color: "#9E9E9E", textAlign: "center" }}>{roleTheme.label}</div>
         <div style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 16 }}>
           <AuthInput label="Mobile number" value={mobile} onChange={(e) => setMobile(e.target.value)} prefix="+63" />
           <AuthInput label="PIN" value={pin} onChange={(e) => setPin(e.target.value)} type="password" hint="4-digit PIN" />
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", marginTop: 12, fontSize: 13 }}>
           <label style={{ color: "#666", display: "flex", gap: 8, alignItems: "center" }}><input type="checkbox" defaultChecked style={{ accentColor: "#2E7D32" }} />Keep me signed in on this device</label>
-          <a style={{ color: "#2E7D32", fontWeight: 700, cursor: "pointer" }}>Forgot PIN?</a>
+          <a style={{ color: roleTheme.deep, fontWeight: 700, cursor: "pointer" }}>{role === "LGU Admin" ? "Forgot password?" : "Forgot PIN?"}</a>
         </div>
-        <button style={{ width: "100%", marginTop: 16, height: 52, border: "none", background: "#2E7D32", color: "white", fontSize: 18, fontWeight: 700, borderRadius: 8, fontFamily: "Poppins", cursor: "pointer" }}>Log in to {role}</button>
-        <div style={{ marginTop: 16, textAlign: "center", color: "#666", fontSize: 15 }}>New to BAGO.PH? <a style={{ color: "#2E7D32", fontWeight: 700, cursor: "pointer" }}>Register your household →</a></div>
+        <button style={{ width: "100%", marginTop: 16, height: 52, border: "none", background: roleTheme.accent, color: "white", fontSize: 18, fontWeight: 700, borderRadius: 8, fontFamily: "Poppins", cursor: "pointer" }}>{role === "LGU Admin" ? "Log in to LGU Admin" : "Log in to " + role}</button>
+        {role === "LGU Admin" && (
+          <div style={{ marginTop: 10, textAlign: "center", color: "#999", fontSize: 12 }}>OR</div>
+        )}
+        {role === "LGU Admin" && (
+          <button style={{ width: "100%", marginTop: 8, height: 44, border: "1px solid #D9D9D9", background: "white", color: "#4B5563", fontSize: 15, fontWeight: 600, borderRadius: 8, fontFamily: "Poppins", cursor: "pointer" }}>Continue with GovPH SSO</button>
+        )}
+        <div style={{ marginTop: 16, textAlign: "center", color: "#666", fontSize: 15 }}>New to BAGO.PH? <a style={{ color: roleTheme.deep, fontWeight: 700, cursor: "pointer" }}>Register your household →</a></div>
       </div>
     </AuthShell>
   );
