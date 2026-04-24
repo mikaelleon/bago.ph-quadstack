@@ -6,6 +6,22 @@ const RW_GREEN_DEEP = '#1B5E20';
 const RW_GREEN_TINT = '#E8F5E9';
 const RW_BLUE = '#1565C0';
 
+const RESIDENT_WEB_ROUTES = {
+  home: 'resident-web-home.html',
+  schedule: 'resident-web-schedule.html',
+  report: 'resident-web-report.html',
+  myreports: 'resident-web-myreports.html',
+  wallet: 'resident-web-wallet.html',
+  missions: 'resident-web-missions.html',
+  rewards: 'resident-web-rewards.html',
+  leaderboard: 'resident-web-leaderboard.html',
+  profile: 'resident-web-profile.html',
+};
+
+function navTo(path) {
+  window.location.href = './' + String(path || 'index.html').replace(/^\.\//, '');
+}
+
 /* ──────────────────────────────────────────────────────────────────
    Shell: sidebar + topbar — consistent across all resident web screens
    ────────────────────────────────────────────────────────────────── */
@@ -22,14 +38,14 @@ function ResidentWebShell({ active, title, subtitle, actions, children, pageScro
     ['profile',    '👤',  'Profile'],
   ];
   return (
-    <div style={{ width: 1280, height: 820, display: 'flex', fontFamily: 'Poppins', background: '#F5F5F5', color: '#212121' }}>
+    <div style={{ width: '100vw', minHeight: '100vh', height: '100vh', display: 'flex', fontFamily: 'Poppins', background: '#F5F5F5', color: '#212121', overflow: 'hidden' }}>
       {/* Sidebar */}
       <aside style={{
         width: 240, background: 'white', borderRight: '1px solid #E0E0E0',
         display: 'flex', flexDirection: 'column', flexShrink: 0,
       }}>
         <div style={{ padding: '20px 20px 16px', borderBottom: '1px solid #F0F0F0' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: RW_GREEN, fontSize: 20, fontWeight: 800, letterSpacing: -0.5 }}>
+          <div onClick={() => navTo('dashboard-resident.html')} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: RW_GREEN, fontSize: 20, fontWeight: 800, letterSpacing: -0.5, cursor: 'pointer' }}>
             <span style={{ fontSize: 22 }}>🌿</span>
             <span>BAGO.<span style={{ opacity: 0.85 }}>PH</span></span>
           </div>
@@ -49,7 +65,7 @@ function ResidentWebShell({ active, title, subtitle, actions, children, pageScro
           {nav.map(([id, icon, label]) => {
             const on = id === active;
             return (
-              <div key={id} style={{
+              <div key={id} onClick={() => navTo(RESIDENT_WEB_ROUTES[id])} style={{
                 display: 'flex', alignItems: 'center', gap: 12, padding: '10px 12px',
                 borderRadius: 6, marginBottom: 2, cursor: 'pointer',
                 background: on ? RW_GREEN_TINT : 'transparent',
@@ -84,7 +100,7 @@ function ResidentWebShell({ active, title, subtitle, actions, children, pageScro
             <span>·</span>
             <span style={{ cursor: 'pointer' }}>Settings</span>
             <span>·</span>
-            <span style={{ cursor: 'pointer' }}>Log out</span>
+            <span style={{ cursor: 'pointer' }} onClick={() => { localStorage.removeItem('bagoRole'); localStorage.removeItem('bagoToken'); navTo('index.html'); }}>Log out</span>
           </div>
         </div>
       </aside>

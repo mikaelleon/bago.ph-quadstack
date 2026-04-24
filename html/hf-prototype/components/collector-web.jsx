@@ -5,6 +5,19 @@ const CW_BLUE_DEEP = '#0D47A1';
 const CW_BLUE_TINT = '#E3F2FD';
 const CW_GREEN = '#2E7D32';
 
+const COLLECTOR_WEB_ROUTES = {
+  route: 'collector-web-route.html',
+  scan: 'collector-web-scan.html',
+  reports: 'collector-web-reports.html',
+  schedule: 'collector-web-schedule.html',
+  analytics: 'collector-web-analytics.html',
+  profile: 'collector-web-profile.html',
+};
+
+function navTo(path) {
+  window.location.href = './' + String(path || 'index.html').replace(/^\.\//, '');
+}
+
 function CollectorWebShell({ active, title, subtitle, actions, children, pageScrollable = true }) {
   const nav = [
     ['route',    '🚛', 'Today\'s route'],
@@ -15,10 +28,10 @@ function CollectorWebShell({ active, title, subtitle, actions, children, pageScr
     ['profile',  '👤', 'Profile'],
   ];
   return (
-    <div style={{ width: 1280, height: 820, display: 'flex', fontFamily: 'Poppins', background: '#F5F5F5', color: '#212121' }}>
+    <div style={{ width: '100vw', minHeight: '100vh', height: '100vh', display: 'flex', fontFamily: 'Poppins', background: '#F5F5F5', color: '#212121', overflow: 'hidden' }}>
       <aside style={{ width: 240, background: '#0D1B2A', color: 'white', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
         <div style={{ padding: '20px 20px 16px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 20, fontWeight: 800, letterSpacing: -0.5 }}>
+          <div onClick={() => navTo('dashboard-collector.html')} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 20, fontWeight: 800, letterSpacing: -0.5, cursor: 'pointer' }}>
             <span style={{ fontSize: 22 }}>🌿</span>
             <span>BAGO.<span style={{ opacity: 0.85 }}>PH</span></span>
           </div>
@@ -45,7 +58,7 @@ function CollectorWebShell({ active, title, subtitle, actions, children, pageScr
           {nav.map(([id, icon, label]) => {
             const on = id === active;
             return (
-              <div key={id} style={{
+              <div key={id} onClick={() => navTo(COLLECTOR_WEB_ROUTES[id])} style={{
                 display: 'flex', alignItems: 'center', gap: 12, padding: '10px 12px',
                 borderRadius: 6, marginBottom: 2, cursor: 'pointer',
                 background: on ? 'rgba(33,150,243,0.2)' : 'transparent',
@@ -64,7 +77,7 @@ function CollectorWebShell({ active, title, subtitle, actions, children, pageScr
         <div style={{ padding: 16, borderTop: '1px solid rgba(255,255,255,0.08)', fontSize: 11, color: 'rgba(255,255,255,0.55)', display: 'flex', gap: 10 }}>
           <span style={{ cursor: 'pointer' }}>Help</span><span>·</span>
           <span style={{ cursor: 'pointer' }}>Dispatch</span><span>·</span>
-          <span style={{ cursor: 'pointer' }}>Log out</span>
+          <span style={{ cursor: 'pointer' }} onClick={() => { localStorage.removeItem('bagoRole'); localStorage.removeItem('bagoToken'); navTo('index.html'); }}>Log out</span>
         </div>
       </aside>
 
