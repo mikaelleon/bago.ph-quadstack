@@ -227,14 +227,25 @@ window.BAGOPrototype = (function () {
 
   function dashboardFor(role) {
     var r = normalizeRole(role);
-    if (r === "collector") return "dashboard-collector.html";
-    if (r === "lgu_officer") return "dashboard-lgu.html";
-    return "dashboard-resident.html";
+    if (r === "collector") return "dashboard-collector";
+    if (r === "lgu_officer") return "dashboard-lgu";
+    return "dashboard-resident";
+  }
+
+  function pagePath(page) {
+    var p = String(page || "index").replace(/^\.\//, "");
+    if (!/\.html$/i.test(p)) p += ".html";
+    return "./" + p;
+  }
+
+  function go(page) {
+    window.location.href = pagePath(page);
   }
 
   function currentPage() {
-    var p = window.location.pathname.split("/").pop();
-    return p || "index.html";
+    var p = window.location.pathname.split("/").pop() || "index";
+    if (!/\.html$/i.test(p)) p += ".html";
+    return p.toLowerCase();
   }
 
   function enforceAccess() {
@@ -243,7 +254,7 @@ window.BAGOPrototype = (function () {
     if (authPages[page]) return;
     var role = normalizeRole(localStorage.getItem("bagoRole"));
     if (!localStorage.getItem("bagoRole")) {
-      window.location.href = "index.html";
+      go("index");
       return;
     }
     var allow = {
@@ -263,7 +274,7 @@ window.BAGOPrototype = (function () {
       ]
     };
     if ((allow[role] || []).indexOf(page) === -1) {
-      window.location.href = dashboardFor(role);
+      go(dashboardFor(role));
     }
   }
 
@@ -320,14 +331,14 @@ window.BAGOPrototype = (function () {
         }
         if (out.ok) {
           setRole(out.role);
-          window.location.href = "otp.html";
+          go("otp");
           return;
         }
         alert(out.message || "Login failed");
         var fallback = tryLocalLogin(mobile, pin);
         if (fallback.ok) {
           setRole(fallback.role);
-          window.location.href = dashboardFor(fallback.role);
+          go(dashboardFor(fallback.role));
           return;
         }
         alert("API failed. Local fallback failed: " + (fallback.message || "login failed"));
@@ -336,7 +347,7 @@ window.BAGOPrototype = (function () {
         var fallback2 = tryLocalLogin(mobile, pin);
         if (fallback2.ok) {
           setRole(fallback2.role);
-          window.location.href = dashboardFor(fallback2.role);
+          go(dashboardFor(fallback2.role));
           return;
         }
         alert("API failed. Local fallback failed: " + (fallback2.message || e.message || "Login failed"));
@@ -346,7 +357,7 @@ window.BAGOPrototype = (function () {
     var fallback3 = tryLocalLogin(mobile, pin);
     if (fallback3.ok) {
       setRole(fallback3.role);
-      window.location.href = dashboardFor(fallback3.role);
+      go(dashboardFor(fallback3.role));
       return;
     }
     alert("API unavailable. Local fallback failed: " + (fallback3.message || "login failed"));
@@ -395,28 +406,28 @@ window.BAGOPrototype = (function () {
         }
         if (out.ok) {
           setRole(out.role);
-          window.location.href = dashboardFor(out.role);
+          go(dashboardFor(out.role));
           return;
         }
         saveLocalAccount(mobile, pin, role);
         setRole(role);
-        window.location.href = "otp.html";
+        go("otp");
       } catch (e) {
         saveLocalAccount(mobile, pin, role);
         setRole(role);
-        window.location.href = "otp.html";
+        go("otp");
       }
       return;
     }
     saveLocalAccount(mobile, pin, role);
     setRole(role);
-    window.location.href = "otp.html";
+    go("otp");
   }
 
   async function onSubmitReport() {
     if (!token()) {
       alert("Login first before submitting report.");
-      window.location.href = "index.html";
+      go("index");
       return;
     }
 
@@ -442,7 +453,7 @@ window.BAGOPrototype = (function () {
         barangay_id: b.barangay_id
       });
       alert("Report submitted: " + created.reference_number);
-      window.location.href = "dashboard-resident.html";
+      go("dashboard-resident");
     } catch (e) {
       alert(e.message || "Failed to submit report");
     }
@@ -531,15 +542,15 @@ window.BAGOPrototype = (function () {
       }
       if (lastComponent === "OTPScreen" && txt.indexOf("verify and continue") !== -1) {
         event.preventDefault();
-        window.location.href = dashboardFor(localStorage.getItem("bagoRole") || "user");
+        go(dashboardFor(localStorage.getItem("bagoRole") || "user"));
       }
       if (lastComponent === "OTPScreen" && txt.indexOf("verify & finish registration") !== -1) {
         event.preventDefault();
-        window.location.href = dashboardFor(localStorage.getItem("bagoRole") || "user");
+        go(dashboardFor(localStorage.getItem("bagoRole") || "user"));
       }
       if (lastComponent === "OTPScreen" && txt.indexOf("go back") !== -1) {
         event.preventDefault();
-        window.location.href = "register.html";
+        go("register");
       }
       if (lastComponent === "ResidentReport" && txt.indexOf("submit report") !== -1) {
         event.preventDefault();
@@ -549,7 +560,7 @@ window.BAGOPrototype = (function () {
         event.preventDefault();
         var adminRole = "lgu_officer";
         setRole(adminRole);
-        window.location.href = dashboardFor(adminRole);
+        go(dashboardFor(adminRole));
       }
       if (lastComponent === "CollectorReportUpdate" && txt.indexOf("update report status") !== -1) {
         event.preventDefault();
@@ -567,7 +578,7 @@ window.BAGOPrototype = (function () {
         event.preventDefault();
         localStorage.removeItem("bagoRole");
         localStorage.removeItem("bagoToken");
-        window.location.href = "index.html";
+        go("index");
       }
     });
 
@@ -579,32 +590,32 @@ window.BAGOPrototype = (function () {
       var textLc = text.toLowerCase();
 
       if (lastComponent && lastComponent.indexOf("Admin") === 0 && text === "Dashboard") {
-        window.location.href = "dashboard-lgu.html";
+        go("dashboard-lgu");
         return;
       }
       if (lastComponent && lastComponent.indexOf("Admin") === 0 && text === "Schedule") {
-        window.location.href = "admin-schedule.html";
+        go("admin-schedule");
         return;
       }
       if (lastComponent && lastComponent.indexOf("Admin") === 0 && text === "Reports") {
-        window.location.href = "admin-reports.html";
+        go("admin-reports");
         return;
       }
       if (lastComponent && lastComponent.indexOf("Admin") === 0 && text === "DENR Report") {
-        window.location.href = "denr-reports.html";
+        go("denr-reports");
         return;
       }
       if (lastComponent && lastComponent.indexOf("Admin") === 0 && text === "Log in to console") {
-        window.location.href = "dashboard-lgu.html";
+        go("dashboard-lgu");
       }
       if (textLc.indexOf("register now") !== -1 || textLc.indexOf("create an account") !== -1) {
         event.preventDefault();
-        window.location.href = "register.html";
+        go("register");
         return;
       }
       if (textLc.indexOf("register your household") !== -1) {
         event.preventDefault();
-        window.location.href = "register.html";
+        go("register");
         return;
       }
       if (textLc.indexOf("forgot pin") !== -1) {
