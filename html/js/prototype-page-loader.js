@@ -250,7 +250,14 @@ window.BAGOPrototype = (function () {
 
   function enforceAccess() {
     var page = currentPage();
-    var authPages = { "index.html": true, "register.html": true };
+    var authPages = {
+      "index.html": true,
+      "register.html": true,
+      "otp.html": true,
+      "auth-web-login.html": true,
+      "auth-web-register.html": true,
+      "auth-web-otp.html": true
+    };
     if (authPages[page]) return;
     var role = normalizeRole(localStorage.getItem("bagoRole"));
     if (!localStorage.getItem("bagoRole")) {
@@ -261,16 +268,22 @@ window.BAGOPrototype = (function () {
       user: [
         "dashboard-resident.html", "schedule.html", "report.html", "eco-points.html", "announcements.html",
         "resident-reports.html", "resident-report-detail.html", "resident-report-submitted.html",
-        "resident-missions.html", "resident-rewards.html", "resident-leaderboard.html", "otp.html"
+        "resident-missions.html", "resident-rewards.html", "resident-leaderboard.html",
+        "resident-web-home.html", "resident-web-schedule.html", "resident-web-report.html",
+        "resident-web-myreports.html", "resident-web-wallet.html", "resident-web-missions.html",
+        "resident-web-rewards.html", "resident-web-leaderboard.html", "resident-web-profile.html",
+        "resident-web-qrcard.html"
       ],
       collector: [
         "dashboard-collector.html", "collectors.html", "qr-audit.html", "announcements.html", "schedule.html", "report.html",
-        "collector-route.html", "collector-reports.html", "collector-report-update.html", "otp.html"
+        "collector-route.html", "collector-reports.html", "collector-report-update.html", "collector-scan.html",
+        "collector-web-route.html", "collector-web-scan.html", "collector-web-reports.html",
+        "collector-web-schedule.html", "collector-web-analytics.html", "collector-web-profile.html"
       ],
       lgu_officer: [
         "dashboard-lgu.html", "dashboard.html", "compliance.html", "users.html", "denr-reports.html",
         "xml-schedules-editor.html", "xml-barangays-editor.html", "announcements.html", "collectors.html",
-        "eco-points.html", "qr-audit.html", "admin-login.html", "admin-schedule.html", "admin-reports.html", "otp.html"
+        "eco-points.html", "qr-audit.html", "admin-login.html", "admin-schedule.html", "admin-reports.html"
       ]
     };
     if ((allow[role] || []).indexOf(page) === -1) {
