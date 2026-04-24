@@ -205,7 +205,7 @@ function LoginScreen() {
         </div>
         <div style={{ marginTop: 8, fontSize: 12, color: "#9E9E9E", textAlign: "center" }}>{roleTheme.label}</div>
         <div style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 16 }}>
-          <AuthInput label="Mobile number" value={mobile} onChange={(e) => onMobileChange(e.target.value)} prefix="+63" placeholder="9175438821" />
+          <AuthInput label="Mobile number" value={mobile} onChange={(e) => onMobileChange(e.target.value)} type="tel" prefix="+63" placeholder="9175438821" />
           <AuthInput label="PIN" value={pin} onChange={(e) => onPinChange(e.target.value)} type="password" hint="4-digit PIN" placeholder="Enter 4-digit PIN" />
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", marginTop: 12, fontSize: 13 }}>
@@ -270,7 +270,7 @@ function RegisterScreen() {
           <UL style={{ color: "#1B5E20" }}>Personal details</UL>
           <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <AuthInput label="Full name" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Enter full name" />
-            <AuthInput label="Mobile number" value={mobile} onChange={(e) => onMobileChange(e.target.value)} prefix="+63" placeholder="9175438821" />
+            <AuthInput label="Mobile number" value={mobile} onChange={(e) => onMobileChange(e.target.value)} type="tel" prefix="+63" placeholder="9175438821" />
           </div>
           <UL style={{ color: "#1B5E20", marginTop: 14 }}>Address</UL>
           <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
@@ -291,18 +291,79 @@ function RegisterScreen() {
 }
 
 function OTPScreen() {
-  const digits = ["8", "3", "1", "", "", ""];
+  const [digits, setDigits] = React.useState(["", "", "", "", "", ""]);
+  const [mobileDisplay, setMobileDisplay] = React.useState("+63 9•• ••• ••••");
+  const [debugOtp, setDebugOtp] = React.useState("");
+
+  React.useEffect(() => {
+    var pendingMobile = String(localStorage.getItem("bagoPendingMobile") || "").replace(/\D/g, "");
+    var pendingOtp = String(localStorage.getItem("bagoPendingOtp") || "");
+    if (pendingMobile.length >= 11 && pendingMobile.indexOf("0") === 0) {
+      var masked = "+63 " + pendingMobile.slice(1, 4) + " ••• " + pendingMobile.slice(-4);
+      setMobileDisplay(masked);
+    }
+    if ((location.hostname === "localhost" || location.hostname === "127.0.0.1") && /^\d{6}$/.test(pendingOtp)) {
+      setDebugOtp(pendingOtp);
+    }
+  }, []);
+
+  function onDigitChange(index, value) {
+    var next = String(value || "").replace(/\D/g, "").slice(0, 1);
+    var copy = digits.slice();
+    copy[index] = next;
+    setDigits(copy);
+    if (next && index < 5) {
+      var nxt = document.querySelector('[data-otp-digit="' + (index + 1) + '"]');
+      if (nxt) nxt.focus();
+    }
+  }
+
+  function onDigitKeyDown(index, event) {
+    if (event.key === "Backspace" && !digits[index] && index > 0) {
+      var prev = document.querySelector('[data-otp-digit="' + (index - 1) + '"]');
+      if (prev) prev.focus();
+    }
+  }
+
   return (
     <AuthShell leftTitle="Barangay app for garbage operations" leftBig={<>One more step — verify it's really you.</>} leftStat="99.4%" leftStatSub={<>of SMS codes deliver within 10 seconds via Globe + Smart integration.</>} bullets={[{ icon: "📶", title: "Works on any network", sub: "Globe · Smart · Sun · DITO · PLDT mobile." }, { icon: "⏱️", title: "Auto-expires in 5 minutes", sub: "Codes single-use and hashed at rest." }, { icon: "🛟", title: "Stuck? Call your barangay desk", sub: "In-office registration available as fallback." }]}>
       <div style={{ maxWidth: 480, margin: "40px auto 0", textAlign: "center" }}>
         <div style={{ width: 68, height: 68, borderRadius: "50%", background: "#E8F5E9", margin: "0 auto", display: "grid", placeItems: "center", fontSize: 30 }}>📱</div>
         <div style={{ marginTop: 14, fontSize: 44, fontWeight: 800, color: "#1f1f1f" }}>Verify your number</div>
         <div style={{ marginTop: 8, color: "#666", fontSize: 14 }}>We sent a 6-digit code to</div>
-        <div style={{ marginTop: 4, color: "#1f1f1f", fontWeight: 700, fontSize: 22 }}>+63 917 ••• 8821</div>
+        <div style={{ marginTop: 4, color: "#1f1f1f", fontWeight: 700, fontSize: 22 }}>{mobileDisplay}</div>
         <div style={{ marginTop: 18, display: "flex", justifyContent: "center", gap: 10 }}>
-          {digits.map((d, i) => <div key={i} style={{ width: 52, height: 62, borderRadius: 10, border: "1.5px solid " + (d ? "#7CBF84" : "#D7D7D7"), background: d ? "#F0FAF2" : "white", display: "grid", placeItems: "center", fontSize: 31, fontWeight: 700, color: "#1B5E20" }}>{d || (i === 3 ? "|" : "")}</div>)}
+          {digits.map((d, i) => (
+            <input
+              key={i}
+              data-otp-digit={i}
+              value={d}
+              onChange={(e) => onDigitChange(i, e.target.value)}
+              onKeyDown={(e) => onDigitKeyDown(i, e)}
+              inputMode="numeric"
+              maxLength={1}
+              style={{
+                width: 52,
+                height: 62,
+                borderRadius: 10,
+                border: "1.5px solid " + (d ? "#7CBF84" : "#D7D7D7"),
+                background: d ? "#F0FAF2" : "white",
+                fontSize: 31,
+                fontWeight: 700,
+                color: "#1B5E20",
+                textAlign: "center",
+                outline: "none",
+                fontFamily: "Poppins"
+              }}
+            />
+          ))}
         </div>
         <button style={{ width: "100%", marginTop: 18, height: 52, border: "none", background: "#2E7D32", color: "white", fontSize: 18, fontWeight: 700, borderRadius: 8, fontFamily: "Poppins", cursor: "pointer" }}>Verify & finish registration</button>
+        {debugOtp && (
+          <div style={{ marginTop: 10, fontSize: 12, color: "#1B5E20", background: "#E8F5E9", border: "1px dashed #66BB6A", borderRadius: 8, padding: "8px 10px" }}>
+            Localhost test OTP: <strong>{debugOtp}</strong>
+          </div>
+        )}
         <div style={{ marginTop: 12, fontSize: 13, color: "#666" }}>Wrong number? <a style={{ color: "#2E7D32", fontWeight: 700, cursor: "pointer" }}>Go back</a></div>
       </div>
     </AuthShell>

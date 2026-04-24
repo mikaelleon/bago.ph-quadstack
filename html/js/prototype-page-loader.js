@@ -168,8 +168,21 @@ window.BAGOPrototype = (function () {
   function normalizeMobile(raw) {
     var d = String(raw || "").replace(/\D/g, "");
     if (d.indexOf("63") === 0 && d.length >= 12) d = "0" + d.slice(2);
+    if (d.length === 10 && d.indexOf("9") === 0) d = "0" + d;
     if (d.length > 11) d = d.slice(-11);
     return d;
+  }
+
+  function issueOtpForLocal(mobile) {
+    var m = normalizeMobile(mobile);
+    var otp = String(Math.floor(100000 + Math.random() * 900000));
+    localStorage.setItem("bagoPendingMobile", m);
+    localStorage.setItem("bagoPendingOtp", otp);
+    if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+      console.log("[BAGO.PH][OTP] mobile=" + m + " otp=" + otp);
+      console.warn("[BAGO.PH][OTP] Use this code for localhost OTP verification: " + otp);
+    }
+    return otp;
   }
 
   function localAccounts() {
@@ -344,6 +357,7 @@ window.BAGOPrototype = (function () {
         }
         if (out.ok) {
           setRole(out.role);
+          issueOtpForLocal(mobile);
           go("otp");
           return;
         }
@@ -351,6 +365,7 @@ window.BAGOPrototype = (function () {
         var fallback = tryLocalLogin(mobile, pin);
         if (fallback.ok) {
           setRole(fallback.role);
+          issueOtpForLocal(mobile);
           go(dashboardFor(fallback.role));
           return;
         }
@@ -360,6 +375,7 @@ window.BAGOPrototype = (function () {
         var fallback2 = tryLocalLogin(mobile, pin);
         if (fallback2.ok) {
           setRole(fallback2.role);
+          issueOtpForLocal(mobile);
           go(dashboardFor(fallback2.role));
           return;
         }
@@ -370,6 +386,7 @@ window.BAGOPrototype = (function () {
     var fallback3 = tryLocalLogin(mobile, pin);
     if (fallback3.ok) {
       setRole(fallback3.role);
+      issueOtpForLocal(mobile);
       go(dashboardFor(fallback3.role));
       return;
     }
@@ -433,22 +450,27 @@ window.BAGOPrototype = (function () {
           out = { ok: true, role: data.role };
         }
         if (out.ok) {
+          saveLocalAccount(mobile, pin, out.role || role);
           setRole(out.role);
-          go(dashboardFor(out.role));
+          issueOtpForLocal(mobile);
+          go("otp");
           return;
         }
         saveLocalAccount(mobile, pin, role);
         setRole(role);
+        issueOtpForLocal(mobile);
         go("otp");
       } catch (e) {
         saveLocalAccount(mobile, pin, role);
         setRole(role);
+        issueOtpForLocal(mobile);
         go("otp");
       }
       return;
     }
     saveLocalAccount(mobile, pin, role);
     setRole(role);
+    issueOtpForLocal(mobile);
     go("otp");
   }
 
@@ -570,10 +592,28 @@ window.BAGOPrototype = (function () {
       }
       if (lastComponent === "OTPScreen" && txt.indexOf("verify and continue") !== -1) {
         event.preventDefault();
+        var expected1 = String(localStorage.getItem("bagoPendingOtp") || "");
+        var got1 = Array.prototype.slice.call(document.querySelectorAll("[data-otp-digit]"))
+          .map(function (el) { return String(el.value || "").replace(/\D/g, "").slice(0, 1); })
+          .join("");
+        if (expected1 && got1 !== expected1) {
+          alert("Invalid OTP. Check browser console for local test OTP.");
+          return;
+        }
+        localStorage.removeItem("bagoPendingOtp");
         go(dashboardFor(localStorage.getItem("bagoRole") || "user"));
       }
       if (lastComponent === "OTPScreen" && txt.indexOf("verify & finish registration") !== -1) {
         event.preventDefault();
+        var expected2 = String(localStorage.getItem("bagoPendingOtp") || "");
+        var got2 = Array.prototype.slice.call(document.querySelectorAll("[data-otp-digit]"))
+          .map(function (el) { return String(el.value || "").replace(/\D/g, "").slice(0, 1); })
+          .join("");
+        if (expected2 && got2 !== expected2) {
+          alert("Invalid OTP. Check browser console for local test OTP.");
+          return;
+        }
+        localStorage.removeItem("bagoPendingOtp");
         go(dashboardFor(localStorage.getItem("bagoRole") || "user"));
       }
       if (lastComponent === "OTPScreen" && txt.indexOf("go back") !== -1) {
