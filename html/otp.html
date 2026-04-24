@@ -17,6 +17,23 @@
     function withBases(relPath) {
       return baseCandidates().map(function (base) { return base + relPath; });
     }
+    function ensureCoreLibs() {
+      return new Promise(function (resolve, reject) {
+        var attempts = 0;
+        (function check() {
+          if (window.React && window.ReactDOM && window.Babel) {
+            resolve();
+            return;
+          }
+          attempts += 1;
+          if (attempts > 60) {
+            reject(new Error("Core CDN scripts unavailable (React/ReactDOM/Babel). Check network or adblock/shields."));
+            return;
+          }
+          setTimeout(check, 100);
+        })();
+      });
+    }
     function loadScript(candidates, attrs) {
       return new Promise(function (resolve, reject) {
         var i = 0;
@@ -33,7 +50,8 @@
         next();
       });
     }
-    loadScript(withBases("js/bago-env.js"))
+    ensureCoreLibs()
+      .then(function () { return loadScript(withBases("js/bago-env.js")); })
       .then(function () { return loadScript(withBases("js/bago-api.js")); })
       .then(function () { return loadScript(withBases("hf-prototype/components/shared.jsx"), { type: "text/babel" }); })
       .then(function () { return loadScript(withBases("hf-prototype/components/shared-screens.jsx"), { type: "text/babel" }); })

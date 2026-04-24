@@ -20,8 +20,8 @@
   "scripts": {
     "dev": "node server/index.js",
     "dev:api": "node server/index.js",
-    "dev:web": "serve html -l 5500",
-    "dev:all": "concurrently \"pnpm run dev:api\" \"pnpm run dev:web\"",
+    "dev:web": "serve html --listen 5500 --no-port-switching",
+    "dev:all": "concurrently --kill-others-on-fail \"npm run dev:api\" \"npm run dev:web\"",
     "start": "node server/index.js",
     "test": "node -e \"console.log('No tests configured.'); process.exit(0)\""
   },
