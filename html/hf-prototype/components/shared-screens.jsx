@@ -61,13 +61,13 @@ function RoleBtn({ active, icon, label, onClick, activeColor = "#2E7D32" }) {
   );
 }
 
-function AuthInput({ label, value, onChange, type = "text", prefix, hint }) {
+function AuthInput({ label, value, onChange, type = "text", prefix, hint, placeholder }) {
   return (
     <div>
       <div style={{ fontSize: 13, fontWeight: 700, color: "#333", marginBottom: 8 }}>{label}</div>
       <div style={{ display: "flex", alignItems: "center", border: "1px solid #D0D0D0", borderRadius: 8, background: "white", height: 50 }}>
         {prefix && <div style={{ width: 52, textAlign: "center", borderRight: "1px solid #E6E6E6", color: "#666", fontWeight: 600 }}>{prefix}</div>}
-        <input value={value} onChange={onChange} type={type} style={{ width: "100%", border: "none", outline: "none", background: "transparent", fontSize: 16, fontFamily: "Poppins", padding: "0 14px" }} />
+        <input value={value} onChange={onChange} type={type} placeholder={placeholder || ""} style={{ width: "100%", border: "none", outline: "none", background: "transparent", fontSize: 16, fontFamily: "Poppins", padding: "0 14px" }} />
       </div>
       {hint && <div style={{ marginTop: 6, fontSize: 12, color: "#888" }}>{hint}</div>}
     </div>
@@ -76,8 +76,8 @@ function AuthInput({ label, value, onChange, type = "text", prefix, hint }) {
 
 function LoginScreen() {
   const [role, setRole] = React.useState("Resident");
-  const [mobile, setMobile] = React.useState("917 543 8821");
-  const [pin, setPin] = React.useState("1234");
+  const [mobile, setMobile] = React.useState("");
+  const [pin, setPin] = React.useState("");
   const roleTheme = role === "Collector"
     ? { accent: "#1565C0", deep: "#0D47A1", light: "#E3F2FD", hero: "linear-gradient(160deg,#1565C0,#1E88E5,#26A69A)", label: "field crew · depot operators" }
     : role === "LGU Admin"
@@ -138,8 +138,8 @@ function LoginScreen() {
         </div>
         <div style={{ marginTop: 8, fontSize: 12, color: "#9E9E9E", textAlign: "center" }}>{roleTheme.label}</div>
         <div style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 16 }}>
-          <AuthInput label="Mobile number" value={mobile} onChange={(e) => setMobile(e.target.value)} prefix="+63" />
-          <AuthInput label="PIN" value={pin} onChange={(e) => setPin(e.target.value)} type="password" hint="4-digit PIN" />
+          <AuthInput label="Mobile number" value={mobile} onChange={(e) => setMobile(e.target.value)} prefix="+63" placeholder="917 543 8821" />
+          <AuthInput label="PIN" value={pin} onChange={(e) => setPin(e.target.value)} type="password" hint="4-digit PIN" placeholder="Enter 4-digit PIN" />
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", marginTop: 12, fontSize: 13 }}>
           <label style={{ color: "#666", display: "flex", gap: 8, alignItems: "center" }}><input type="checkbox" defaultChecked style={{ accentColor: "#2E7D32" }} />Keep me signed in on this device</label>
@@ -166,6 +166,13 @@ function LoginScreen() {
 }
 
 function RegisterScreen() {
+  const [fullName, setFullName] = React.useState("");
+  const [mobile, setMobile] = React.useState("");
+  const [barangay, setBarangay] = React.useState("Brgy. Marawoy");
+  const [city, setCity] = React.useState("");
+  const [address, setAddress] = React.useState("");
+  const [pin, setPin] = React.useState("");
+  const [confirmPin, setConfirmPin] = React.useState("");
   return (
     <AuthShell leftTitle="Barangay app for garbage operations" leftBig={<>Your barangay ID, a QR card, and eco-points — in 3 minutes.</>} leftStat="3 min" leftStatSub={<>average time to register verification via SMS OTP.</>} bullets={[{ icon: "🪪", title: "Unique household ID", sub: "Printable QR card that collectors scan at pickup." }, { icon: "🆓", title: "Free forever for residents", sub: "Your LGU funds BAGO.PH under municipal SWM plan." }, { icon: "🔒", title: "Your data stays in Philippines", sub: "RA 10173-compliant processing with opt-out anytime." }]}>
       <div style={{ maxWidth: 560, margin: "8px auto 0" }}>
@@ -174,19 +181,19 @@ function RegisterScreen() {
         <div style={{ marginTop: 18, background: "white", border: "1px solid #E4E4E4", borderRadius: 12, padding: 18 }}>
           <UL style={{ color: "#1B5E20" }}>Personal details</UL>
           <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            <AuthInput label="Full name" value="Maria Santos Dela Cruz" onChange={() => {}} />
-            <AuthInput label="Mobile number" value="917 543 8821" onChange={() => {}} prefix="+63" />
+            <AuthInput label="Full name" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Enter full name" />
+            <AuthInput label="Mobile number" value={mobile} onChange={(e) => setMobile(e.target.value)} prefix="+63" placeholder="917 543 8821" />
           </div>
           <UL style={{ color: "#1B5E20", marginTop: 14 }}>Address</UL>
           <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            <Select label="Barangay" value="Brgy. Marawoy" onChange={() => {}} options={["Brgy. Marawoy", "Brgy. San Sebastian", "Brgy. Balintawak", "Brgy. Tambo"]} />
-            <AuthInput label="City" value="Lipa City, Batangas" onChange={() => {}} />
+            <Select label="Barangay" value={barangay} onChange={setBarangay} options={["Brgy. Marawoy", "Brgy. San Sebastian", "Brgy. Balintawak", "Brgy. Tambo"]} />
+            <AuthInput label="City" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Enter city" />
           </div>
-          <AuthInput label="Street address & purok" value="128 Rizal St., Purok 3" onChange={() => {}} />
+          <AuthInput label="Street address & purok" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="House no., street, purok" />
           <UL style={{ color: "#1B5E20", marginTop: 14 }}>Security PIN</UL>
           <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            <AuthInput label="Create PIN" value="1234" onChange={() => {}} type="password" hint="4 digits" />
-            <AuthInput label="Confirm PIN" value="1234" onChange={() => {}} type="password" hint="Match required" />
+            <AuthInput label="Create PIN" value={pin} onChange={(e) => setPin(e.target.value)} type="password" hint="4 digits" placeholder="Enter PIN" />
+            <AuthInput label="Confirm PIN" value={confirmPin} onChange={(e) => setConfirmPin(e.target.value)} type="password" hint="Match required" placeholder="Re-enter PIN" />
           </div>
         </div>
         <button style={{ width: "100%", marginTop: 14, height: 52, border: "none", background: "#2E7D32", color: "white", fontSize: 18, fontWeight: 700, borderRadius: 8, fontFamily: "Poppins", cursor: "pointer" }}>Continue to verification</button>

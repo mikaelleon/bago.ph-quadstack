@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>BAGO.PH - OTP</title><style>body{margin:0;min-height:100vh;background:#f0f2f5;}#app{width:100vw;min-height:100vh;}</style></head>
+<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" /><title>BAGO.PH - OTP</title><style>body{margin:0;min-height:100vh;background:#f0f2f5;}#app{width:100vw;min-height:100vh;}</style></head>
 <body>
 <main id="app"></main>
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
@@ -50,11 +50,37 @@
         next();
       });
     }
+    function loadText(candidates) {
+      return new Promise(function (resolve, reject) {
+        var i = 0;
+        function next() {
+          if (i >= candidates.length) return reject(new Error("Failed to fetch script: " + candidates.join(", ")));
+          var url = candidates[i++];
+          fetch(url)
+            .then(function (res) {
+              if (!res.ok) throw new Error(String(res.status));
+              return res.text();
+            })
+            .then(function (code) { resolve({ code: code, url: url }); })
+            .catch(next);
+        }
+        next();
+      });
+    }
+    function loadBabelJsx(candidates) {
+      return loadText(candidates).then(function (src) {
+        if (!window.Babel || typeof window.Babel.transform !== "function") {
+          throw new Error("Babel standalone unavailable");
+        }
+        var out = window.Babel.transform(src.code, { presets: ["react"] }).code;
+        (0, eval)(out + "\n//# sourceURL=" + src.url);
+      });
+    }
     ensureCoreLibs()
       .then(function () { return loadScript(withBases("js/bago-env.js")); })
       .then(function () { return loadScript(withBases("js/bago-api.js")); })
-      .then(function () { return loadScript(withBases("hf-prototype/components/shared.jsx"), { type: "text/babel" }); })
-      .then(function () { return loadScript(withBases("hf-prototype/components/shared-screens.jsx"), { type: "text/babel" }); })
+      .then(function () { return loadBabelJsx(withBases("hf-prototype/components/shared.jsx")); })
+      .then(function () { return loadBabelJsx(withBases("hf-prototype/components/shared-screens.jsx")); })
       .then(function () { return loadScript(withBases("js/prototype-page-loader.js")); })
       .then(function () { window.BAGOPrototype.render("OTPScreen"); })
       .catch(function (e) {
