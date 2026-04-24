@@ -1,160 +1,19 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BAGO.PH — Register</title>
-  <link rel="stylesheet" href="../css/style.css" />
-  <style>
-    body.page-auth {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      background: #f5f5f5;
-    }
-    .login-wrapper {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
-    }
-    .login-box {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      padding: 40px;
-      width: 100%;
-      max-width: 440px;
-    }
-    .login-logo { text-align: center; margin-bottom: 24px; }
-    .login-logo h1 { font-size: 28px; color: #2E7D32; }
-    .login-logo p { font-size: 12px; color: #757575; margin-top: 4px; }
-    .divider { text-align: center; margin: 16px 0; color: #BDBDBD; font-size: 13px; }
-    .register-link { text-align: center; font-size: 13px; margin-top: 16px; color: #757575; }
-    .register-link a { color: #2E7D32; font-weight: 600; text-decoration: none; }
-    .role-selector { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-    .role-btn {
-      flex: 1;
-      min-width: 100px;
-      height: 44px;
-      border: 2px solid #BDBDBD;
-      border-radius: 8px;
-      background: white;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      color: #757575;
-      transition: all 0.2s;
-    }
-    .role-btn.active, .role-btn:hover {
-      border-color: #2E7D32;
-      color: #2E7D32;
-      background: #F1F8F1;
-    }
-    body.page-auth footer {
-      padding: 16px 20px;
-      text-align: center;
-      font-size: 12px;
-      color: #757575;
-      background: #fff;
-      border-top: 1px solid #eee;
-    }
-  </style>
+  <title>BAGO.PH - Register</title>
+  <style>body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #f0f2f5; font-family: Poppins, sans-serif; }</style>
 </head>
-<body class="page-auth">
-
-  <main class="login-wrapper">
-    <div class="login-box">
-
-      <div class="login-logo">
-        <h1>🌿 BAGO.PH</h1>
-        <p>Create your account<br/>Choose role — you can work with LGU later to change access.</p>
-      </div>
-
-      <form id="register-form" action="#" method="post">
-
-        <div class="form-group">
-          <label for="full-name">Full name</label>
-          <input type="text" id="full-name" name="full_name" required maxlength="120"
-                 placeholder="As registered with barangay" autocomplete="name" />
-        </div>
-
-        <div class="form-group">
-          <label for="mobile">Mobile number</label>
-          <input type="tel" id="mobile" name="mobile" required maxlength="11"
-                 placeholder="e.g., 09171234567" autocomplete="tel" />
-        </div>
-
-        <div class="form-group">
-          <label for="pin">4-digit PIN</label>
-          <input type="password" id="pin" name="pin" required maxlength="4" pattern="[0-9]{4}"
-                 placeholder="4 digits" inputmode="numeric" />
-        </div>
-
-        <div class="form-group">
-          <label for="pin2">Confirm PIN</label>
-          <input type="password" id="pin2" name="pin2" required maxlength="4" pattern="[0-9]{4}"
-                 placeholder="Repeat PIN" inputmode="numeric" />
-        </div>
-
-        <div class="form-group">
-          <label>Account role</label>
-          <div class="role-selector">
-            <button type="button" class="role-btn active" onclick="BAGOAccess.activateRoleButton(this)">🏠 Resident</button>
-            <button type="button" class="role-btn" onclick="BAGOAccess.activateRoleButton(this)">🚛 Collector</button>
-            <button type="button" class="role-btn" onclick="BAGOAccess.activateRoleButton(this)">🏛️ LGU Admin</button>
-          </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Register &amp; continue</button>
-      </form>
-
-      <div class="divider">— or —</div>
-      <div class="register-link">
-        Already registered?
-        <a href="index.html">Back to login</a>
-      </div>
-    </div>
-  </main>
-
-  <footer>
-    <p>🌿 BAGO.PH | With API running, credentials are stored in MySQL + JWT; otherwise local demo only.</p>
-  </footer>
-
-  <script src="js/bago-env.js"></script>
-  <script src="js/bago-api.js"></script>
-  <script src="role-access.js"></script>
-  <script>
-    document.getElementById("register-form").addEventListener("submit", async function (e) {
-      e.preventDefault();
-      var p1 = document.getElementById("pin").value;
-      var p2 = document.getElementById("pin2").value;
-      if (p1 !== p2) {
-        alert("PINs do not match.");
-        return;
-      }
-      var mobile = document.getElementById("mobile").value;
-      var fullName = document.getElementById("full-name").value;
-      var active = document.querySelector(".role-btn.active");
-      var role = window.BAGOAccess.roleFromSelectorButtonText(active ? active.textContent : "");
-      if (window.BAGOApi && window.BAGOApi.hasBase()) {
-        var api = await window.BAGOApi.tryRegister(fullName, mobile, p1, role);
-        if (api && api.ok) {
-          window.BAGOAccess.setCurrentRole(api.role);
-          window.location.href = window.BAGOAccess.getDashboardHome();
-          return;
-        }
-        if (api && !api.ok && api.message) {
-          alert(api.message);
-          return;
-        }
-      }
-      window.BAGOAccess.saveRegisteredAccount(mobile, p1, role);
-      window.BAGOAccess.setCurrentRole(role);
-      window.location.href = window.BAGOAccess.getDashboardHome();
-    });
-  </script>
+<body>
+  <main id="app"></main>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+  <script type="text/babel" src="../hf-prototype/components/shared.jsx"></script>
+  <script type="text/babel" src="../hf-prototype/components/shared-screens.jsx"></script>
+  <script src="js/prototype-page-loader.js"></script>
+  <script>window.BAGOPrototype.render("RegisterScreen");</script>
 </body>
 </html>

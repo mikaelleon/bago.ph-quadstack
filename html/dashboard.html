@@ -1,34 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BAGO.PH — Redirecting…</title>
-  <script>
-    (function () {
-      var raw = localStorage.getItem("bagoRole");
-      if (!raw) {
-        window.location.replace("index.html");
-        return;
-      }
-      function norm(r) {
-        if (!r) return "user";
-        var c = String(r).trim().toLowerCase().replace(/\s+/g, "_");
-        if (c === "lgu_admin") return "lgu_officer";
-        if (c === "user" || c === "collector" || c === "lgu_officer") return c;
-        return "user";
-      }
-      var role = norm(raw);
-      var map = {
-        user: "dashboard-resident.html",
-        collector: "dashboard-collector.html",
-        lgu_officer: "dashboard-lgu.html"
-      };
-      window.location.replace(map[role] || "dashboard-resident.html");
-    })();
-  </script>
-</head>
+<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>BAGO.PH - Dashboard</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#eceff1;}</style></head>
 <body>
-  <p style="font-family: system-ui, sans-serif; padding: 1rem;">Redirecting…</p>
-</body>
-</html>
+<main id="app"></main>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+<script type="text/babel" src="../hf-prototype/components/shared.jsx"></script>
+<script type="text/babel" src="../hf-prototype/components/admin-screens.jsx"></script>
+<script src="js/prototype-page-loader.js"></script>
+<script>window.BAGOPrototype.render("AdminDashboard");</script>
+</body></html>

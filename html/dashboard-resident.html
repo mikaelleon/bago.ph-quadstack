@@ -1,99 +1,19 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0" />
-  <title>BAGO.PH — Resident Home</title>
-  <link rel="stylesheet" href="../css/style.css" />
-  <link rel="stylesheet" href="../css/dashboard.css" />
-  <link rel="stylesheet" href="../css/bento.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BAGO.PH - Resident Dashboard</title>
+  <style>body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #f0f2f5; }</style>
 </head>
 <body>
-
-  <div class="nav-overlay" onclick="toggleNav()"></div>
-
-  <nav>
-    <a href="index.html" class="logo">🌿 BAGO.PH</a>
-    <button class="nav-toggle" onclick="toggleNav()">☰</button>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="dashboard.html" class="active">Dashboard</a></li>
-      <li><a href="schedule.html">Schedule</a></li>
-      <li><a href="report.html">Reports</a></li>
-      <li><a href="collectors.html">Collectors</a></li>
-      <li><a href="compliance.html">Compliance</a></li>
-      <li><a href="eco-points.html">Eco-Points</a></li>
-      <li><a href="announcements.html">Announce</a></li>
-      <li><a href="denr-reports.html">DENR</a></li>
-      <li><a href="users.html">Users</a></li>
-      <li><a href="qr-audit.html">QR Audit</a></li>
-    </ul>
-  </nav>
-
-  <header class="page-header">
-    <div class="container">
-      <h1>🏠 My household</h1>
-      <p>
-        Resident dashboard — collection schedule, eco-points, and reports
-        for your barangay
-      </p>
-    </div>
-  </header>
-
-  <main class="container" style="padding-top: 0; padding-bottom: 40px;">
-
-    <div class="metric-grid">
-
-      <div class="metric-card blue">
-        <div class="metric-icon">🌿</div>
-        <div class="metric-value">420</div>
-        <div class="metric-label">Your Eco-Points</div>
-        <div class="metric-sub">Household balance (demo)</div>
-      </div>
-
-      <div class="metric-card green">
-        <div class="metric-icon">📅</div>
-        <div class="metric-value">Wed</div>
-        <div class="metric-label">Next collection</div>
-        <div class="metric-sub">Biodegradable day — 6:00–10:00 AM</div>
-      </div>
-
-      <div class="metric-card orange">
-        <div class="metric-icon">📸</div>
-        <div class="metric-value">1</div>
-        <div class="metric-label">Open report</div>
-        <div class="metric-sub">Track status under Reports</div>
-      </div>
-
-      <div class="metric-card green">
-        <div class="metric-icon">♻️</div>
-        <div class="metric-value">OK</div>
-        <div class="metric-label">Segregation reminder</div>
-        <div class="metric-sub">Biodegradable / non-biodegradable / special waste</div>
-      </div>
-
-    </div>
-
-    <h2 style="margin: 28px 0 12px;">Quick links</h2>
-    <div style="display:flex; gap:12px; flex-wrap: wrap;">
-      <a href="schedule.html" class="btn btn-primary" style="text-decoration:none;">View schedule</a>
-      <a href="report.html" class="btn btn-secondary" style="text-decoration:none;">Submit report</a>
-      <a href="eco-points.html" class="btn btn-secondary" style="text-decoration:none;">Eco-Points</a>
-      <a href="announcements.html" class="btn btn-secondary" style="text-decoration:none;">Announcements</a>
-    </div>
-
-  </main>
-
-  <footer>
-    <p>
-      🌿 BAGO.PH | In compliance with RA 9003 and
-      RA 10173 | Aligned with UN SDGs 11, 12, and 13
-    </p>
-  </footer>
-
-  <script src="role-access.js"></script>
-  <script src="nav-ui.js"></script>
-
+  <main id="app"></main>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+  <script type="text/babel" src="../hf-prototype/components/shared.jsx"></script>
+  <script type="text/babel" src="../hf-prototype/components/resident-screens.jsx"></script>
+  <script src="js/prototype-page-loader.js"></script>
+  <script>window.BAGOPrototype.render("ResidentHome");</script>
 </body>
 </html>

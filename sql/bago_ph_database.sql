@@ -18,11 +18,11 @@
 -- A. DDL — CREATE DATABASE & TABLES
 -- =============================================================================
 
-CREATE DATABASE IF NOT EXISTS bago_ph
+CREATE DATABASE IF NOT EXISTS defaultdb
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-USE bago_ph;
+USE defaultdb;
 
 -- Optional: wipe and recreate (uncomment for clean reinstall — destroys data)
 -- SET FOREIGN_KEY_CHECKS = 0;

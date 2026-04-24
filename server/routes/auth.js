@@ -7,6 +7,26 @@ const { signToken, authMiddleware } = require("../middleware/auth");
 
 const router = express.Router();
 
+function dbErrorResponse(res, err, fallbackMessage) {
+  const code = err && err.code;
+  if (code === "ER_ACCESS_DENIED_ERROR") {
+    return res.status(503).json({
+      error: "Database credentials rejected. Check DB_USER/DB_PASSWORD in .env."
+    });
+  }
+  if (code === "ER_BAD_DB_ERROR") {
+    return res.status(503).json({
+      error: "Database not found. Check DB_NAME and import schema."
+    });
+  }
+  if (code === "ECONNREFUSED") {
+    return res.status(503).json({
+      error: "Database server unreachable. Start MySQL and verify DB_HOST/DB_PORT."
+    });
+  }
+  return res.status(500).json({ error: fallbackMessage });
+}
+
 function normalizeMobile(raw) {
   let d = String(raw || "").replace(/\D/g, "");
   if (d.length > 11) d = d.slice(-11);
@@ -38,17 +58,18 @@ router.post("/register", async (req, res) => {
   }
 
   const pool = getPool();
-  const [[existing]] = await pool.query(
-    "SELECT identity_id FROM app_identity WHERE mobile_number = ? LIMIT 1",
-    [mobile]
-  );
-  if (existing) {
-    return res.status(409).json({ error: "Mobile number already registered" });
-  }
-
-  const pin_hash = await bcrypt.hash(pin, 10);
-  const conn = await pool.getConnection();
+  let conn;
   try {
+    const [[existing]] = await pool.query(
+      "SELECT identity_id FROM app_identity WHERE mobile_number = ? LIMIT 1",
+      [mobile]
+    );
+    if (existing) {
+      return res.status(409).json({ error: "Mobile number already registered" });
+    }
+
+    const pin_hash = await bcrypt.hash(pin, 10);
+    conn = await pool.getConnection();
     await conn.beginTransaction();
 
     let resident_id = null;
@@ -113,11 +134,11 @@ router.post("/register", async (req, res) => {
       lgu_admin_id: row.lgu_admin_id
     });
   } catch (e) {
-    await conn.rollback();
+    if (conn) await conn.rollback();
     console.error(e);
-    return res.status(500).json({ error: "Registration failed" });
+    return dbErrorResponse(res, e, "Registration failed");
   } finally {
-    conn.release();
+    if (conn) conn.release();
   }
 });
 
@@ -129,49 +150,59 @@ router.post("/login", async (req, res) => {
     return res.status(400).json({ error: "Mobile and 4-digit PIN required" });
   }
 
-  const pool = getPool();
-  const [[row]] = await pool.query(
-    `SELECT identity_id, mobile_number, pin_hash, role, resident_id, collector_id, lgu_admin_id
-     FROM app_identity WHERE mobile_number = ?`,
-    [mobile]
-  );
+  try {
+    const pool = getPool();
+    const [[row]] = await pool.query(
+      `SELECT identity_id, mobile_number, pin_hash, role, resident_id, collector_id, lgu_admin_id
+       FROM app_identity WHERE mobile_number = ?`,
+      [mobile]
+    );
 
-  if (!row) {
-    return res.status(401).json({ error: "Unknown mobile number or wrong PIN" });
+    if (!row) {
+      return res.status(401).json({ error: "Unknown mobile number or wrong PIN" });
+    }
+
+    const ok = await bcrypt.compare(pin, row.pin_hash);
+    if (!ok) {
+      return res.status(401).json({ error: "Unknown mobile number or wrong PIN" });
+    }
+
+    const token = signToken({
+      sub: row.identity_id,
+      role: row.role,
+      mobile: row.mobile_number,
+      resident_id: row.resident_id,
+      collector_id: row.collector_id,
+      lgu_admin_id: row.lgu_admin_id
+    });
+
+    return res.json({
+      token,
+      role: row.role,
+      resident_id: row.resident_id,
+      collector_id: row.collector_id,
+      lgu_admin_id: row.lgu_admin_id
+    });
+  } catch (e) {
+    console.error(e);
+    return dbErrorResponse(res, e, "Login failed");
   }
-
-  const ok = await bcrypt.compare(pin, row.pin_hash);
-  if (!ok) {
-    return res.status(401).json({ error: "Unknown mobile number or wrong PIN" });
-  }
-
-  const token = signToken({
-    sub: row.identity_id,
-    role: row.role,
-    mobile: row.mobile_number,
-    resident_id: row.resident_id,
-    collector_id: row.collector_id,
-    lgu_admin_id: row.lgu_admin_id
-  });
-
-  return res.json({
-    token,
-    role: row.role,
-    resident_id: row.resident_id,
-    collector_id: row.collector_id,
-    lgu_admin_id: row.lgu_admin_id
-  });
 });
 
 router.get("/me", authMiddleware(true), async (req, res) => {
-  const pool = getPool();
-  const [[row]] = await pool.query(
-    `SELECT identity_id, mobile_number, role, resident_id, collector_id, lgu_admin_id
-     FROM app_identity WHERE identity_id = ?`,
-    [req.user.sub]
-  );
-  if (!row) return res.status(404).json({ error: "Identity not found" });
-  return res.json(row);
+  try {
+    const pool = getPool();
+    const [[row]] = await pool.query(
+      `SELECT identity_id, mobile_number, role, resident_id, collector_id, lgu_admin_id
+       FROM app_identity WHERE identity_id = ?`,
+      [req.user.sub]
+    );
+    if (!row) return res.status(404).json({ error: "Identity not found" });
+    return res.json(row);
+  } catch (e) {
+    console.error(e);
+    return dbErrorResponse(res, e, "Failed to load profile");
+  }
 });
 
 module.exports = router;
