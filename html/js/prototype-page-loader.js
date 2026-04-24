@@ -7,6 +7,37 @@ window.BAGOPrototype = (function () {
     return React.createElement.apply(React, [tag, props || {}].concat(children));
   }
 
+  function ensureGlobalPoppins() {
+    if (!document.querySelector('link[data-bago-poppins="preconnect"]')) {
+      var preconnect1 = document.createElement("link");
+      preconnect1.rel = "preconnect";
+      preconnect1.href = "https://fonts.googleapis.com";
+      preconnect1.setAttribute("data-bago-poppins", "preconnect");
+      document.head.appendChild(preconnect1);
+    }
+    if (!document.querySelector('link[data-bago-poppins="preconnect-gstatic"]')) {
+      var preconnect2 = document.createElement("link");
+      preconnect2.rel = "preconnect";
+      preconnect2.href = "https://fonts.gstatic.com";
+      preconnect2.crossOrigin = "anonymous";
+      preconnect2.setAttribute("data-bago-poppins", "preconnect-gstatic");
+      document.head.appendChild(preconnect2);
+    }
+    if (!document.querySelector('link[data-bago-poppins="stylesheet"]')) {
+      var fontLink = document.createElement("link");
+      fontLink.rel = "stylesheet";
+      fontLink.href = "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap";
+      fontLink.setAttribute("data-bago-poppins", "stylesheet");
+      document.head.appendChild(fontLink);
+    }
+    if (!document.getElementById("bago-global-font-style")) {
+      var style = document.createElement("style");
+      style.id = "bago-global-font-style";
+      style.textContent = "html, body, button, input, select, textarea { font-family: 'Poppins', sans-serif; }";
+      document.head.appendChild(style);
+    }
+  }
+
   function ensureFallbacks() {
     if (fallbackComponents.LoginScreen) return;
 
@@ -699,6 +730,7 @@ window.BAGOPrototype = (function () {
     });
   }
 
+  ensureGlobalPoppins();
   bindPhase2Handlers();
   ensureDemoAccounts();
   enforceAccess();
