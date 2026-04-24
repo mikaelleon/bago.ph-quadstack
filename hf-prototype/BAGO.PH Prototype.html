@@ -23,15 +23,25 @@
 <script type="text/babel" src="components/resident-screens.jsx"></script>
 <script type="text/babel" src="components/collector-screens.jsx"></script>
 <script type="text/babel" src="components/admin-screens.jsx"></script>
+<script type="text/babel" src="components/auth-web.jsx"></script>
+<script type="text/babel" src="components/resident-web.jsx"></script>
+<script type="text/babel" src="components/resident-web-2.jsx"></script>
+<script type="text/babel" src="components/collector-web.jsx"></script>
 
 <script type="text/babel">
 function App() {
   return (
-    <DesignCanvas title="BAGO.PH" subtitle="Barangay App for Garbage Operations · 23 screens across 3 roles · RA 9003-compliant civic waste platform">
-      <DCSection id="shared" title="Shared · Authentication" subtitle="Three screens common to all roles">
+    <DesignCanvas title="BAGO.PH" subtitle="Barangay App for Garbage Operations · 42 screens across 3 roles · RA 9003-compliant civic waste platform">
+      <DCSection id="shared" title="Shared · Authentication (mobile)" subtitle="Three screens common to all roles">
         <DCArtboard id="login" label="01 · Login" width={520} height={640}><LoginScreen/></DCArtboard>
         <DCArtboard id="register" label="02 · Register" width={920} height={720}><RegisterScreen/></DCArtboard>
         <DCArtboard id="otp" label="03 · OTP verification" width={460} height={540}><OTPScreen/></DCArtboard>
+      </DCSection>
+
+      <DCSection id="auth-web" title="Web-app authentication" subtitle="Desktop 1280 × 820 · Marketing-forward split layout — brand panel + form · role-aware (Resident / Collector / LGU Admin)">
+        <DCArtboard id="aw-login" label="40 · Web login" width={1280} height={820}><AuthWebLogin/></DCArtboard>
+        <DCArtboard id="aw-register" label="41 · Web register" width={1280} height={820}><AuthWebRegister/></DCArtboard>
+        <DCArtboard id="aw-otp" label="42 · Web OTP verification" width={1280} height={820}><AuthWebOTP/></DCArtboard>
       </DCSection>
 
       <DCSection id="resident" title="Resident mobile app" subtitle="10 screens · Green #2E7D32 · 390 × 780 mobile frame">
@@ -61,6 +71,28 @@ function App() {
         <DCArtboard id="a-sched" label="21 · Schedule management" width={1280} height={860}><AdminSchedule/></DCArtboard>
         <DCArtboard id="a-reports" label="22 · Report console" width={1280} height={860}><AdminReports/></DCArtboard>
         <DCArtboard id="a-denr" label="23 · DENR report generator" width={1280} height={860}><AdminDENRReport/></DCArtboard>
+      </DCSection>
+
+      <DCSection id="resident-web" title="Resident web app" subtitle="9 screens · Desktop 1280 × 820 · For residents who prefer a browser over mobile">
+        <DCArtboard id="rw-home" label="24 · Web home" width={1280} height={820}><ResidentWebHome/></DCArtboard>
+        <DCArtboard id="rw-schedule" label="25 · Web schedule" width={1280} height={820}><ResidentWebSchedule/></DCArtboard>
+        <DCArtboard id="rw-report" label="26 · Web submit report" width={1280} height={820}><ResidentWebReport/></DCArtboard>
+        <DCArtboard id="rw-myreports" label="27 · Web my reports" width={1280} height={820}><ResidentWebMyReports/></DCArtboard>
+        <DCArtboard id="rw-wallet" label="28 · Web wallet" width={1280} height={820}><ResidentWebWallet/></DCArtboard>
+        <DCArtboard id="rw-missions" label="29 · Web missions" width={1280} height={820}><ResidentWebMissions/></DCArtboard>
+        <DCArtboard id="rw-rewards" label="30 · Web rewards" width={1280} height={820}><ResidentWebRewards/></DCArtboard>
+        <DCArtboard id="rw-leaderboard" label="31 · Web leaderboard" width={1280} height={820}><ResidentWebLeaderboard/></DCArtboard>
+        <DCArtboard id="rw-profile" label="32 · Web profile" width={1280} height={820}><ResidentWebProfile/></DCArtboard>
+        <DCArtboard id="rw-qrcard" label="33 · Household QR card (print)" width={820} height={1100}><ResidentHouseholdQRCard/></DCArtboard>
+      </DCSection>
+
+      <DCSection id="collector-web" title="Collector web console" subtitle="6 screens · Desktop 1280 × 820 · Depot-side console with live route map, QR verification, and analytics">
+        <DCArtboard id="cw-route" label="34 · Route console" width={1280} height={820}><CollectorWebRoute/></DCArtboard>
+        <DCArtboard id="cw-scan" label="35 · QR verification" width={1280} height={820}><CollectorWebScan/></DCArtboard>
+        <DCArtboard id="cw-reports" label="36 · Assigned reports" width={1280} height={820}><CollectorWebReports/></DCArtboard>
+        <DCArtboard id="cw-schedule" label="37 · Shift schedule" width={1280} height={820}><CollectorWebSchedule/></DCArtboard>
+        <DCArtboard id="cw-analytics" label="38 · My analytics" width={1280} height={820}><CollectorWebAnalytics/></DCArtboard>
+        <DCArtboard id="cw-profile" label="39 · Collector profile" width={1280} height={820}><CollectorWebProfile/></DCArtboard>
       </DCSection>
     </DesignCanvas>
   );

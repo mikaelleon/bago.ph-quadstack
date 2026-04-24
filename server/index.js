@@ -27,6 +27,17 @@ app.get("/health", (_req, res) => {
   res.json({ ok: true, service: "bago.ph-api" });
 });
 
+app.get("/", (_req, res) => {
+  res.status(200).json({
+    ok: true,
+    service: "bago.ph-api",
+    message: "API is running. Use /health or /api/* endpoints.",
+    health: "/health",
+    auth_login: "/api/auth/login",
+    auth_register: "/api/auth/register"
+  });
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/barangays", barangaysRoutes);
 app.use("/api/schedules", schedulesRoutes);
