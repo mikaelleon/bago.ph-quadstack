@@ -19,6 +19,9 @@
   },
   "scripts": {
     "dev": "node server/index.js",
+    "dev:api": "node server/index.js",
+    "dev:web": "serve html -l 5500",
+    "dev:all": "concurrently \"pnpm run dev:api\" \"pnpm run dev:web\"",
     "start": "node server/index.js",
     "test": "node -e \"console.log('No tests configured.'); process.exit(0)\""
   },
@@ -29,5 +32,9 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.22.2"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "serve": "^14.2.6"
   }
 }
