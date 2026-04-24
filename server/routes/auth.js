@@ -46,6 +46,9 @@ router.post("/register", async (req, res) => {
   const mobile = normalizeMobile(req.body.mobile);
   const pin = String(req.body.pin || "");
   const role = normalizeRole(req.body.role);
+  const city = String(req.body.city || "").trim() || "Lipa City";
+  const barangay = String(req.body.barangay || "").trim();
+  const street_address = String(req.body.street_address || "").trim().slice(0, 200);
 
   if (!full_name || full_name.length > 120) {
     return res.status(400).json({ error: "Full name required (max 120 chars)" });
@@ -55,6 +58,9 @@ router.post("/register", async (req, res) => {
   }
   if (!/^\d{4}$/.test(pin)) {
     return res.status(400).json({ error: "PIN must be exactly 4 digits" });
+  }
+  if (role === "user" && !barangay) {
+    return res.status(400).json({ error: "Barangay is required for resident registration" });
   }
 
   const pool = getPool();
@@ -78,11 +84,30 @@ router.post("/register", async (req, res) => {
 
     if (role === "user") {
       const hid = `BAGO-REG-${Date.now()}`;
+      let barangay_id = 1;
+      if (barangay) {
+        const [rows] = await conn.query(
+          `SELECT barangay_id FROM barangays
+           WHERE barangay_name = ? AND city = ?
+           LIMIT 1`,
+          [barangay, city]
+        );
+        if (rows.length) {
+          barangay_id = rows[0].barangay_id;
+        } else {
+          const [createdBarangay] = await conn.query(
+            `INSERT INTO barangays (barangay_name, city, province, registered_households, compliance_rate, status)
+             VALUES (?, ?, 'Batangas', 0, 0.00, 'On Track')`,
+            [barangay, city]
+          );
+          barangay_id = createdBarangay.insertId;
+        }
+      }
       const [ins] = await conn.query(
         `INSERT INTO residents
           (household_id, full_name, mobile_number, barangay_id, street_address, pin_hash, eco_points, tier, registration_date)
-         VALUES (?, ?, ?, 1, '', ?, 0, 'Seedling', CURDATE())`,
-        [hid, full_name, mobile, pin_hash]
+         VALUES (?, ?, ?, ?, ?, ?, 0, 'Seedling', CURDATE())`,
+        [hid, full_name, mobile, barangay_id, street_address, pin_hash]
       );
       resident_id = ins.insertId;
     } else if (role === "collector") {

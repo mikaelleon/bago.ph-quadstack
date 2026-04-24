@@ -74,10 +74,77 @@ function AuthInput({ label, value, onChange, type = "text", prefix, hint, placeh
   );
 }
 
+const BATANGAS_CITY_BARANGAYS = {
+  "Batangas City": [
+    "Alangilan", "Balagtas", "Balete", "Banaba Center", "Banaba Ibaba", "Banaba Kanluran", "Banaba Silangan",
+    "Barangay 1 (Poblacion)", "Barangay 2 (Poblacion)", "Barangay 3 (Poblacion)", "Barangay 4 (Poblacion)",
+    "Barangay 5 (Poblacion)", "Barangay 6 (Poblacion)", "Barangay 7 (Poblacion)", "Barangay 8 (Poblacion)",
+    "Barangay 9 (Poblacion)", "Barangay 10 (Poblacion)", "Barangay 11 (Poblacion)", "Barangay 12 (Poblacion)",
+    "Barangay 13 (Poblacion)", "Barangay 14 (Poblacion)", "Barangay 15 (Poblacion)", "Barangay 16 (Poblacion)",
+    "Barangay 17 (Poblacion)", "Barangay 18 (Poblacion)", "Barangay 19 (Poblacion)", "Barangay 20 (Poblacion)",
+    "Barangay 21 (Poblacion)", "Barangay 22 (Poblacion)", "Barangay 23 (Poblacion)", "Barangay 24 (Poblacion)",
+    "Bilogo", "Bolbok", "Bukal", "Calicanto", "Catandala", "Concepcion", "Conde Itaas", "Conde Labak", "Cuta",
+    "Dalig", "Dela Paz", "Dela Paz Pulot Aplaya", "Dela Paz Pulot Itaas", "Domoclay", "Dumantay", "Gulod Itaas",
+    "Gulod Labak", "Haligue Kanluran", "Haligue Silangan", "Ilihan", "Isla Verde", "Kumba", "Kumintang Ibaba",
+    "Kumintang Ilaya", "Libjo", "Liponpon", "Maapas", "Mabacong (Matoco)", "Mahabang Dahilig", "Mahabang Parang",
+    "Mahacot Kanluran", "Mahacot Silangan", "Malalim", "Malibayo", "Malitam", "Maruclap", "Pagkilatan",
+    "Paharang Kanluran", "Paharang Silangan", "Pallocan Kanluran", "Pallocan Silangan", "Pinamucan",
+    "Pinamucan Ibaba", "Pinamucan Silangan", "Sampaga", "San Agapito", "San Agustin Kanluran",
+    "San Agustin Silangan", "San Andres", "San Antonio", "San Isidro", "San Jose Sico", "San Miguel", "San Pedro",
+    "Santa Clara", "Santa Rita Aplaya", "Santa Rita Karsada", "Santo Domingo", "Santo Niño", "Simlong",
+    "Sirang Lupa", "Sorosoro Ibaba", "Sorosoro Ilaya", "Sorosoro Karsada", "Tabangao Ambulong",
+    "Tabangao Aplaya (Tabangao Proper)", "Tabangao Dao", "Talahib Pandayan", "Talahib Payapa", "Talumpok Kanluran",
+    "Talumpok Silangan", "Tinga Itaas", "Tinga Labak", "Tulo", "Wawa"
+  ],
+  "Calaca City": [
+    "Baclas", "Bagong Tubig", "Balimbing", "Bambang", "Barangay 1 (Poblacion)", "Barangay 2 (Poblacion)",
+    "Barangay 3 (Poblacion)", "Barangay 4 (Poblacion)", "Barangay 5 (Poblacion)", "Barangay 6 (Poblacion)", "Bisaya",
+    "Cahil", "Calantas", "Caluangan", "Camastilisan", "Coral Ni Bacal", "Coral Ni Lopez (Sugod)", "Dacanlao", "Dila",
+    "Loma", "Lumbang Calzada", "Lumbang Na Bata", "Lumbang Na Matanda", "Madalunot", "Makina", "Matipok",
+    "Munting Coral", "Niyugan", "Pantay", "Puting Bato East", "Puting Bato West", "Puting Kahoy", "Quisumbing",
+    "Salong", "San Rafael", "Sinisian", "Taklang Anak", "Talisay", "Tamayo", "Timbain"
+  ],
+  "Lipa City": [
+    "Adya", "Anilao", "Anilao-Labac", "Antipolo Del Norte", "Antipolo Del Sur", "Bagong Pook", "Balintawak",
+    "Banaybanay", "Bolbok", "Bugtong na Pulo", "Bulacnin", "Bulaklakan", "Calamias", "Cumba", "Dagatan", "Duhatan",
+    "Halang", "Inosloban", "Kayumanggi", "Latag", "Lodlod", "Lumbang", "Mabini", "Malagonlong", "Malitlit", "Marauoy",
+    "Mataas Na Lupa", "Munting Pulo", "Pagolingin Bata", "Pagolingin East", "Pagolingin West", "Pangao",
+    "Pinagkawitan", "Pinagtongulan", "Plaridel", "Poblacion Barangay 1-8", "Poblacion Barangay 9",
+    "Poblacion Barangay 9-A", "Poblacion Barangay 10-12", "Pusil", "Quezon", "Rizal", "Sabang", "Sampaguita",
+    "San Benito", "San Carlos", "San Celestino", "San Francisco", "San Guillermo", "San Jose", "San Lucas",
+    "San Salvador", "San Sebastian (Balagbag)", "Santo Niño", "Santo Toribio", "Sapac", "Sico", "Talisay", "Tambo",
+    "Tangob", "Tanguay", "Tibig", "Tipacan"
+  ],
+  "Santo Tomas City": [
+    "Barangay I (Poblacion)", "Barangay II (Poblacion)", "Barangay III (Poblacion)", "Barangay IV (Poblacion)",
+    "San Agustin", "San Antonio", "San Bartolome", "San Felix", "San Fernando", "San Francisco", "San Isidro Norte",
+    "San Isidro Sur", "San Joaquin", "San Jose", "San Juan", "San Luis", "San Miguel", "San Pablo", "San Pedro",
+    "San Rafael", "San Roque", "San Vicente", "Santa Ana", "Santa Anastacia", "Santa Clara", "Santa Cruz",
+    "Santa Elena", "Santa Maria", "Santa Teresita", "Santiago"
+  ],
+  "Tanauan City": [
+    "Altura Bata", "Altura Matanda", "Altura-South", "Ambulong", "Bagbag", "Bagumbayan", "Balele", "Banadero",
+    "Banjo East", "Banjo Laurel (Banjo West)", "Bilog-bilog", "Boot", "Cale", "Darasa", "Gonzales", "Hidalgo",
+    "Janopol", "Janopol Oriental", "Laurel", "Luyos", "Mabini", "Malaking Pulo", "Maria Paz", "Maugat",
+    "Montaña (Ik-ik)", "Natatas", "Pagaspas", "Pantay Bata", "Pantay Matanda", "Poblacion Barangay 1",
+    "Poblacion Barangay 2", "Poblacion Barangay 3", "Poblacion Barangay 4", "Poblacion Barangay 5",
+    "Poblacion Barangay 6", "Poblacion Barangay 7", "Sala", "Sambat", "San Jose", "Santol (Doña Jacoba Garcia)",
+    "Santor", "Sulpoc", "Suplang", "Talaga", "Tinurik", "Trapiche", "Ulango", "Wawa"
+  ]
+};
+
 function LoginScreen() {
   const [role, setRole] = React.useState("Resident");
   const [mobile, setMobile] = React.useState("");
   const [pin, setPin] = React.useState("");
+  function onMobileChange(value) {
+    const digits = String(value || "").replace(/\D/g, "").slice(0, 10);
+    setMobile(digits);
+  }
+  function onPinChange(value) {
+    const digits = String(value || "").replace(/\D/g, "").slice(0, 4);
+    setPin(digits);
+  }
   const roleTheme = role === "Collector"
     ? { accent: "#1565C0", deep: "#0D47A1", light: "#E3F2FD", hero: "linear-gradient(160deg,#1565C0,#1E88E5,#26A69A)", label: "field crew · depot operators" }
     : role === "LGU Admin"
@@ -138,8 +205,8 @@ function LoginScreen() {
         </div>
         <div style={{ marginTop: 8, fontSize: 12, color: "#9E9E9E", textAlign: "center" }}>{roleTheme.label}</div>
         <div style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 16 }}>
-          <AuthInput label="Mobile number" value={mobile} onChange={(e) => setMobile(e.target.value)} prefix="+63" placeholder="917 543 8821" />
-          <AuthInput label="PIN" value={pin} onChange={(e) => setPin(e.target.value)} type="password" hint="4-digit PIN" placeholder="Enter 4-digit PIN" />
+          <AuthInput label="Mobile number" value={mobile} onChange={(e) => onMobileChange(e.target.value)} prefix="+63" placeholder="9175438821" />
+          <AuthInput label="PIN" value={pin} onChange={(e) => onPinChange(e.target.value)} type="password" hint="4-digit PIN" placeholder="Enter 4-digit PIN" />
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", marginTop: 12, fontSize: 13 }}>
           <label style={{ color: "#666", display: "flex", gap: 8, alignItems: "center" }}><input type="checkbox" defaultChecked style={{ accentColor: "#2E7D32" }} />Keep me signed in on this device</label>
@@ -166,13 +233,34 @@ function LoginScreen() {
 }
 
 function RegisterScreen() {
+  const cityOptions = Object.keys(BATANGAS_CITY_BARANGAYS);
   const [fullName, setFullName] = React.useState("");
   const [mobile, setMobile] = React.useState("");
-  const [barangay, setBarangay] = React.useState("Brgy. Marawoy");
-  const [city, setCity] = React.useState("");
+  const [city, setCity] = React.useState("Lipa City");
+  const [barangay, setBarangay] = React.useState(BATANGAS_CITY_BARANGAYS["Lipa City"][0]);
   const [address, setAddress] = React.useState("");
   const [pin, setPin] = React.useState("");
   const [confirmPin, setConfirmPin] = React.useState("");
+  const barangayOptions = BATANGAS_CITY_BARANGAYS[city] || [];
+
+  function onCityChange(nextCity) {
+    setCity(nextCity);
+    var nextBarangays = BATANGAS_CITY_BARANGAYS[nextCity] || [];
+    setBarangay(nextBarangays.length ? nextBarangays[0] : "");
+  }
+  function onMobileChange(value) {
+    const digits = String(value || "").replace(/\D/g, "").slice(0, 10);
+    setMobile(digits);
+  }
+  function onPinChange(value) {
+    const digits = String(value || "").replace(/\D/g, "").slice(0, 4);
+    setPin(digits);
+  }
+  function onConfirmPinChange(value) {
+    const digits = String(value || "").replace(/\D/g, "").slice(0, 4);
+    setConfirmPin(digits);
+  }
+
   return (
     <AuthShell leftTitle="Barangay app for garbage operations" leftBig={<>Your barangay ID, a QR card, and eco-points — in 3 minutes.</>} leftStat="3 min" leftStatSub={<>average time to register verification via SMS OTP.</>} bullets={[{ icon: "🪪", title: "Unique household ID", sub: "Printable QR card that collectors scan at pickup." }, { icon: "🆓", title: "Free forever for residents", sub: "Your LGU funds BAGO.PH under municipal SWM plan." }, { icon: "🔒", title: "Your data stays in Philippines", sub: "RA 10173-compliant processing with opt-out anytime." }]}>
       <div style={{ maxWidth: 560, margin: "8px auto 0" }}>
@@ -182,18 +270,18 @@ function RegisterScreen() {
           <UL style={{ color: "#1B5E20" }}>Personal details</UL>
           <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <AuthInput label="Full name" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Enter full name" />
-            <AuthInput label="Mobile number" value={mobile} onChange={(e) => setMobile(e.target.value)} prefix="+63" placeholder="917 543 8821" />
+            <AuthInput label="Mobile number" value={mobile} onChange={(e) => onMobileChange(e.target.value)} prefix="+63" placeholder="9175438821" />
           </div>
           <UL style={{ color: "#1B5E20", marginTop: 14 }}>Address</UL>
           <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            <Select label="Barangay" value={barangay} onChange={setBarangay} options={["Brgy. Marawoy", "Brgy. San Sebastian", "Brgy. Balintawak", "Brgy. Tambo"]} />
-            <AuthInput label="City" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Enter city" />
+            <Select label="City" value={city} onChange={onCityChange} options={cityOptions} />
+            <Select label="Barangay" value={barangay} onChange={setBarangay} options={barangayOptions} />
           </div>
           <AuthInput label="Street address & purok" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="House no., street, purok" />
           <UL style={{ color: "#1B5E20", marginTop: 14 }}>Security PIN</UL>
           <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            <AuthInput label="Create PIN" value={pin} onChange={(e) => setPin(e.target.value)} type="password" hint="4 digits" placeholder="Enter PIN" />
-            <AuthInput label="Confirm PIN" value={confirmPin} onChange={(e) => setConfirmPin(e.target.value)} type="password" hint="Match required" placeholder="Re-enter PIN" />
+            <AuthInput label="Create PIN" value={pin} onChange={(e) => onPinChange(e.target.value)} type="password" hint="4 digits" placeholder="Enter PIN" />
+            <AuthInput label="Confirm PIN" value={confirmPin} onChange={(e) => onConfirmPinChange(e.target.value)} type="password" hint="Match required" placeholder="Re-enter PIN" />
           </div>
         </div>
         <button style={{ width: "100%", marginTop: 14, height: 52, border: "none", background: "#2E7D32", color: "white", fontSize: 18, fontWeight: 700, borderRadius: 8, fontFamily: "Poppins", cursor: "pointer" }}>Continue to verification</button>

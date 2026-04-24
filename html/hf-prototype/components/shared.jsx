@@ -7,7 +7,11 @@ function Select({ label, value, onChange, options, style }) {
   return (
     <div style={{ ...style }}>
       {label && <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>{label}</label>}
-      <select value={value} onChange={onChange} style={{ width: "100%", height: 48, border: "1px solid #BDBDBD", borderRadius: 8, padding: "0 12px", fontFamily: "Poppins", fontSize: 14, background: "white" }}>
+      <select
+        value={value}
+        onChange={(e) => onChange && onChange(e.target.value)}
+        style={{ width: "100%", height: 48, border: "1px solid #BDBDBD", borderRadius: 8, padding: "0 12px", fontFamily: "Poppins", fontSize: 14, background: "white" }}
+      >
         {options.map((o) => <option key={o} value={o}>{o}</option>)}
       </select>
     </div>

@@ -379,6 +379,10 @@ window.BAGOPrototype = (function () {
   async function onRegister() {
     var textInputs = Array.prototype.slice.call(document.querySelectorAll('input[type="text"]'));
     var fullName = String(textInputs.length ? textInputs[0].value : "").trim();
+    var streetAddress = String(textInputs.length > 1 ? textInputs[1].value : "").trim();
+    var selects = Array.prototype.slice.call(document.querySelectorAll("select"));
+    var city = String(selects[0] ? selects[0].value : "").trim();
+    var barangay = String(selects[1] ? selects[1].value : "").trim();
     var mobileInput = document.querySelector('input[type="tel"]');
     var passInputs = Array.prototype.slice.call(document.querySelectorAll('input[type="password"]'));
     var mobile = normalizeMobile(mobileInput ? mobileInput.value : "");
@@ -391,6 +395,14 @@ window.BAGOPrototype = (function () {
     }
     if (!mobile || mobile.length < 10) {
       alert("Enter valid mobile number.");
+      return;
+    }
+    if (!city) {
+      alert("Select a city.");
+      return;
+    }
+    if (!barangay) {
+      alert("Select a barangay.");
       return;
     }
     if (!/^\d{4}$/.test(pin)) {
@@ -412,7 +424,10 @@ window.BAGOPrototype = (function () {
             full_name: fullName,
             mobile: mobile,
             pin: pin,
-            role: role
+            role: role,
+            city: city,
+            barangay: barangay,
+            street_address: streetAddress
           });
           localStorage.setItem("bagoToken", data.token);
           out = { ok: true, role: data.role };
