@@ -7,8 +7,8 @@
 - [Project Title](#project-title)
 - [Group Members](#group-members)
 - [Description of the System](#description-of-the-system)
-- [Features Completed (30%)](#features-completed-30)
-- [Progress Since the 30% Milestone](#progress-since-the-30-milestone)
+- [Features Completed (30% Baseline)](#features-completed-30-baseline)
+- [Current Project Progress (~85%)](#current-project-progress-85)
 - [Who This Is For](#who-this-is-for)
 - [Feature Overview](#feature-overview)
 - [Auth, Registration & Navigation](#auth-registration--navigation)
@@ -48,7 +48,7 @@ The prototype focuses on **clear screens and flows** rather than live production
 
 ---
 
-## Features Completed (30%)
+## Features Completed (30% Baseline)
 Baseline milestone work includes:
 
 **Done (original 30% scope)**
@@ -68,19 +68,29 @@ Baseline milestone work includes:
 - [ ] QR code verification system (production-grade)
 - [ ] LGU analytics charts (live charts)
 - [ ] Push notification simulation
-- [ ] Full database connection and backend logic
+- [x] Full database connection and backend logic (Node + Express + MySQL + JWT + bcrypt implemented)
 
 ---
 
-## Progress Since the 30% Milestone
-Implemented on top of the baseline above:
+## Current Project Progress (~85%)
+Implemented on top of the 30% baseline:
 
-- **Dedicated login & registration** — `index.html` and `auth-web-login.html`: **Resident / Collector** use mobile + 4-digit PIN; **LGU Admin** uses **government email + password** (aligned with the web LGU console). `register.html` supports sign-up with role selection. **No main navbar** on these screens until login or registration completes.
-- **Client-side access control** — `html/role-access.js` stores role in `localStorage`, hides disallowed nav links, redirects unauthorized URLs, adds **Logout**, and sends already-logged-in users away from login/register toward the dashboard.
-- **Official Lipa City barangay list** — all **72 barangays** in `html/js/lipa-barangays.js`, populated into relevant dropdowns via `lipa-barangays-select.js`; `xml/barangays.xml` regenerated with 72 rows (helper: `scripts/gen-barangays-xml.mjs`).
-- **XML / XSLT layout** — stylesheets under `xsl/` (e.g. `ecolinisph-schedules.xsl`, `barangays.xsl`); XML files reference them for browser transform (Firefox works best for opening raw `.xml`).
-- **Interactive XML pages** — `xml-schedules-editor.html` and `xml-barangays-editor.html`: filter, **column sort**, add/edit/delete in memory, **Save to browser** (`localStorage`), **Export** downloaded XML, **Reload from file** / clear storage; **`?mode=view`** for read-only browse (sort & filter, no CRUD). Raw `.xml` files on disk are **not** overwritten automatically (browser security); replace files manually after export if needed.
-- **SQL file fully structured for demo/import flow** — `sql/bago_ph_database.sql` now grouped into clear sections: **A) DDL** (database + tables + indexes), **B) seed INSERTs**, **C) READ queries**, **D) additional INSERT/UPDATE/DELETE examples** with matching demo keys.
+- [x] **Dedicated login & registration** — `index.html` and `auth-web-login.html`: **Resident / Collector** use mobile + 4-digit PIN; **LGU Admin** uses **government email + password**. `register.html` supports sign-up with role selection.
+- [x] **Role-aware web auth variants** — added role-specific pages and components (`auth-web-register-collector.html`, `auth-web-register-lgu.html`, `AuthWebRegisterCollector`, `AuthWebRegisterAdmin`).
+- [x] **Auth flow bridge in loader** — `window.BAGOPrototype` now exposes registration/apply methods, OTP continuation, LGU application submit path, and modal helpers.
+- [x] **Logout/sign-out coverage** — collector and LGU web dashboards now have proper sign-out buttons wired to confirmation and session cleanup.
+- [x] **Demo credentials UX** — removed accidental popups; credentials now appear only via explicit **Demo credentials** button in a modal with per-role **Copy** actions.
+- [x] **Responsive auth layouts** — `auth-web.jsx` and `shared-screens.jsx` updated to fit viewport (`100dvh`) and adapt to mobile breakpoints (stacked sections, responsive grid/forms).
+- [x] **Client-side access control** — `html/role-access.js` and `prototype-page-loader.js` enforce role/page guards and auth-page redirects in static prototype mode.
+- [x] **Official Lipa City barangay list** — all **72 barangays** in `html/js/lipa-barangays.js`, populated via `lipa-barangays-select.js`; `xml/barangays.xml` regenerated.
+- [x] **XML / XSLT + interactive editors** — `xml-schedules-editor.html` and `xml-barangays-editor.html` support filter/sort/CRUD/export with read-only `?mode=view`.
+- [x] **SQL + API integration path** — `sql/bago_ph_database.sql` structured and aligned with backend auth changes; API routes support mobile/PIN and LGU email/password login.
+
+**Still pending for finalization**
+- [ ] Eco-points wallet depth beyond current mock
+- [ ] Production-grade QR verification pipeline
+- [ ] Live analytics chart feeds across all LGU analytics screens
+- [ ] Push notification simulation/dispatch channel
 
 ---
 
@@ -112,6 +122,7 @@ Implemented on top of the baseline above:
 - After login or successful registration, the app stores **`bagoRole`** (`user` | `collector` | `lgu_officer`) from the account and opens the **dashboard** (LGU email login goes directly to **`dashboard-lgu.html`** without OTP).
 - If a role is already stored, visiting login or register **redirects to the dashboard**.
 - Inside the app, use **Logout** (injected on authenticated pages) to clear the role and return to login.
+- On auth screens, demo accounts now open through an explicit **Demo credentials** button (modal with per-role copy buttons), not via background click handlers.
 - **Prototype demo credentials (not production):**
   - **Resident** — `html/js/prototype-page-loader.js` seeds localStorage mobile **`09171234567`** · PIN **`1234`**. With API + DB: **`09181234501`–`09181234505`** · PIN **`1234`**.
   - **Collector** — local **`09171234568`** · PIN **`1234`**. With API: **`09171111001`–`09171111005`** · PIN **`1234`**.
@@ -175,7 +186,7 @@ If a page is not allowed for the current role, the app redirects to that role’
 
 ### Cannot Do Yet
 - **With API off:** same as before — no live DB (static / `localStorage` only).
-- **With API on:** JWT auth, hashed PINs, and MySQL-backed schedules/reports for wired pages; other screens remain mock until migrated.
+- **With API on:** core auth and selected schedules/reports are live via MySQL; many UI-heavy pages still use mock/demo content until fully migrated.
 - No production identity provider (OAuth, etc.); prototype JWT + bcrypt only.
 - No automatic write-back of exported XML into the repository (manual file replace).
 - XSLT in the browser is **not** extended with interactive sorting; use the HTML tools instead.
@@ -250,8 +261,8 @@ With the API running, the browser uses the server first; if the API is unreachab
 Work that still **needs** or **would benefit from** implementation for a production or thesis-final system:
 
 **Backend & data**
-- Real **authentication** (hashed passwords, sessions or tokens, optional OAuth), server-side role checks.
-- **Database connection** and CRUD APIs replacing `localStorage` and manual XML export.
+- Broaden **server-side role checks** across every route and screen path (some static flows still fallback to local logic).
+- Expand MySQL-backed CRUD coverage to remaining mock-heavy pages and reduce `localStorage` dependence.
 - **Server-side** or controlled **write path** for schedule/barangay XML or JSON if that remains a source format.
 
 **Features called out in earlier milestones**
