@@ -61,28 +61,46 @@ function AdminShell({ children, active = 'dashboard', title, subtitle, topRight,
             </div>
           ))}
         </div>
-        <div style={{ padding: 16, fontSize: 10, color: 'rgba(255,255,255,0.4)', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-          v2.4.1 · RA 9003 compliant
+        <div style={{ padding: '12px 16px', fontSize: 10, color: 'rgba(255,255,255,0.45)', borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div>v2.4.1 · RA 9003 compliant</div>
+          <button
+            type="button"
+            onClick={() => window.bagoConfirmSignOut && window.bagoConfirmSignOut()}
+            style={{
+              width: '100%', height: 36, border: '1px solid rgba(255,205,210,0.45)', background: 'rgba(198,40,40,0.15)',
+              color: '#FFCDD2', borderRadius: 6, fontFamily: 'Poppins', fontSize: 12, fontWeight: 700, cursor: 'pointer',
+            }}
+          >Sign out</button>
         </div>
       </div>
 
       {/* Main */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         {/* Topbar */}
-        <div style={{ height: 64, background: 'white', borderBottom: '1px solid #E0E0E0', display: 'flex', alignItems: 'center', padding: '0 28px', flexShrink: 0 }}>
-          <div style={{ flex: 1 }}>
+        <div style={{ height: 64, background: 'white', borderBottom: '1px solid #E0E0E0', display: 'flex', alignItems: 'center', padding: '0 28px', flexShrink: 0, gap: 16 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 18, fontWeight: 700 }}>{title}</div>
             {subtitle && <div style={{ fontSize: 12, color: '#757575' }}>{subtitle}</div>}
           </div>
-          {topRight || (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#757575' }}>
-                <span style={{ width: 8, height: 8, borderRadius: 4, background: '#2E7D32', boxShadow: '0 0 0 3px rgba(46,125,50,0.2)' }}/>
-                LIVE · synced 9:42 am
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+            {topRight || (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#757575' }}>
+                  <span style={{ width: 8, height: 8, borderRadius: 4, background: '#2E7D32', boxShadow: '0 0 0 3px rgba(46,125,50,0.2)' }}/>
+                  LIVE · synced 9:42 am
+                </div>
+                <button type="button" style={{ background: NAVY, color: 'white', border: 'none', padding: '9px 18px', borderRadius: 6, fontFamily: 'Poppins', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>📢 Announce</button>
               </div>
-              <button style={{ background: NAVY, color: 'white', border: 'none', padding: '9px 18px', borderRadius: 6, fontFamily: 'Poppins', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>📢 Announce</button>
-            </div>
-          )}
+            )}
+            <button
+              type="button"
+              onClick={() => window.bagoConfirmSignOut && window.bagoConfirmSignOut()}
+              style={{
+                height: 36, padding: '0 14px', border: '1px solid #E0E0E0', background: 'white',
+                borderRadius: 6, fontFamily: 'Poppins', fontSize: 12, fontWeight: 700, color: '#C62828', cursor: 'pointer', whiteSpace: 'nowrap',
+              }}
+            >Sign out</button>
+          </div>
         </div>
         {/* Content */}
         <div style={{ flex: 1, overflowY: 'auto', padding: noPad ? 0 : 28, background: '#F5F5F5' }}>
@@ -95,6 +113,8 @@ function AdminShell({ children, active = 'dashboard', title, subtitle, topRight,
 
 // ─── 19. Admin login ─────────────────────────────────────────────────
 function AdminLogin() {
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
   return (
     <div style={{ width: 900, height: 600, background: NAVY, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Poppins', borderRadius: 10, position: 'relative', overflow: 'hidden' }}>
       {/* Bg pattern */}
@@ -106,8 +126,8 @@ function AdminLogin() {
           <div style={{ display: 'inline-block', marginTop: 10, background: '#F5F5F5', color: '#757575', padding: '4px 12px', borderRadius: 20, fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase' }}>LGU Administrator Portal</div>
         </div>
         <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', gap: 14 }}>
-          <Input label="Email" value="elena.mercado@lipa.gov.ph" onChange={() => {}} type="email"/>
-          <Input label="Password" value="••••••••••" onChange={() => {}} type="password"/>
+          <Input label="Email" value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="you@lipacity.gov.ph"/>
+          <Input label="Password" value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Enter password"/>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
           <label style={{ fontSize: 12, color: '#757575', display: 'flex', alignItems: 'center', gap: 6 }}>

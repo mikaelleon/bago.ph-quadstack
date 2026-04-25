@@ -74,10 +74,10 @@ function CollectorWebShell({ active, title, subtitle, actions, children, pageScr
           })}
         </nav>
 
-        <div style={{ padding: 16, borderTop: '1px solid rgba(255,255,255,0.08)', fontSize: 11, color: 'rgba(255,255,255,0.55)', display: 'flex', gap: 10 }}>
+        <div style={{ padding: 16, borderTop: '1px solid rgba(255,255,255,0.08)', fontSize: 11, color: 'rgba(255,255,255,0.55)', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 10 }}>
           <span style={{ cursor: 'pointer' }}>Help</span><span>·</span>
           <span style={{ cursor: 'pointer' }}>Dispatch</span><span>·</span>
-          <span style={{ cursor: 'pointer' }} onClick={() => { localStorage.removeItem('bagoRole'); localStorage.removeItem('bagoToken'); navTo('index.html'); }}>Log out</span>
+          <span style={{ cursor: 'pointer', fontWeight: 700, color: '#FFCDD2' }} onClick={() => window.bagoConfirmSignOut && window.bagoConfirmSignOut()}>Sign out</span>
         </div>
       </aside>
 
@@ -91,6 +91,14 @@ function CollectorWebShell({ active, title, subtitle, actions, children, pageScr
             <span>🔍</span><span>Search household ID, report…</span>
           </div>
           {actions}
+          <button
+            type="button"
+            onClick={() => window.bagoConfirmSignOut && window.bagoConfirmSignOut()}
+            style={{
+              height: 36, padding: '0 14px', border: '1px solid #FFCDD2', background: '#FFF8F8',
+              borderRadius: 6, fontFamily: 'Poppins', fontSize: 12, fontWeight: 700, color: '#C62828', cursor: 'pointer',
+            }}
+          >Sign out</button>
           <div style={{ position: 'relative', cursor: 'pointer', padding: '8px 6px' }}>
             <span style={{ fontSize: 20 }}>🔔</span>
             <span style={{ position: 'absolute', top: 6, right: 4, width: 8, height: 8, borderRadius: 4, background: '#F9A825', border: '1.5px solid white' }}/>
@@ -662,6 +670,12 @@ function CollectorWebProfile() {
             <Toggle on={on} color={CW_BLUE}/>
           </div>
         ))}
+        <div style={{ marginTop: 18, paddingTop: 16, borderTop: '1px solid #F5F5F5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+          <div style={{ fontSize: 11, color: '#757575', maxWidth: 420 }}>
+            End your shift on this device only. Dispatch still sees your last known status until you sign in again.
+          </div>
+          <Btn outline color="#C62828" onClick={() => window.bagoConfirmSignOut && window.bagoConfirmSignOut()}>Sign out of console</Btn>
+        </div>
       </div>
     </CollectorWebShell>
   );

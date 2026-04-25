@@ -128,7 +128,9 @@ function getCurrentPageName() {
 
 function isAuthPage() {
   const p = getCurrentPageName();
-  return p === "index.html" || p === "register.html";
+  if (p === "index.html" || p === "register.html" || p === "otp.html") return true;
+  if (/^auth-web-/.test(p)) return true;
+  return false;
 }
 
 function getStoredRole() {

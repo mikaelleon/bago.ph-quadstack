@@ -147,13 +147,13 @@ function BottomNavItem({ icon, label, active, activeColor = '#2E7D32', onClick }
   );
 }
 
-function Btn({ children, onClick, color = '#2E7D32', outline, style, size = 'md', full, icon }) {
+function Btn({ children, onClick, color = '#2E7D32', outline, style, size = 'md', full, icon, type = 'button' }) {
   const h = size === 'sm' ? 36 : 48;
   const bg = outline ? 'transparent' : color;
   const fg = outline ? color : 'white';
   const border = outline ? `1.5px solid ${color}` : 'none';
   return (
-    <button onClick={onClick} style={{
+    <button type={type} onClick={onClick} style={{
       height: h, background: bg, color: fg, border, borderRadius: 8,
       fontFamily: 'Poppins', fontWeight: 600, fontSize: size === 'sm' ? 13 : 14,
       padding: size === 'sm' ? '0 14px' : '0 20px', cursor: 'pointer',
@@ -191,7 +191,7 @@ function Input({ label, value, onChange, placeholder, type = 'text', prefix, suf
   );
 }
 
-function Select({ label, value, onChange, options, style }) {
+function Select({ label, value, onChange, options, placeholder, style }) {
   return (
     <div style={{ ...style }}>
       {label && <label style={{ fontSize: 13, fontWeight: 600, display: 'block', marginBottom: 6 }}>{label}</label>}
@@ -199,7 +199,10 @@ function Select({ label, value, onChange, options, style }) {
         width: '100%', height: 48, border: '1px solid #BDBDBD', borderRadius: 8,
         padding: '0 12px', fontFamily: 'Poppins', fontSize: 14, background: 'white',
       }}>
-        {options.map(o => <option key={o} value={o}>{o}</option>)}
+        {placeholder != null && placeholder !== '' ? (
+          <option value="">{placeholder}</option>
+        ) : null}
+        {(options || []).map(o => <option key={o} value={o}>{o}</option>)}
       </select>
     </div>
   );
@@ -268,7 +271,28 @@ function Logo({ color = '#2E7D32', size = 24, withLeaf = true }) {
   );
 }
 
+/** Clears prototype session after confirm; uses BAGOPrototype.modalConfirm when available. */
+function bagoConfirmSignOut(redirectHref) {
+  var href = redirectHref || './auth-web-login.html';
+  function perform() {
+    try {
+      localStorage.removeItem('bagoRole');
+      localStorage.removeItem('bagoToken');
+      localStorage.removeItem('bagoPendingOtp');
+      localStorage.removeItem('bagoPendingMobile');
+    } catch (_e) {}
+    window.location.href = href;
+  }
+  var proto = window.BAGOPrototype;
+  var msg = 'You will be signed out in this browser. Unsaved draft data in this prototype is not kept on the server.';
+  if (proto && typeof proto.modalConfirm === 'function') {
+    proto.modalConfirm(msg, 'Sign out?').then(function (ok) { if (ok) perform(); });
+    return;
+  }
+  if (window.confirm('Sign out?')) perform();
+}
+
 Object.assign(window, {
   COLORS, UL, Card, Badge, PhoneFrame, BottomNavItem, Btn, Input, Select, Toggle,
-  PhotoPlaceholder, Avatar, Logo,
+  PhotoPlaceholder, Avatar, Logo, bagoConfirmSignOut,
 });

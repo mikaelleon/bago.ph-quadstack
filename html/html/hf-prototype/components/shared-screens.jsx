@@ -1,60 +1,83 @@
 // shared-screens.jsx — Web auth screens (static-host copy)
 
+const BAGO_AUTH_SHELL_CSS = `
+.bago-auth-root{width:100%;max-width:100vw;min-height:100vh;min-height:100dvh;box-sizing:border-box;background:#fff;overflow-x:hidden;font-family:Poppins,system-ui,sans-serif;display:flex;flex-direction:column;}
+.bago-auth-top{height:44px;box-sizing:border-box;border-bottom:1px solid #EAEAEA;display:flex;align-items:center;padding:0 clamp(12px,3vw,28px);color:#757575;font-size:13px;gap:clamp(8px,2vw,26px);flex-shrink:0;flex-wrap:wrap;min-height:44px;}
+.bago-auth-top-mid{display:flex;gap:clamp(8px,2vw,26px);flex-wrap:wrap;}
+@media(max-width:640px){.bago-auth-top-mid{display:none;}}
+.bago-auth-split{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);overflow:hidden;box-sizing:border-box;}
+.bago-auth-hero{color:#fff;padding:clamp(22px,5vw,36px) clamp(18px,5vw,50px) clamp(18px,4vw,28px);position:relative;overflow:hidden;min-width:0;}
+.bago-auth-hero-big{margin-top:14px;font-size:clamp(1.5rem,6vw,3.5rem);line-height:0.98;font-weight:800;letter-spacing:-0.04em;}
+.bago-auth-hero-stat{font-size:clamp(2rem,10vw,3.75rem);font-weight:800;line-height:1;}
+.bago-auth-right{background:#F7F7F7;padding:clamp(18px,4vw,34px) clamp(16px,4vw,42px) 20px;overflow-y:auto;min-width:0;}
+@media(max-width:900px){
+  .bago-auth-split{grid-template-columns:1fr;display:flex;flex-direction:column;}
+  .bago-auth-right{order:-1;flex:1;}
+}
+.bago-auth-foot{min-height:33px;box-sizing:border-box;border-top:1px solid #EAEAEA;font-size:11px;color:#9E9E9E;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:8px clamp(12px,3vw,20px);flex-shrink:0;}
+`;
+
 function AuthShell({ leftTitle, leftBig, leftStat, leftStatSub, bullets, children, hero }) {
+  const heroBg = hero || "linear-gradient(160deg,#1D7B2F,#2E7D32)";
   return (
-    <div style={{ width: "100%", height: "100vh", minHeight: "100vh", background: "#fff", overflow: "hidden", fontFamily: "Poppins", display: "flex", flexDirection: "column", boxSizing: "border-box" }}>
-      <div style={{ height: 44, boxSizing: "border-box", borderBottom: "1px solid #EAEAEA", display: "flex", alignItems: "center", padding: "0 28px", color: "#757575", fontSize: 13, gap: 26, flexShrink: 0 }}>
-        <Logo size={28} />
-        <span>How it works</span>
-        <span>For barangays</span>
-        <span>RA 9003</span>
-        <span>Help</span>
-        <span style={{ marginLeft: "auto", fontSize: 12 }}>English · Tagalog</span>
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "49% 51%", flex: 1, minHeight: 0, overflow: "hidden", boxSizing: "border-box" }}>
-        <div style={{ background: hero || "linear-gradient(160deg,#1D7B2F,#2E7D32)", color: "white", padding: "36px 50px 28px", position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", width: 360, height: 360, borderRadius: "50%", right: -40, top: -20, background: "rgba(255,255,255,0.1)" }} />
-          <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: 1, opacity: 0.9, fontWeight: 700 }}>{leftTitle}</div>
-          <div style={{ marginTop: 14, fontSize: 56, lineHeight: 0.98, fontWeight: 800, letterSpacing: -0.8 }}>{leftBig}</div>
-          <div style={{ marginTop: 24, display: "flex", gap: 12, alignItems: "baseline" }}>
-            <div style={{ fontSize: 60, fontWeight: 800, lineHeight: 1 }}>{leftStat}</div>
-            <div style={{ maxWidth: 250, lineHeight: 1.25, fontSize: 16, fontWeight: 600 }}>{leftStatSub}</div>
+    <React.Fragment>
+      <style dangerouslySetInnerHTML={{ __html: BAGO_AUTH_SHELL_CSS }} />
+      <div className="bago-auth-root">
+        <div className="bago-auth-top">
+          <Logo size={28} />
+          <div className="bago-auth-top-mid">
+            <span>How it works</span>
+            <span>For barangays</span>
+            <span>RA 9003</span>
+            <span>Help</span>
           </div>
-
-          <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 12 }}>
-            {bullets.map((b, i) => (
-              <div key={i} style={{ display: "flex", gap: 12 }}>
-                <div style={{ width: 28, height: 28, borderRadius: 8, background: "rgba(255,255,255,0.15)", display: "grid", placeItems: "center", fontSize: 14 }}>{b.icon}</div>
-                <div>
-                  <div style={{ fontSize: 17, fontWeight: 700, lineHeight: 1.15 }}>{b.title}</div>
-                  <div style={{ fontSize: 13, opacity: 0.86, marginTop: 3 }}>{b.sub}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ marginTop: 14, borderTop: "1px solid rgba(255,255,255,0.2)", paddingTop: 10, display: "flex", gap: 10 }}>
-            {["RA 9003", "RA 10173", "DILG"].map((x, i) => (
-              <div key={i} style={{ background: "rgba(255,255,255,0.15)", borderRadius: 8, padding: "8px 14px", fontSize: 11, fontWeight: 700 }}>{x}</div>
-            ))}
-          </div>
+          <span style={{ marginLeft: "auto", fontSize: 12 }}>English · Tagalog</span>
         </div>
 
-        <div style={{ background: "#F7F7F7", padding: "34px 42px 20px", overflow: "hidden" }}>{children}</div>
-      </div>
+        <div className="bago-auth-split">
+          <div className="bago-auth-hero" style={{ background: heroBg }}>
+            <div style={{ position: "absolute", width: 360, height: 360, borderRadius: "50%", right: -40, top: -20, background: "rgba(255,255,255,0.1)" }} />
+            <div style={{ position: "relative", fontSize: 11, textTransform: "uppercase", letterSpacing: 1, opacity: 0.9, fontWeight: 700 }}>{leftTitle}</div>
+            <div className="bago-auth-hero-big" style={{ position: "relative" }}>{leftBig}</div>
+            <div style={{ marginTop: 24, display: "flex", gap: 12, alignItems: "baseline", flexWrap: "wrap" }}>
+              <div className="bago-auth-hero-stat">{leftStat}</div>
+              <div style={{ maxWidth: 250, lineHeight: 1.25, fontSize: 16, fontWeight: 600 }}>{leftStatSub}</div>
+            </div>
 
-      <div style={{ height: 33, boxSizing: "border-box", borderTop: "1px solid #EAEAEA", fontSize: 11, color: "#9E9E9E", display: "flex", alignItems: "center", padding: "0 20px", flexShrink: 0 }}>
-        <span>© 2026 LGU Lipa City · Piloted with DENR Region IV-A</span>
-        <span style={{ marginLeft: "auto" }}>Privacy · Terms · Accessibility · Contact</span>
+            <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 12, position: "relative" }}>
+              {bullets.map((b, i) => (
+                <div key={i} style={{ display: "flex", gap: 12 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: 8, background: "rgba(255,255,255,0.15)", display: "grid", placeItems: "center", fontSize: 14 }}>{b.icon}</div>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: 17, fontWeight: 700, lineHeight: 1.15 }}>{b.title}</div>
+                    <div style={{ fontSize: 13, opacity: 0.86, marginTop: 3 }}>{b.sub}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ marginTop: 14, borderTop: "1px solid rgba(255,255,255,0.2)", paddingTop: 10, display: "flex", gap: 10, flexWrap: "wrap", position: "relative" }}>
+              {["RA 9003", "RA 10173", "DILG"].map((x, i) => (
+                <div key={i} style={{ background: "rgba(255,255,255,0.15)", borderRadius: 8, padding: "8px 14px", fontSize: 11, fontWeight: 700 }}>{x}</div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bago-auth-right">{children}</div>
+        </div>
+
+        <div className="bago-auth-foot">
+          <span>© 2026 LGU Lipa City · Piloted with DENR Region IV-A</span>
+          <span>Privacy · Terms · Accessibility · Contact</span>
+        </div>
       </div>
-    </div>
+    </React.Fragment>
   );
 }
 
 function RoleBtn({ active, icon, label, onClick, activeColor = "#2E7D32" }) {
   return (
-    <button onClick={onClick} style={{ width: 118, height: 74, borderRadius: 10, border: active ? "2px solid " + activeColor : "1px solid #DDDDDD", background: active ? "#F5FBF6" : "white", color: active ? activeColor : "#424242", cursor: "pointer", fontFamily: "Poppins", fontWeight: 700, fontSize: 12 }}>
+    <button type="button" onClick={onClick} style={{ width: 118, height: 74, borderRadius: 10, border: active ? "2px solid " + activeColor : "1px solid #DDDDDD", background: active ? "#F5FBF6" : "white", color: active ? activeColor : "#424242", cursor: "pointer", fontFamily: "Poppins", fontWeight: 700, fontSize: 12 }}>
       <div style={{ fontSize: 17 }}>{icon}</div>
       <div>{label}</div>
     </button>
@@ -137,8 +160,8 @@ function LoginScreen() {
   const [role, setRole] = React.useState("Resident");
   const [mobile, setMobile] = React.useState("");
   const [pin, setPin] = React.useState("");
-  const [govEmail, setGovEmail] = React.useState("m.santos@lipacity.gov.ph");
-  const [govPassword, setGovPassword] = React.useState("LipaDemo2026!");
+  const [govEmail, setGovEmail] = React.useState("");
+  const [govPassword, setGovPassword] = React.useState("");
   function onMobileChange(value) {
     const digits = String(value || "").replace(/\D/g, "").slice(0, 10);
     setMobile(digits);
@@ -193,7 +216,7 @@ function LoginScreen() {
           {isLGU ? (
             <>
               <AuthInput label="Government email" value={govEmail} onChange={(e) => setGovEmail(e.target.value)} type="email" placeholder="you@lipacity.gov.ph" />
-              <AuthInput label="Password" value={govPassword} onChange={(e) => setGovPassword(e.target.value)} type="password" hint="Min. 10 chars · 2FA required next" placeholder="Enter password" />
+              <AuthInput label="Password" value={govPassword} onChange={(e) => setGovPassword(e.target.value)} type="password" hint="Min. 10 chars · 2FA required next · demo: m.santos@lipacity.gov.ph / LipaDemo2026!" placeholder="Enter password" />
             </>
           ) : (
             <>
@@ -223,8 +246,8 @@ function RegisterScreen() {
   const cityOptions = Object.keys(BATANGAS_CITY_BARANGAYS);
   const [fullName, setFullName] = React.useState("");
   const [mobile, setMobile] = React.useState("");
-  const [city, setCity] = React.useState("Lipa City");
-  const [barangay, setBarangay] = React.useState(BATANGAS_CITY_BARANGAYS["Lipa City"][0]);
+  const [city, setCity] = React.useState("");
+  const [barangay, setBarangay] = React.useState("");
   const [address, setAddress] = React.useState("");
   const [pin, setPin] = React.useState("");
   const [confirmPin, setConfirmPin] = React.useState("");
@@ -232,8 +255,7 @@ function RegisterScreen() {
 
   function onCityChange(nextCity) {
     setCity(nextCity);
-    var nextBarangays = BATANGAS_CITY_BARANGAYS[nextCity] || [];
-    setBarangay(nextBarangays.length ? nextBarangays[0] : "");
+    setBarangay("");
   }
   function onMobileChange(value) {
     const digits = String(value || "").replace(/\D/g, "").slice(0, 10);
@@ -261,8 +283,8 @@ function RegisterScreen() {
           </div>
           <UL style={{ color: "#1B5E20", marginTop: 14 }}>Address</UL>
           <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            <Select label="City" value={city} onChange={onCityChange} options={cityOptions} />
-            <Select label="Barangay" value={barangay} onChange={setBarangay} options={barangayOptions} />
+            <Select label="City" value={city} onChange={onCityChange} options={cityOptions} placeholder="Select city / municipality" />
+            <Select label="Barangay" value={barangay} onChange={setBarangay} options={barangayOptions} placeholder={city ? "Select barangay" : "Choose city first"} />
           </div>
           <AuthInput label="Street address & purok" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="House no., street, purok" />
           <UL style={{ color: "#1B5E20", marginTop: 14 }}>Security PIN</UL>
@@ -279,7 +301,7 @@ function RegisterScreen() {
 
 function OTPScreen() {
   const [digits, setDigits] = React.useState(["", "", "", "", "", ""]);
-  const [mobileDisplay, setMobileDisplay] = React.useState("+63 9•• ••• ••••");
+  const [mobileDisplay, setMobileDisplay] = React.useState("—");
   const [debugOtp, setDebugOtp] = React.useState("");
 
   React.useEffect(() => {
@@ -288,6 +310,8 @@ function OTPScreen() {
     if (pendingMobile.length >= 11 && pendingMobile.indexOf("0") === 0) {
       var masked = "+63 " + pendingMobile.slice(1, 4) + " ••• " + pendingMobile.slice(-4);
       setMobileDisplay(masked);
+    } else {
+      setMobileDisplay("Complete registration to receive a code at your number.");
     }
     if ((location.hostname === "localhost" || location.hostname === "127.0.0.1") && /^\d{6}$/.test(pendingOtp)) {
       setDebugOtp(pendingOtp);

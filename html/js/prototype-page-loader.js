@@ -38,6 +38,153 @@ window.BAGOPrototype = (function () {
     }
   }
 
+  /** Lightweight overlay dialogs (no React dependency). */
+  function modalAlert(message, title) {
+    title = title || "BAGO.PH";
+    return new Promise(function (resolve) {
+      var backdrop = document.createElement("div");
+      backdrop.setAttribute("role", "dialog");
+      backdrop.setAttribute("aria-modal", "true");
+      backdrop.style.cssText =
+        "position:fixed;inset:0;z-index:999999;background:rgba(13,27,42,0.55);display:flex;align-items:center;justify-content:center;padding:20px;font-family:Poppins,system-ui,sans-serif;";
+      var box = document.createElement("div");
+      box.style.cssText =
+        "background:#fff;border-radius:12px;max-width:420px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,0.25);overflow:hidden;";
+      var head = document.createElement("div");
+      head.style.cssText = "padding:14px 18px;border-bottom:1px solid #eee;font-size:16px;font-weight:700;color:#0D1B2A;";
+      head.textContent = title;
+      var body = document.createElement("div");
+      body.style.cssText = "padding:18px;font-size:14px;color:#424242;line-height:1.55;white-space:pre-wrap;";
+      body.textContent = message;
+      var foot = document.createElement("div");
+      foot.style.cssText = "padding:12px 18px;border-top:1px solid #eee;text-align:right;background:#fafafa;";
+      var ok = document.createElement("button");
+      ok.type = "button";
+      ok.textContent = "OK";
+      ok.style.cssText =
+        "height:40px;padding:0 20px;border:none;border-radius:8px;background:#2E7D32;color:#fff;font-weight:700;font-family:Poppins;cursor:pointer;";
+      function cleanup() {
+        if (backdrop.parentNode) backdrop.parentNode.removeChild(backdrop);
+        document.removeEventListener("keydown", onKey);
+        resolve(true);
+      }
+      function onKey(ev) {
+        if (ev.key === "Escape") cleanup();
+      }
+      ok.onclick = cleanup;
+      backdrop.onclick = function (e) {
+        if (e.target === backdrop) cleanup();
+      };
+      foot.appendChild(ok);
+      box.appendChild(head);
+      box.appendChild(body);
+      box.appendChild(foot);
+      backdrop.appendChild(box);
+      document.body.appendChild(backdrop);
+      document.addEventListener("keydown", onKey);
+      ok.focus();
+    });
+  }
+
+  function modalConfirm(message, title) {
+    title = title || "Confirm";
+    return new Promise(function (resolve) {
+      var backdrop = document.createElement("div");
+      backdrop.setAttribute("role", "dialog");
+      backdrop.setAttribute("aria-modal", "true");
+      backdrop.style.cssText =
+        "position:fixed;inset:0;z-index:999999;background:rgba(13,27,42,0.55);display:flex;align-items:center;justify-content:center;padding:20px;font-family:Poppins,system-ui,sans-serif;";
+      var box = document.createElement("div");
+      box.style.cssText =
+        "background:#fff;border-radius:12px;max-width:420px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,0.25);overflow:hidden;";
+      var head = document.createElement("div");
+      head.style.cssText = "padding:14px 18px;border-bottom:1px solid #eee;font-size:16px;font-weight:700;color:#0D1B2A;";
+      head.textContent = title;
+      var body = document.createElement("div");
+      body.style.cssText = "padding:18px;font-size:14px;color:#424242;line-height:1.55;";
+      body.textContent = message;
+      var foot = document.createElement("div");
+      foot.style.cssText =
+        "padding:12px 18px;border-top:1px solid #eee;text-align:right;background:#fafafa;display:flex;gap:10px;justify-content:flex-end;";
+      var cancel = document.createElement("button");
+      cancel.type = "button";
+      cancel.textContent = "Cancel";
+      cancel.style.cssText =
+        "height:40px;padding:0 16px;border:1px solid #bdbdbd;border-radius:8px;background:#fff;font-family:Poppins;font-weight:600;cursor:pointer;";
+      var confirm = document.createElement("button");
+      confirm.type = "button";
+      confirm.textContent = "Sign out";
+      confirm.style.cssText =
+        "height:40px;padding:0 18px;border:none;border-radius:8px;background:#C62828;color:#fff;font-weight:700;font-family:Poppins;cursor:pointer;";
+      function cleanup(val) {
+        if (backdrop.parentNode) backdrop.parentNode.removeChild(backdrop);
+        document.removeEventListener("keydown", onKey);
+        resolve(!!val);
+      }
+      function onKey(ev) {
+        if (ev.key === "Escape") cleanup(false);
+      }
+      cancel.onclick = function () {
+        cleanup(false);
+      };
+      confirm.onclick = function () {
+        cleanup(true);
+      };
+      backdrop.onclick = function (e) {
+        if (e.target === backdrop) cleanup(false);
+      };
+      foot.appendChild(cancel);
+      foot.appendChild(confirm);
+      box.appendChild(head);
+      box.appendChild(body);
+      box.appendChild(foot);
+      backdrop.appendChild(box);
+      document.body.appendChild(backdrop);
+      document.addEventListener("keydown", onKey);
+      cancel.focus();
+    });
+  }
+
+  function applyWebRegister(opts) {
+    opts = opts || {};
+    var role = normalizeRole(opts.role || "user");
+    var mobile = normalizeMobile(opts.mobile || "");
+    var pin = String(opts.pin || "").replace(/\D/g, "").slice(0, 4);
+    if (!mobile || mobile.length < 10) {
+      alert("Enter a valid Philippine mobile number (10 digits after +63).");
+      return;
+    }
+    if (!/^\d{4}$/.test(pin)) {
+      alert("PIN must be exactly 4 digits.");
+      return;
+    }
+    if (role === "collector") {
+      var inv = String(opts.inviteCode || "").replace(/\D/g, "");
+      if (inv !== "207142") {
+        alert("Invalid or expired supervisor invite code. Prototype accepts code 207142.");
+        return;
+      }
+    }
+    saveLocalAccount(mobile, pin, role);
+    setRole(role);
+    issueOtpForLocal(mobile);
+    go("auth-web-otp");
+  }
+
+  function submitLGUAdminApplication(payload) {
+    var name = payload && payload.fullName ? String(payload.fullName) : "—";
+    var em = payload && payload.email ? String(payload.email) : "—";
+    var msg =
+      "Recorded (prototype only):\n" +
+      name +
+      "\n" +
+      em +
+      "\n\nNo LGU account is created until NSWMC approval. Use the demo LGU sign-in on the login page to explore the admin console.";
+    modalAlert(msg, "Application submitted").then(function () {
+      go("auth-web-login");
+    });
+  }
+
   function ensureFallbacks() {
     if (fallbackComponents.LoginScreen) return;
 
@@ -324,6 +471,8 @@ window.BAGOPrototype = (function () {
       "otp.html": true,
       "auth-web-login.html": true,
       "auth-web-register.html": true,
+      "auth-web-register-collector.html": true,
+      "auth-web-register-lgu.html": true,
       "auth-web-otp.html": true
     };
     if (authPages[page]) return;
@@ -728,6 +877,19 @@ window.BAGOPrototype = (function () {
         localStorage.removeItem("bagoPendingOtp");
         go(dashboardFor(localStorage.getItem("bagoRole") || "user"));
       }
+      if (lastComponent === "AuthWebOTP" && txt.indexOf("verify & finish registration") !== -1) {
+        event.preventDefault();
+        var expected3 = String(localStorage.getItem("bagoPendingOtp") || "");
+        var got3 = Array.prototype.slice.call(document.querySelectorAll("[data-otp-digit]"))
+          .map(function (el) { return String(el.value || "").replace(/\D/g, "").slice(0, 1); })
+          .join("");
+        if (expected3 && got3 !== expected3) {
+          alert("Invalid OTP. Check browser console for local test OTP.");
+          return;
+        }
+        localStorage.removeItem("bagoPendingOtp");
+        go(dashboardFor(localStorage.getItem("bagoRole") || "user"));
+      }
       if (lastComponent === "OTPScreen" && txt.indexOf("go back") !== -1) {
         event.preventDefault();
         go("register");
@@ -756,9 +918,12 @@ window.BAGOPrototype = (function () {
       }
       if (txt.indexOf("logout") !== -1) {
         event.preventDefault();
-        localStorage.removeItem("bagoRole");
-        localStorage.removeItem("bagoToken");
-        go("index");
+        modalConfirm("You will return to the login screen. Session and token on this device will be cleared.", "Sign out?").then(function (ok) {
+          if (!ok) return;
+          localStorage.removeItem("bagoRole");
+          localStorage.removeItem("bagoToken");
+          go("index");
+        });
       }
     });
 
@@ -839,5 +1004,11 @@ window.BAGOPrototype = (function () {
     ReactDOM.createRoot(mount).render(React.createElement(component));
   }
 
-  return { render: render };
+  return {
+    render: render,
+    applyWebRegister: applyWebRegister,
+    submitLGUAdminApplication: submitLGUAdminApplication,
+    modalAlert: modalAlert,
+    modalConfirm: modalConfirm
+  };
 })();
