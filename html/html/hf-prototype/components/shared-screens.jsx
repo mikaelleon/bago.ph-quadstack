@@ -237,6 +237,9 @@ function LoginScreen() {
           <button style={{ width: "100%", marginTop: 6, height: 40, border: "1px solid #D9D9D9", background: "white", color: "#4B5563", fontSize: 14, fontWeight: 600, borderRadius: 8, fontFamily: "Poppins", cursor: "pointer" }}>Continue with GovPH SSO</button>
         )}
         <div style={{ marginTop: isLGU ? 10 : 16, textAlign: "center", color: "#666", fontSize: 14 }}>New to BAGO.PH? <a style={{ color: roleTheme.deep, fontWeight: 700, cursor: "pointer" }}>Register your household →</a></div>
+        <div style={{ marginTop: 8, textAlign: "center" }}>
+          <button type="button" data-bago-demo-creds="1" style={{ border: "none", background: "transparent", color: roleTheme.deep, fontWeight: 700, fontSize: 12, cursor: "pointer", textDecoration: "underline" }}>Demo credentials</button>
+        </div>
       </div>
     </AuthShell>
   );

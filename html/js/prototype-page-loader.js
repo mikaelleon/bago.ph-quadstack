@@ -145,6 +145,109 @@ window.BAGOPrototype = (function () {
     });
   }
 
+  function copyText(value) {
+    var text = String(value || "");
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      try {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "readonly");
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        if (ok) resolve();
+        else reject(new Error("Copy failed"));
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
+
+  function showDemoCredentialsModal() {
+    var creds = [
+      { role: "Resident", value: "09171234567 / 1234", copy: "09171234567\t1234" },
+      { role: "Collector", value: "09171234568 / 1234", copy: "09171234568\t1234" },
+      { role: "LGU Admin", value: "m.santos@lipacity.gov.ph / LipaDemo2026!", copy: "m.santos@lipacity.gov.ph\tLipaDemo2026!" }
+    ];
+    var backdrop = document.createElement("div");
+    backdrop.setAttribute("role", "dialog");
+    backdrop.setAttribute("aria-modal", "true");
+    backdrop.style.cssText =
+      "position:fixed;inset:0;z-index:999999;background:rgba(13,27,42,0.55);display:flex;align-items:center;justify-content:center;padding:20px;font-family:Poppins,system-ui,sans-serif;";
+    var box = document.createElement("div");
+    box.style.cssText =
+      "background:#fff;border-radius:12px;max-width:560px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,0.25);overflow:hidden;";
+    var head = document.createElement("div");
+    head.style.cssText = "padding:14px 18px;border-bottom:1px solid #eee;font-size:16px;font-weight:700;color:#0D1B2A;";
+    head.textContent = "Demo credentials";
+    var body = document.createElement("div");
+    body.style.cssText = "padding:14px 18px;display:flex;flex-direction:column;gap:10px;";
+    creds.forEach(function (entry) {
+      var row = document.createElement("div");
+      row.style.cssText = "display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:1px solid #E0E0E0;border-radius:8px;padding:10px;";
+      var meta = document.createElement("div");
+      meta.style.cssText = "flex:1;min-width:210px;";
+      var role = document.createElement("div");
+      role.style.cssText = "font-size:12px;font-weight:700;color:#0D1B2A;";
+      role.textContent = entry.role;
+      var value = document.createElement("div");
+      value.style.cssText = "font-size:12px;color:#616161;margin-top:2px;font-family:ui-monospace,Menlo,Consolas,monospace;";
+      value.textContent = entry.value;
+      var copy = document.createElement("button");
+      copy.type = "button";
+      copy.textContent = "Copy";
+      copy.style.cssText =
+        "height:34px;padding:0 12px;border:1px solid #2E7D32;border-radius:7px;background:#E8F5E9;color:#1B5E20;font-weight:700;font-family:Poppins;cursor:pointer;";
+      copy.onclick = function () {
+        copyText(entry.copy).then(function () {
+          var old = copy.textContent;
+          copy.textContent = "Copied";
+          setTimeout(function () { copy.textContent = old; }, 1000);
+        }).catch(function () {
+          copy.textContent = "Failed";
+          setTimeout(function () { copy.textContent = "Copy"; }, 1000);
+        });
+      };
+      meta.appendChild(role);
+      meta.appendChild(value);
+      row.appendChild(meta);
+      row.appendChild(copy);
+      body.appendChild(row);
+    });
+    var foot = document.createElement("div");
+    foot.style.cssText = "padding:12px 18px;border-top:1px solid #eee;text-align:right;background:#fafafa;";
+    var close = document.createElement("button");
+    close.type = "button";
+    close.textContent = "Close";
+    close.style.cssText =
+      "height:38px;padding:0 16px;border:none;border-radius:8px;background:#2E7D32;color:#fff;font-weight:700;font-family:Poppins;cursor:pointer;";
+    function cleanup() {
+      if (backdrop.parentNode) backdrop.parentNode.removeChild(backdrop);
+      document.removeEventListener("keydown", onKey);
+    }
+    function onKey(ev) {
+      if (ev.key === "Escape") cleanup();
+    }
+    close.onclick = cleanup;
+    backdrop.onclick = function (e) {
+      if (e.target === backdrop) cleanup();
+    };
+    foot.appendChild(close);
+    box.appendChild(head);
+    box.appendChild(body);
+    box.appendChild(foot);
+    backdrop.appendChild(box);
+    document.body.appendChild(backdrop);
+    document.addEventListener("keydown", onKey);
+    close.focus();
+  }
+
   function applyWebRegister(opts) {
     opts = opts || {};
     var role = normalizeRole(opts.role || "user");
@@ -928,6 +1031,12 @@ window.BAGOPrototype = (function () {
     });
 
     document.addEventListener("click", function (event) {
+      var demoBtn = event.target.closest("[data-bago-demo-creds]");
+      if (demoBtn) {
+        event.preventDefault();
+        showDemoCredentialsModal();
+        return;
+      }
       var node = event.target.closest("div,span,a,button");
       if (!node) return;
       var text = String(node.textContent || "").trim();
@@ -963,16 +1072,7 @@ window.BAGOPrototype = (function () {
         go("register");
         return;
       }
-      if (textLc.indexOf("forgot pin") !== -1 || textLc.indexOf("forgot password") !== -1) {
-        event.preventDefault();
-        alert(
-          "Demo credentials (prototype only):\n" +
-          "Resident — mobile 09171234567 · PIN 1234\n" +
-          "Collector — mobile 09171234568 · PIN 1234\n" +
-          "LGU Admin — email m.santos@lipacity.gov.ph · password LipaDemo2026!"
-        );
-        return;
-      }
+      if (textLc.indexOf("forgot pin") !== -1 || textLc.indexOf("forgot password") !== -1) return;
     });
   }
 

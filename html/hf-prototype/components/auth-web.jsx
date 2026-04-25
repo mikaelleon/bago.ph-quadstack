@@ -257,6 +257,15 @@ function AuthWebLogin() {
           {' · '}
           <a href="./auth-web-register-lgu.html" style={{ color: AW_NAVY, fontWeight: 600, cursor: 'pointer', textDecoration: 'none' }}>LGU admin enrollment</a>
         </div>
+        <div style={{ textAlign: 'center', marginTop: 8 }}>
+          <button
+            type="button"
+            data-bago-demo-creds="1"
+            style={{ border: 'none', background: 'transparent', color: active.color, fontSize: 12, fontWeight: 700, cursor: 'pointer', textDecoration: 'underline' }}
+          >
+            Demo credentials
+          </button>
+        </div>
       </div>
     </AuthWebShell>
   );
