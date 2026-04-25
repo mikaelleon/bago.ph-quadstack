@@ -4,6 +4,7 @@
 
 const AW_GREEN = '#2E7D32';
 const AW_GREEN_DEEP = '#1B5E20';
+const AW_GREEN_TINT = '#E8F5E9';
 const AW_BLUE = '#1565C0';
 const AW_NAVY = '#0D1B2A';
 
@@ -121,6 +122,8 @@ function AuthWebShell({ tagline, heroStat, heroStatLabel, heroBullets, footerLef
    ───────────────────────────────────────────────────────────────── */
 function AuthWebLogin() {
   const [role, setRole] = React.useState('Resident');
+  const [govEmail, setGovEmail] = React.useState('m.santos@lipacity.gov.ph');
+  const [govPassword, setGovPassword] = React.useState('LipaDemo2026!');
   const roles = [
     { key: 'Resident',  icon: '🏠', color: AW_GREEN, desc: 'Households · barangay residents' },
     { key: 'Collector', icon: '🚛', color: AW_BLUE,  desc: 'Field crew · depot operators' },
@@ -168,12 +171,12 @@ function AuthWebLogin() {
         {/* Form */}
         <div style={{ marginTop: 22, display: 'flex', flexDirection: 'column', gap: 14 }}>
           {role === 'LGU Admin' ? (
-            <Input label="Government email" value="m.santos@lipacity.gov.ph" onChange={() => {}} type="email"/>
+            <Input label="Government email" value={govEmail} onChange={(e) => setGovEmail(e.target.value)} type="email"/>
           ) : (
             <Input label="Mobile number" value="917 543 8821" onChange={() => {}} prefix="+63" type="tel"/>
           )}
           <div>
-            <Input label={role === 'LGU Admin' ? 'Password' : 'PIN'} value={role === 'LGU Admin' ? '••••••••••' : '••••'} onChange={() => {}} type="password" hint={role === 'LGU Admin' ? 'Min. 10 chars · 2FA required next' : '4-digit PIN'}/>
+            <Input label={role === 'LGU Admin' ? 'Password' : 'PIN'} value={role === 'LGU Admin' ? govPassword : '••••'} onChange={role === 'LGU Admin' ? (e) => setGovPassword(e.target.value) : () => {}} type="password" hint={role === 'LGU Admin' ? 'Min. 10 chars · 2FA required next · demo: LipaDemo2026!' : '4-digit PIN'}/>
             <div style={{ textAlign: 'right', marginTop: 6 }}>
               <a style={{ fontSize: 12, color: active.color, fontWeight: 600, cursor: 'pointer' }}>Forgot {role === 'LGU Admin' ? 'password' : 'PIN'}?</a>
             </div>
@@ -199,7 +202,13 @@ function AuthWebLogin() {
         )}
 
         <div style={{ textAlign: 'center', marginTop: 20, fontSize: 13, color: '#757575' }}>
-          New to BAGO.PH? <a style={{ color: active.color, fontWeight: 700, cursor: 'pointer' }}>Register your household →</a>
+          New to BAGO.PH?{' '}
+          <a href="./auth-web-register.html" style={{ color: active.color, fontWeight: 700, cursor: 'pointer', textDecoration: 'none' }}>Register household →</a>
+        </div>
+        <div style={{ textAlign: 'center', marginTop: 10, fontSize: 12, color: '#9E9E9E', lineHeight: 1.65 }}>
+          <a href="./auth-web-register-collector.html" style={{ color: AW_BLUE, fontWeight: 600, cursor: 'pointer', textDecoration: 'none' }}>Collector enrollment</a>
+          {' · '}
+          <a href="./auth-web-register-lgu.html" style={{ color: AW_NAVY, fontWeight: 600, cursor: 'pointer', textDecoration: 'none' }}>LGU admin enrollment</a>
         </div>
       </div>
     </AuthWebShell>
@@ -209,97 +218,426 @@ function AuthWebLogin() {
 /* ─────────────────────────────────────────────────────────────────
    41 · Web Register — stepper + full form + side summary
    ───────────────────────────────────────────────────────────────── */
-function AuthWebRegister() {
-  return (
-    <AuthWebShell
-      tagline="Your barangay ID, a QR card, and eco-points — in 3 minutes."
-      heroStat="3 min"
-      heroStatLabel="average time to register · verification via SMS OTP. No office visit needed."
-      heroBullets={[
+function AuthWebRegister({ initialRole = 'resident', hideRolePicker = false } = {}) {
+  const [role, setRole] = React.useState(initialRole);
+  const COL = '#1565C0', COL_DEEP = '#0D47A1', COL_TINT = '#E3F2FD';
+  const NAVY = '#0D1B2A', NAVY_TINT = '#E8EAF0';
+  const accent = role === 'collector' ? COL : role === 'admin' ? NAVY : AW_GREEN;
+
+  // Hero changes per role
+  const heroByRole = {
+    resident: {
+      tagline: 'Your barangay ID, a QR card, and eco-points — in 3 minutes.',
+      heroStat: '3 min',
+      heroStatLabel: 'average time to register · verification via SMS OTP. No office visit needed.',
+      bullets: [
         ['🪪', 'Unique household ID (e.g. BAGO-MARA-2025-00142)', 'Printable QR card that collectors scan at pickup.'],
         ['💸', 'Free forever for residents',                      'Your LGU funds BAGO.PH under the SWM plan.'],
         ['🔒', 'Your data stays in the Philippines',              'RA 10173-compliant processing · opt-out any time.'],
-      ]}>
+      ],
+    },
+    collector: {
+      tagline: 'Collector accounts are issued by your LGU substation supervisor.',
+      heroStat: 'Invite-only',
+      heroStatLabel: 'You\'ll need a 6-digit invite code from your supervisor + your government ID.',
+      bullets: [
+        ['📨', 'Get an invite from your substation supervisor', 'Codes expire after 72 hours and one use.'],
+        ['🪪', 'Verify with PhilSys or driver\'s license',       'Photo + selfie liveness check. Done in 5 minutes.'],
+        ['👮', 'Manual approval by LGU within 24 hours',         'You\'ll get a text once your account is active.'],
+      ],
+    },
+    admin: {
+      tagline: 'LGU admin access is restricted — register only with explicit authorization.',
+      heroStat: 'Mayor-signed',
+      heroStatLabel: 'Office Order required · NSWMC verifies your appointment before account creation.',
+      bullets: [
+        ['🏛️', 'PhilGov SSO is the recommended path',              'No password to manage. Audit-logged on every access.'],
+        ['📜', 'Office Order from Mayor or ENRO required',          'Uploaded as PDF — kept on file for audits.'],
+        ['🛡️', '2-factor authentication enforced from day one',     'Hardware key supported. SMS fallback available.'],
+      ],
+    },
+  };
+  const hero = heroByRole[role];
 
-      <div style={{ width: '100%', maxWidth: 540 }}>
-        {/* Stepper */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24 }}>
-          {[
-            [1, 'Account',    'active'],
-            [2, 'Address',    'active'],
-            [3, 'Security',   'current'],
-            [4, 'Verify OTP', 'pending'],
-          ].map(([n, l, s], i) => {
-            const active = s === 'active' || s === 'current';
+  const brgyOptions = ['Brgy. Marawoy', 'Brgy. San Sebastian', 'Brgy. Balintawak', 'Brgy. Tambo', 'Brgy. Dagatan'];
+  const idTypeOptions = ['PhilSys (National ID)', 'Driver\'s license', 'PRC license', 'Postal ID'];
+
+  React.useEffect(function () {
+    if (hideRolePicker) setRole(initialRole);
+  }, [hideRolePicker, initialRole]);
+
+  const [rName, setRName] = React.useState('Maria Santos Dela Cruz');
+  const [rMobile, setRMobile] = React.useState('9175438821');
+  const [rBrgy, setRBrgy] = React.useState('Brgy. Marawoy');
+  const [rCity, setRCity] = React.useState('Lipa City, Batangas');
+  const [rStreet, setRStreet] = React.useState('128 Rizal St., Purok 3');
+  const [rPin, setRPin] = React.useState('');
+  const [rPin2, setRPin2] = React.useState('');
+
+  const [inv, setInv] = React.useState(['2', '0', '7', '1', '4', '2']);
+  function setInvIdx(i, v) {
+    var d = String(v || '').replace(/\D/g, '').slice(-1);
+    setInv(function (prev) { var n = prev.slice(); n[i] = d; return n; });
+  }
+  const [cName, setCName] = React.useState('Juan Carlos Reyes');
+  const [cMobile, setCMobile] = React.useState('9176120042');
+  const [cIdType, setCIdType] = React.useState('PhilSys (National ID)');
+  const [cIdNum, setCIdNum] = React.useState('');
+  const [cPin, setCPin] = React.useState('');
+  const [cPin2, setCPin2] = React.useState('');
+
+  const [aName, setAName] = React.useState('Elena R. Mercado');
+  const [aPos, setAPos] = React.useState('Senior Environmental Officer');
+  const [aEmail, setAEmail] = React.useState('emercado@lipacity.gov.ph');
+  const [aCsc, setACsc] = React.useState('2018-LIPA-04217');
+
+  function submitResident() {
+    if (String(rName).trim().length < 3) return alert('Enter full name (at least 3 characters).');
+    if (String(rPin) !== String(rPin2)) return alert('PIN and confirm PIN must match.');
+    var fn = window.BAGOPrototype && window.BAGOPrototype.applyWebRegister;
+    if (fn) fn({ role: 'user', mobile: rMobile, pin: rPin, fullName: rName, barangay: rBrgy, city: rCity, street: rStreet });
+    else alert('Registration bridge not loaded. Refresh the page.');
+  }
+
+  function submitCollector() {
+    var code = inv.join('');
+    if (!/^\d{6}$/.test(code)) return alert('Enter the 6-digit supervisor invite code (digits only).');
+    if (String(cName).trim().length < 3) return alert('Enter full legal name.');
+    if (String(cPin) !== String(cPin2)) return alert('PIN and confirm PIN must match.');
+    var fn = window.BAGOPrototype && window.BAGOPrototype.applyWebRegister;
+    if (fn) fn({ role: 'collector', mobile: cMobile, pin: cPin, fullName: cName, inviteCode: code, idType: cIdType, idNumber: cIdNum });
+    else alert('Registration bridge not loaded. Refresh the page.');
+  }
+
+  function submitAdmin() {
+    var fn = window.BAGOPrototype && window.BAGOPrototype.submitLGUAdminApplication;
+    if (fn) fn({ email: aEmail, fullName: aName, position: aPos, cscNo: aCsc });
+    else alert('Registration bridge not loaded. Refresh the page.');
+  }
+
+  return (
+    <AuthWebShell
+      tagline={hero.tagline}
+      heroStat={hero.heroStat}
+      heroStatLabel={hero.heroStatLabel}
+      heroBullets={hero.bullets}
+      accent={accent}>
+
+      <div style={{ width: '100%', maxWidth: 560 }} data-bago-active-role={role}>
+        {!hideRolePicker && (
+        <div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#757575', letterSpacing: 0.5, textTransform: 'uppercase', marginBottom: 8 }}>I'm signing up as a…</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8 }}>
+            {[
+              ['resident',  '🏠', 'Resident',  'Self-serve · OTP only'],
+              ['collector', '🚛', 'Collector', 'Invite + ID required'],
+              ['admin',     '🏛️', 'LGU Admin', 'Office Order required'],
+            ].map(([id, ic, l, sub]) => {
+              const on = role === id;
+              const c = id === 'collector' ? COL : id === 'admin' ? NAVY : AW_GREEN;
+              return (
+                <button type="button" key={id} onClick={() => setRole(id)} style={{
+                  padding: '12px 10px', textAlign: 'left',
+                  background: on ? (id === 'collector' ? COL_TINT : id === 'admin' ? NAVY_TINT : '#E8F5E9') : 'white',
+                  border: on ? `2px solid ${c}` : '1.5px solid #E0E0E0',
+                  borderRadius: 8, cursor: 'pointer', fontFamily: 'Poppins', transition: 'all 0.15s',
+                }}>
+                  <div style={{ fontSize: 18 }}>{ic}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: on ? c : '#212121', marginTop: 4 }}>{l}</div>
+                  <div style={{ fontSize: 10, color: '#757575', marginTop: 2 }}>{sub}</div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        )}
+        {hideRolePicker && (
+          <div style={{ fontSize: 12, fontWeight: 700, color: '#757575', marginBottom: 4 }}>
+            {initialRole === 'collector' ? '🚛 Collector enrollment' : '🏛️ LGU admin enrollment'}
+          </div>
+        )}
+
+        {/* Step indicator */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 18 }}>
+          {(role === 'resident'
+            ? [[1, 'Account', 'done'], [2, 'Address', 'done'], [3, 'Security', 'current'], [4, 'OTP', 'pending']]
+            : role === 'collector'
+              ? [[1, 'Invite code', 'done'], [2, 'Identity', 'current'], [3, 'OTP', 'pending'], [4, 'LGU approval', 'pending']]
+              : [[1, 'Office Order', 'done'], [2, 'PhilGov SSO', 'current'], [3, '2FA setup', 'pending'], [4, 'NSWMC review', 'pending']]
+          ).map(([n, l, s], i, arr) => {
+            const active = s === 'done' || s === 'current';
             return (
               <React.Fragment key={n}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   <div style={{
-                    width: 26, height: 26, borderRadius: 13,
-                    background: active ? AW_GREEN : '#E0E0E0',
+                    width: 22, height: 22, borderRadius: 11,
+                    background: active ? accent : '#E0E0E0',
                     color: active ? 'white' : '#9E9E9E',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 12, fontWeight: 700,
-                    boxShadow: s === 'current' ? `0 0 0 4px ${AW_GREEN}22` : 'none',
-                  }}>{s === 'active' ? '✓' : n}</div>
-                  <span style={{ fontSize: 12, fontWeight: s === 'current' ? 700 : 500, color: active ? '#212121' : '#9E9E9E' }}>{l}</span>
+                    fontSize: 10, fontWeight: 700,
+                    boxShadow: s === 'current' ? `0 0 0 3px ${accent}22` : 'none',
+                  }}>{s === 'done' ? '✓' : n}</div>
+                  <span style={{ fontSize: 11, fontWeight: s === 'current' ? 700 : 500, color: active ? '#212121' : '#9E9E9E' }}>{l}</span>
                 </div>
-                {i < 3 && <div style={{ flex: 1, height: 2, background: s === 'active' ? AW_GREEN : '#E0E0E0' }}/>}
+                {i < arr.length - 1 && <div style={{ flex: 1, height: 2, background: s === 'done' ? accent : '#E0E0E0' }}/>}
               </React.Fragment>
             );
           })}
         </div>
 
-        <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: -0.5 }}>Create your household account</div>
-        <div style={{ fontSize: 13, color: '#757575', marginTop: 4 }}>Step 3 of 4 — one form, then a quick SMS verification.</div>
+        {/* RESIDENT FORM */}
+        {role === 'resident' && (
+          <div style={{ marginTop: 18, background: 'white', borderRadius: 12, padding: 20, boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
+            <div style={{ fontSize: 17, fontWeight: 700 }}>Create your household account</div>
+            <div style={{ fontSize: 12, color: '#757575', marginTop: 2 }}>Step 3 of 4 — one form, then a quick SMS verification.</div>
 
-        {/* Form */}
-        <div style={{ marginTop: 22, background: 'white', borderRadius: 12, padding: 22, boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
-          <UL style={{ color: AW_GREEN_DEEP }}>Personal details</UL>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 10 }}>
-            <Input label="Full name" value="Maria Santos Dela Cruz" onChange={() => {}}/>
-            <Input label="Mobile number" value="917 543 8821" onChange={() => {}} prefix="+63" type="tel"/>
-          </div>
-
-          <UL style={{ marginTop: 18, color: AW_GREEN_DEEP }}>Address</UL>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 10 }}>
-            <Select label="Barangay" value="Brgy. Marawoy" onChange={() => {}} options={['Brgy. Marawoy', 'Brgy. San Sebastian', 'Brgy. Balintawak', 'Brgy. Tambo', 'Brgy. Dagatan']}/>
-            <Input label="City" value="Lipa City, Batangas" onChange={() => {}}/>
-          </div>
-          <Input label="Street address & purok" value="128 Rizal St., Purok 3" onChange={() => {}} style={{ marginTop: 12 }}/>
-
-          <UL style={{ marginTop: 18, color: AW_GREEN_DEEP }}>Security PIN</UL>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 10 }}>
-            <Input label="Create PIN" value="••••" onChange={() => {}} type="password" hint="4 digits"/>
-            <Input label="Confirm PIN" value="••••" onChange={() => {}} type="password" hint="Match required"/>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginTop: 18, padding: 12, background: '#E8F5E9', borderRadius: 8 }}>
-            <input type="checkbox" defaultChecked style={{ marginTop: 2, accentColor: AW_GREEN, width: 14, height: 14, flexShrink: 0 }}/>
-            <div style={{ fontSize: 12, color: AW_GREEN_DEEP, lineHeight: 1.5 }}>
-              I agree to the <strong>BAGO.PH terms</strong> and consent to data processing under <strong>RA 10173</strong> for civic waste management. I understand my household ID is public within my barangay.
+            <UL style={{ marginTop: 16, color: AW_GREEN_DEEP }}>Personal details</UL>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 8 }}>
+              <Input label="Full name" value={rName} onChange={(e) => setRName(e.target.value)}/>
+              <Input label="Mobile number" value={rMobile} onChange={(e) => setRMobile(e.target.value)} prefix="+63" type="tel" hint="10 digits, e.g. 9175438821"/>
+            </div>
+            <UL style={{ marginTop: 14, color: AW_GREEN_DEEP }}>Address</UL>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 8 }}>
+              <Select label="Barangay" value={rBrgy} onChange={setRBrgy} options={brgyOptions}/>
+              <Input label="City" value={rCity} onChange={(e) => setRCity(e.target.value)}/>
+            </div>
+            <Input label="Street address & purok" value={rStreet} onChange={(e) => setRStreet(e.target.value)} style={{ marginTop: 10 }}/>
+            <UL style={{ marginTop: 14, color: AW_GREEN_DEEP }}>Security PIN</UL>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 8 }}>
+              <Input label="Create PIN" value={rPin} onChange={(e) => setRPin(e.target.value)} type="password" hint="4 digits"/>
+              <Input label="Confirm PIN" value={rPin2} onChange={(e) => setRPin2(e.target.value)} type="password" hint="Match required"/>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginTop: 14, padding: 10, background: AW_GREEN_TINT, borderRadius: 8 }}>
+              <input type="checkbox" defaultChecked style={{ marginTop: 2, accentColor: AW_GREEN, width: 14, height: 14, flexShrink: 0 }}/>
+              <div style={{ fontSize: 11, color: AW_GREEN_DEEP, lineHeight: 1.5 }}>
+                I agree to the <strong>BAGO.PH terms</strong> and consent to data processing under <strong>RA 10173</strong>.
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 12, marginTop: 14, alignItems: 'center' }}>
+              <div style={{ flex: 1, background: AW_GREEN_TINT, borderRadius: 8, padding: '10px 12px' }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: AW_GREEN_DEEP, letterSpacing: 0.5, textTransform: 'uppercase' }}>Household ID will be</div>
+                <div style={{ fontFamily: 'ui-monospace, Menlo', fontSize: 13, color: AW_GREEN_DEEP, fontWeight: 700, marginTop: 2 }}>BAGO-MARA-2026-00203</div>
+              </div>
+              <Btn type="button" color={AW_GREEN} onClick={submitResident}>Continue → Verify</Btn>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Preview card + CTAs */}
-        <div style={{ display: 'flex', gap: 14, marginTop: 16, alignItems: 'center' }}>
-          <div style={{ flex: 1, background: '#E8F5E9', borderRadius: 10, padding: '12px 14px' }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: AW_GREEN_DEEP, letterSpacing: 0.5, textTransform: 'uppercase' }}>Your household ID will be</div>
-            <div style={{ fontFamily: 'ui-monospace, Menlo', fontSize: 14, color: AW_GREEN_DEEP, fontWeight: 700, marginTop: 2 }}>BAGO-MARA-2025-00142</div>
+        {/* COLLECTOR FORM */}
+        {role === 'collector' && (
+          <div style={{ marginTop: 18, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ background: COL_TINT, borderRadius: 10, padding: 14, borderLeft: `3px solid ${COL}`, display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+              <div style={{ fontSize: 20 }}>🛡️</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: COL_DEEP }}>Why this is more locked-down</div>
+                <div style={{ fontSize: 11, color: COL_DEEP, opacity: 0.85, marginTop: 3, lineHeight: 1.5 }}>
+                  Collectors scan QR codes and award eco-points. A fake collector account could mark phantom pickups and steal points. We verify your identity against your LGU substation roster before activating.
+                </div>
+              </div>
+            </div>
+
+            <div style={{ background: 'white', borderRadius: 12, padding: 20, boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
+              <UL style={{ color: COL_DEEP }}>Step 1 — Substation invite code</UL>
+              <div style={{ fontSize: 11, color: '#757575', marginTop: 4, marginBottom: 10 }}>6-digit code from your supervisor (72 h, single-use). Prototype demo: <strong>207142</strong>.</div>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
+                {inv.map((d, i) => (
+                  <input
+                    key={i}
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={1}
+                    value={d}
+                    onChange={(e) => setInvIdx(i, e.target.value)}
+                    style={{
+                      width: 44, height: 52, border: `2px solid ${COL}`, borderRadius: 8, textAlign: 'center',
+                      fontSize: 22, fontWeight: 700, fontFamily: 'ui-monospace, Menlo', background: COL_TINT, color: COL_DEEP,
+                    }}
+                  />
+                ))}
+                <div style={{ flex: 1, minWidth: 80 }}/>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center' }}>
+                  {inv.join('').length === 6 && /^\d{6}$/.test(inv.join('')) ? (
+                    <>
+                      <span style={{ background: '#E8F5E9', color: '#1B5E20', fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 999 }}>✓ Format OK</span>
+                      <div style={{ fontSize: 10, color: '#757575', marginTop: 4 }}>LGU validates code + roster on submit</div>
+                    </>
+                  ) : (
+                    <span style={{ background: '#FFF8E1', color: '#8D6E0F', fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 999 }}>Enter 6 digits</span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div style={{ background: 'white', borderRadius: 12, padding: 20, boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
+              <UL style={{ color: COL_DEEP }}>Step 2 — Identity verification</UL>
+              <div style={{ fontSize: 11, color: '#757575', marginTop: 4, marginBottom: 12 }}>Upload one government-issued ID. We verify against your substation roster.</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <Input label="Full legal name" value={cName} onChange={(e) => setCName(e.target.value)}/>
+                <Input label="Mobile number" value={cMobile} onChange={(e) => setCMobile(e.target.value)} prefix="+63" type="tel" hint="For OTP after submit"/>
+                <Select label="ID type" value={cIdType} onChange={setCIdType} options={idTypeOptions}/>
+                <Input label="ID number" value={cIdNum} onChange={(e) => setCIdNum(e.target.value)} hint="As shown on ID"/>
+              </div>
+              <UL style={{ color: COL_DEEP, marginTop: 14 }}>App PIN (after LGU approves)</UL>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 8 }}>
+                <Input label="Create PIN" value={cPin} onChange={(e) => setCPin(e.target.value)} type="password" hint="4 digits"/>
+                <Input label="Confirm PIN" value={cPin2} onChange={(e) => setCPin2(e.target.value)} type="password" hint="Match required"/>
+              </div>
+              {/* Upload tiles */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 12 }}>
+                {[
+                  ['ID front',   '#E8F5E9', '#1B5E20', '✓ Verified · OCR match',  'philsys-front.jpg · 2.1 MB'],
+                  ['Selfie',     '#E8F5E9', '#1B5E20', '✓ Liveness passed',       'selfie-001.jpg · 1.8 MB'],
+                ].map(([t, bg, fg, ok, fn], i) => (
+                  <div key={i} style={{ background: bg, borderRadius: 8, padding: 12, border: `1px dashed ${fg}66` }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <div style={{ width: 32, height: 32, borderRadius: 6, background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: fg }}>{i === 0 ? '🪪' : '🤳'}</div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: fg }}>{t}</div>
+                        <div style={{ fontSize: 10, color: fg, opacity: 0.75 }}>{ok}</div>
+                      </div>
+                    </div>
+                    <div style={{ fontSize: 10, color: '#757575', marginTop: 6, fontFamily: 'ui-monospace, Menlo' }}>{fn}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ marginTop: 12, padding: 10, background: '#FFF8E1', borderRadius: 6, borderLeft: '3px solid #F9A825', fontSize: 11, color: '#6D4C1B', lineHeight: 1.5 }}>
+                After OTP, your supervisor receives a notification. <strong>Account activates within 24 hours</strong> after they confirm. You'll get a text.
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <label style={{ flex: 1, display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 11, color: '#424242', lineHeight: 1.5 }}>
+                <input type="checkbox" defaultChecked style={{ accentColor: COL, marginTop: 2, flexShrink: 0 }}/>
+                <span>I confirm the information is accurate and consent to identity verification under <strong>RA 10173</strong>.</span>
+              </label>
+              <Btn color={COL} style={{ minWidth: 200 }} onClick={submitCollector}>Submit for review →</Btn>
+            </div>
           </div>
-          <Btn color={AW_GREEN} style={{ minWidth: 180 }}>Continue → Verify</Btn>
-        </div>
+        )}
+
+        {/* ADMIN FORM */}
+        {role === 'admin' && (
+          <div style={{ marginTop: 18, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ background: '#FFEBEE', borderRadius: 10, padding: 14, borderLeft: '3px solid #C62828', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+              <div style={{ fontSize: 20 }}>🛡️</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#B71C1C' }}>Restricted access · audit-logged</div>
+                <div style={{ fontSize: 11, color: '#B71C1C', opacity: 0.9, marginTop: 3, lineHeight: 1.5 }}>
+                  LGU admin accounts have full visibility into resident data and can issue points adjustments. We require an Office Order signed by the Mayor or ENRO. NSWMC reviews and activates within 1 business day.
+                </div>
+              </div>
+            </div>
+
+            <div style={{ background: 'white', borderRadius: 12, padding: 20, boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
+              <UL style={{ color: NAVY }}>Recommended — PhilGov SSO</UL>
+              <button type="button" onClick={() => alert('PhilGov SSO would open here (philgov.gov.ph). Use manual route below for this prototype.')} style={{ width: '100%', height: 56, marginTop: 8, background: NAVY, color: 'white', border: 'none', borderRadius: 8, fontFamily: 'Poppins', fontWeight: 700, fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
+                <span style={{ fontSize: 22 }}>🏛️</span>
+                <span>Continue with PhilGov SSO</span>
+                <span style={{ fontSize: 10, opacity: 0.7, fontWeight: 500 }}>(philgov.gov.ph)</span>
+              </button>
+              <div style={{ fontSize: 11, color: '#757575', marginTop: 8, lineHeight: 1.5 }}>
+                Single sign-on for government employees. No new password to manage. Your appointment is verified against the CSC roster automatically.
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ flex: 1, height: 1, background: '#E0E0E0' }}/>
+              <div style={{ fontSize: 10, color: '#9E9E9E', letterSpacing: 0.6, textTransform: 'uppercase', fontWeight: 600 }}>or manual route</div>
+              <div style={{ flex: 1, height: 1, background: '#E0E0E0' }}/>
+            </div>
+
+            <div style={{ background: 'white', borderRadius: 12, padding: 20, boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
+              <UL style={{ color: NAVY }}>Step 1 — Office Order</UL>
+              <div style={{ fontSize: 11, color: '#757575', marginTop: 4, marginBottom: 12 }}>Upload the order signed by the Mayor or ENRO designating you as LGU admin.</div>
+              <div style={{ background: NAVY_TINT, borderRadius: 8, padding: 14, border: `1px dashed ${NAVY}66`, display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{ width: 40, height: 48, background: 'white', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }}>📄</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: NAVY }}>OO-2026-117 Designation of LGU Admin.pdf</div>
+                  <div style={{ fontSize: 10, color: '#757575', marginTop: 2 }}>Uploaded · 482 KB · Signed by Mayor J. Magsaysay (Apr 18)</div>
+                </div>
+                <span style={{ background: '#E8F5E9', color: '#1B5E20', fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 999 }}>✓ Verified</span>
+              </div>
+              <UL style={{ color: NAVY, marginTop: 16 }}>Step 2 — Your details</UL>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 8 }}>
+                <Input label="Full legal name" value={aName} onChange={(e) => setAName(e.target.value)}/>
+                <Input label="Position" value={aPos} onChange={(e) => setAPos(e.target.value)}/>
+                <Input label="Government email" value={aEmail} onChange={(e) => setAEmail(e.target.value)} type="email"/>
+                <Input label="CSC employee no." value={aCsc} onChange={(e) => setACsc(e.target.value)}/>
+              </div>
+              <UL style={{ color: NAVY, marginTop: 14 }}>Step 3 — 2-factor authentication</UL>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 8 }}>
+                <label style={{ background: NAVY_TINT, padding: 12, borderRadius: 8, cursor: 'pointer', border: `2px solid ${NAVY}`, display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <input type="radio" name="2fa" defaultChecked style={{ accentColor: NAVY }}/>
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: NAVY }}>🔑 Hardware key</div>
+                    <div style={{ fontSize: 10, color: '#757575', marginTop: 2 }}>YubiKey · Titan · recommended</div>
+                  </div>
+                </label>
+                <label style={{ background: 'white', padding: 12, borderRadius: 8, cursor: 'pointer', border: '1.5px solid #E0E0E0', display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <input type="radio" name="2fa" style={{ accentColor: NAVY }}/>
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 700 }}>📱 Authenticator app</div>
+                    <div style={{ fontSize: 10, color: '#757575', marginTop: 2 }}>Google Authenticator · Authy</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <label style={{ flex: 1, display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 11, color: '#424242', lineHeight: 1.5 }}>
+                <input type="checkbox" defaultChecked style={{ accentColor: NAVY, marginTop: 2, flexShrink: 0 }}/>
+                <span>I understand my actions are <strong>fully audit-logged</strong> and subject to NSWMC review.</span>
+              </label>
+              <Btn color={NAVY} style={{ minWidth: 220 }} onClick={submitAdmin}>Submit to NSWMC →</Btn>
+            </div>
+          </div>
+        )}
       </div>
     </AuthWebShell>
   );
 }
 
+/* Wrapper variants for the canvas */
+function AuthWebRegisterResident()  { return <AuthWebRegister initialRole="resident" hideRolePicker={false} />; }
+function AuthWebRegisterCollector() { return <AuthWebRegister initialRole="collector" hideRolePicker />; }
+function AuthWebRegisterAdmin()     { return <AuthWebRegister initialRole="admin" hideRolePicker />; }
+
 /* ─────────────────────────────────────────────────────────────────
    42 · Web OTP — 6 digit input + timer + fallback
    ───────────────────────────────────────────────────────────────── */
 function AuthWebOTP() {
-  const digits = ['8', '3', '1', '', '', ''];
+  const [digits, setDigits] = React.useState(['', '', '', '', '', '']);
+  const [mobileDisplay, setMobileDisplay] = React.useState('+63 · · · · · · · · · ·');
+  const [debugOtp, setDebugOtp] = React.useState('');
+
+  React.useEffect(function () {
+    var pendingMobile = String(localStorage.getItem('bagoPendingMobile') || '').replace(/\D/g, '');
+    var pendingOtp = String(localStorage.getItem('bagoPendingOtp') || '');
+    if (pendingMobile.length >= 11 && pendingMobile.indexOf('0') === 0) {
+      setMobileDisplay('+63 ' + pendingMobile.slice(1, 4) + ' ••• ' + pendingMobile.slice(-4));
+    }
+    if ((location.hostname === 'localhost' || location.hostname === '127.0.0.1') && /^\d{6}$/.test(pendingOtp)) {
+      setDebugOtp(pendingOtp);
+    }
+  }, []);
+
+  function onDigitChange(index, value) {
+    var next = String(value || '').replace(/\D/g, '').slice(0, 1);
+    var copy = digits.slice();
+    copy[index] = next;
+    setDigits(copy);
+    if (next && index < 5) {
+      var nxt = document.querySelector('[data-otp-digit="' + (index + 1) + '"]');
+      if (nxt) nxt.focus();
+    }
+  }
+
+  function onDigitKeyDown(index, event) {
+    if (event.key === 'Backspace' && !digits[index] && index > 0) {
+      var prev = document.querySelector('[data-otp-digit="' + (index - 1) + '"]');
+      if (prev) prev.focus();
+    }
+  }
 
   return (
     <AuthWebShell
@@ -316,24 +654,37 @@ function AuthWebOTP() {
         <div style={{ width: 72, height: 72, borderRadius: 36, background: '#E8F5E9', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 34 }}>📱</div>
         <div style={{ fontSize: 26, fontWeight: 700, marginTop: 18, letterSpacing: -0.5 }}>Verify your number</div>
         <div style={{ fontSize: 13, color: '#757575', marginTop: 6 }}>We sent a 6-digit code to</div>
-        <div style={{ fontSize: 15, fontWeight: 700, marginTop: 4 }}>+63 917 ••• 8821 &nbsp;·&nbsp; <a style={{ color: AW_GREEN, fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>Change number</a></div>
+        <div style={{ fontSize: 15, fontWeight: 700, marginTop: 4 }}>{mobileDisplay}</div>
+        <div style={{ marginTop: 8 }}>
+          <a href="./auth-web-register.html" style={{ color: AW_GREEN, fontWeight: 600, fontSize: 12, textDecoration: 'none' }}>Change number</a>
+        </div>
 
-        {/* OTP boxes */}
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center', marginTop: 28 }}>
           {digits.map((d, i) => (
-            <div key={i} style={{
-              width: 56, height: 64,
-              border: `1.5px solid ${d ? AW_GREEN : i === 3 ? AW_GREEN : '#BDBDBD'}`,
-              borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 26, fontWeight: 700, background: d ? '#E8F5E9' : 'white',
-              color: d ? AW_GREEN_DEEP : '#212121',
-              boxShadow: !d && i === 3 ? `0 0 0 3px ${AW_GREEN}33` : 'none',
-              fontFamily: 'ui-monospace, Menlo',
-            }}>{d || (i === 3 && <span style={{ width: 2, height: 26, background: AW_GREEN, animation: 'none' }}/>)}</div>
+            <input
+              key={i}
+              data-otp-digit={i}
+              value={d}
+              onChange={(e) => onDigitChange(i, e.target.value)}
+              onKeyDown={(e) => onDigitKeyDown(i, e)}
+              inputMode="numeric"
+              maxLength={1}
+              style={{
+                width: 56, height: 64,
+                border: '1.5px solid ' + (d ? AW_GREEN : '#BDBDBD'),
+                borderRadius: 10, fontSize: 26, fontWeight: 700, background: d ? '#E8F5E9' : 'white',
+                color: d ? AW_GREEN_DEEP : '#212121', fontFamily: 'ui-monospace, Menlo', textAlign: 'center', outline: 'none',
+              }}
+            />
           ))}
         </div>
 
-        {/* Resend */}
+        {debugOtp && (
+          <div style={{ marginTop: 12, fontSize: 12, color: '#1B5E20', background: '#E8F5E9', border: '1px dashed #66BB6A', borderRadius: 8, padding: '8px 10px' }}>
+            Localhost test OTP: <strong>{debugOtp}</strong>
+          </div>
+        )}
+
         <div style={{ marginTop: 20, fontSize: 13, color: '#757575' }}>
           Didn't receive it? <span style={{ color: '#BDBDBD', textDecoration: 'line-through' }}>Resend code</span>
           <span style={{ marginLeft: 10, fontSize: 12, color: AW_GREEN, fontWeight: 700 }}>in 0:42</span>
@@ -362,9 +713,15 @@ function AuthWebOTP() {
         <div style={{ marginTop: 18, fontSize: 12, color: '#9E9E9E' }}>
           🔒 Your code is single-use and expires in 5 minutes.
         </div>
+        <div style={{ marginTop: 12, fontSize: 13 }}>
+          <a href="./auth-web-register.html" style={{ color: '#757575', fontWeight: 600, textDecoration: 'none' }}>← Back to registration</a>
+        </div>
       </div>
     </AuthWebShell>
   );
 }
 
-Object.assign(window, { AuthWebShell, AuthWebLogin, AuthWebRegister, AuthWebOTP });
+Object.assign(window, {
+  AuthWebShell, AuthWebLogin, AuthWebRegister, AuthWebOTP,
+  AuthWebRegisterResident, AuthWebRegisterCollector, AuthWebRegisterAdmin,
+});

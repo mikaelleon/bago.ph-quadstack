@@ -7,11 +7,11 @@ const ADMIN_WEB_ROUTES = {
   dashboard: 'dashboard-lgu.html',
   schedule: 'admin-schedule.html',
   reports: 'admin-reports.html',
-  residents: 'users.html',
-  collectors: 'collectors.html',
-  announce: 'announcements.html',
+  residents: 'admin-residents.html',
+  collectors: 'admin-collectors-fleet.html',
+  announce: 'admin-announcements.html',
   denr: 'denr-reports.html',
-  settings: 'compliance.html',
+  settings: 'admin-settings.html',
 };
 
 function navTo(path) {

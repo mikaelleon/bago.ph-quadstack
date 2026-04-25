@@ -175,11 +175,14 @@ CREATE TABLE qr_codes (
     INDEX idx_qr_token (secure_token)
 );
 
--- Auth bridge: mobile + PIN (bcrypt) maps to resident, collector, or LGU admin row.
+-- Auth bridge: residents/collectors use mobile + PIN (bcrypt). LGU officers use
+-- government email + password_hash (bcrypt); mobile_number and pin_hash are NULL for those rows.
 CREATE TABLE app_identity (
     identity_id       INT AUTO_INCREMENT PRIMARY KEY,
-    mobile_number     VARCHAR(15) NOT NULL UNIQUE,
-    pin_hash          VARCHAR(255) NOT NULL,
+    mobile_number     VARCHAR(20) NULL,
+    pin_hash          VARCHAR(255) NULL,
+    gov_email         VARCHAR(150) NULL,
+    password_hash     VARCHAR(255) NULL,
     role              ENUM('user','collector','lgu_officer') NOT NULL,
     resident_id       INT NULL,
     collector_id      INT NULL,
@@ -194,7 +197,8 @@ CREATE TABLE app_identity (
     FOREIGN KEY (lgu_admin_id)
         REFERENCES lgu_admins(admin_id)
         ON DELETE CASCADE,
-    INDEX idx_identity_mobile (mobile_number)
+    UNIQUE KEY uq_identity_mobile (mobile_number),
+    UNIQUE KEY uq_identity_gov_email (gov_email)
 );
 
 
@@ -224,7 +228,9 @@ VALUES
     ('Ana Mendoza',
      'Barangay Captain', 'amendoza@balintawak.lipa.gov.ph', 3),
     ('Pedro Lim',
-     'Environment Officer', 'plim@lipa.gov.ph', NULL);
+     'Environment Officer', 'plim@lipa.gov.ph', NULL),
+    ('Maria Santos Mercado',
+     'Senior Environmental Officer', 'm.santos@lipacity.gov.ph', NULL);
 
 INSERT INTO collectors
     (collector_code, full_name, mobile_number,
@@ -271,55 +277,57 @@ VALUES
      '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
      50,  'Seedling',   '2025-02-10');
 
--- Demo logins (PIN for all: 1234) — mobile maps to role + linked row.
+-- Demo logins: residents + collectors use mobile + PIN 1234 (bcrypt below).
+-- LGU officer demo: government email + password (see README / seed comment).
 INSERT INTO app_identity
-    (mobile_number, pin_hash, role, resident_id, collector_id, lgu_admin_id)
+    (mobile_number, pin_hash, gov_email, password_hash, role, resident_id, collector_id, lgu_admin_id)
 VALUES
     ('09181234501',
      '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     NULL, NULL,
      'user', 1, NULL, NULL),
     ('09181234502',
      '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     NULL, NULL,
      'user', 2, NULL, NULL),
     ('09181234503',
      '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     NULL, NULL,
      'user', 3, NULL, NULL),
     ('09181234504',
      '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     NULL, NULL,
      'user', 4, NULL, NULL),
     ('09181234505',
      '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     NULL, NULL,
      'user', 5, NULL, NULL),
     ('09171111001',
      '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     NULL, NULL,
      'collector', NULL, 1, NULL),
     ('09171111002',
      '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     NULL, NULL,
      'collector', NULL, 2, NULL),
     ('09171111003',
      '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     NULL, NULL,
      'collector', NULL, 3, NULL),
     ('09171111004',
      '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     NULL, NULL,
      'collector', NULL, 4, NULL),
     ('09171111005',
      '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
+     NULL, NULL,
      'collector', NULL, 5, NULL),
-    ('09230000001',
-     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
-     'lgu_officer', NULL, NULL, 1),
-    ('09230000002',
-     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
-     'lgu_officer', NULL, NULL, 2),
-    ('09230000003',
-     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
-     'lgu_officer', NULL, NULL, 3),
-    ('09230000004',
-     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
-     'lgu_officer', NULL, NULL, 4),
-    ('09230000005',
-     '$2b$10$7OD1i59oyW7L5aJejHlQKepMo2laeUKhqK4h47W0DrP8PXz0Z5zaG',
-     'lgu_officer', NULL, NULL, 5);
+    -- LGU: password is LipaDemo2026! (bcrypt) — matches web login prototype fields.
+    (NULL,
+     NULL,
+     'm.santos@lipacity.gov.ph',
+     '$2b$10$mJPTiqfzFGSkSrSgr6jLoevIAAKKFB1w.nAwbT/C5rOnqWj6s784W',
+     'lgu_officer', NULL, NULL, 6);
 
 INSERT INTO collection_schedules
     (barangay_id, waste_type, collection_date,

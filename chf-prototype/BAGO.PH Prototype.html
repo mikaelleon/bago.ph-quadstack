@@ -23,6 +23,7 @@
 <script type="text/babel" src="components/resident-screens.jsx"></script>
 <script type="text/babel" src="components/collector-screens.jsx"></script>
 <script type="text/babel" src="components/admin-screens.jsx"></script>
+<script type="text/babel" src="components/admin-screens-2.jsx"></script>
 <script type="text/babel" src="components/auth-web.jsx"></script>
 <script type="text/babel" src="components/resident-web.jsx"></script>
 <script type="text/babel" src="components/resident-web-2.jsx"></script>
@@ -40,7 +41,9 @@ function App() {
 
       <DCSection id="auth-web" title="Web-app authentication" subtitle="Desktop 1280 × 820 · Marketing-forward split layout — brand panel + form · role-aware (Resident / Collector / LGU Admin)">
         <DCArtboard id="aw-login" label="40 · Web login" width={1280} height={820}><AuthWebLogin/></DCArtboard>
-        <DCArtboard id="aw-register" label="41 · Web register" width={1280} height={820}><AuthWebRegister/></DCArtboard>
+        <DCArtboard id="aw-register-resident" label="41a · Register · Resident" width={1280} height={820}><AuthWebRegisterResident/></DCArtboard>
+        <DCArtboard id="aw-register-collector" label="41b · Register · Collector (invite + ID)" width={1280} height={820}><AuthWebRegisterCollector/></DCArtboard>
+        <DCArtboard id="aw-register-admin" label="41c · Register · LGU Admin (Office Order + SSO)" width={1280} height={820}><AuthWebRegisterAdmin/></DCArtboard>
         <DCArtboard id="aw-otp" label="42 · Web OTP verification" width={1280} height={820}><AuthWebOTP/></DCArtboard>
       </DCSection>
 
@@ -65,12 +68,16 @@ function App() {
         <DCArtboard id="c-update" label="18 · Update report" width={406} height={796}><CollectorReportUpdate/></DCArtboard>
       </DCSection>
 
-      <DCSection id="admin" title="LGU Admin desktop console" subtitle="5 screens · Navy #0D1B2A · 1280 × 860 desktop layout">
+      <DCSection id="admin" title="LGU Admin desktop console" subtitle="9 screens · Navy #0D1B2A · 1280 × 860 desktop layout">
         <DCArtboard id="a-login" label="19 · Admin login" width={900} height={600}><AdminLogin/></DCArtboard>
         <DCArtboard id="a-dash" label="20 · Main dashboard" width={1280} height={860}><AdminDashboard/></DCArtboard>
         <DCArtboard id="a-sched" label="21 · Schedule management" width={1280} height={860}><AdminSchedule/></DCArtboard>
         <DCArtboard id="a-reports" label="22 · Report console" width={1280} height={860}><AdminReports/></DCArtboard>
         <DCArtboard id="a-denr" label="23 · DENR report generator" width={1280} height={860}><AdminDENRReport/></DCArtboard>
+        <DCArtboard id="a-residents" label="24 · Residents registry" width={1280} height={860}><AdminResidents/></DCArtboard>
+        <DCArtboard id="a-collectors" label="25 · Collectors & fleet" width={1280} height={860}><AdminCollectors/></DCArtboard>
+        <DCArtboard id="a-announce" label="26 · Announcements composer" width={1280} height={860}><AdminAnnouncements/></DCArtboard>
+        <DCArtboard id="a-settings" label="27 · LGU settings" width={1280} height={860}><AdminSettings/></DCArtboard>
       </DCSection>
 
       <DCSection id="resident-web" title="Resident web app" subtitle="9 screens · Desktop 1280 × 820 · For residents who prefer a browser over mobile">

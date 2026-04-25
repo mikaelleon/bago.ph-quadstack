@@ -147,13 +147,13 @@ function BottomNavItem({ icon, label, active, activeColor = '#2E7D32', onClick }
   );
 }
 
-function Btn({ children, onClick, color = '#2E7D32', outline, style, size = 'md', full, icon }) {
+function Btn({ children, onClick, color = '#2E7D32', outline, style, size = 'md', full, icon, type = 'button' }) {
   const h = size === 'sm' ? 36 : 48;
   const bg = outline ? 'transparent' : color;
   const fg = outline ? color : 'white';
   const border = outline ? `1.5px solid ${color}` : 'none';
   return (
-    <button onClick={onClick} style={{
+    <button type={type} onClick={onClick} style={{
       height: h, background: bg, color: fg, border, borderRadius: 8,
       fontFamily: 'Poppins', fontWeight: 600, fontSize: size === 'sm' ? 13 : 14,
       padding: size === 'sm' ? '0 14px' : '0 20px', cursor: 'pointer',
@@ -168,7 +168,7 @@ function Btn({ children, onClick, color = '#2E7D32', outline, style, size = 'md'
   );
 }
 
-function Input({ label, value, onChange, placeholder, type = 'text', prefix, suffix, hint, style }) {
+function Input({ label, value, onChange, placeholder, type = 'text', prefix, suffix, hint, style, inputProps = {} }) {
   return (
     <div style={{ ...style }}>
       {label && <label style={{ fontSize: 13, fontWeight: 600, display: 'block', marginBottom: 6 }}>{label}</label>}
@@ -183,7 +183,7 @@ function Input({ label, value, onChange, placeholder, type = 'text', prefix, suf
         <input type={type} value={value} onChange={onChange} placeholder={placeholder} style={{
           flex: 1, border: 'none', outline: 'none', height: '100%', padding: '0 12px',
           fontFamily: 'Poppins', fontSize: 14, background: 'transparent',
-        }}/>
+        }} {...inputProps}/>
         {suffix && <div style={{ padding: '0 12px', color: '#757575', fontSize: 12 }}>{suffix}</div>}
       </div>
       {hint && <div style={{ fontSize: 11, color: '#757575', marginTop: 4 }}>{hint}</div>}

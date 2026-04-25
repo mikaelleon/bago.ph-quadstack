@@ -75,7 +75,7 @@ Baseline milestone work includes:
 ## Progress Since the 30% Milestone
 Implemented on top of the baseline above:
 
-- **Dedicated login & registration** — `index.html` (mobile + PIN; role loaded from the saved account for that number) and `register.html` (sign-up with role selection); **no main navbar** on these screens until the user completes login or registration.
+- **Dedicated login & registration** — `index.html` and `auth-web-login.html`: **Resident / Collector** use mobile + 4-digit PIN; **LGU Admin** uses **government email + password** (aligned with the web LGU console). `register.html` supports sign-up with role selection. **No main navbar** on these screens until login or registration completes.
 - **Client-side access control** — `html/role-access.js` stores role in `localStorage`, hides disallowed nav links, redirects unauthorized URLs, adds **Logout**, and sends already-logged-in users away from login/register toward the dashboard.
 - **Official Lipa City barangay list** — all **72 barangays** in `html/js/lipa-barangays.js`, populated into relevant dropdowns via `lipa-barangays-select.js`; `xml/barangays.xml` regenerated with 72 rows (helper: `scripts/gen-barangays-xml.mjs`).
 - **XML / XSLT layout** — stylesheets under `xsl/` (e.g. `ecolinisph-schedules.xsl`, `barangays.xsl`); XML files reference them for browser transform (Firefox works best for opening raw `.xml`).
@@ -92,7 +92,7 @@ Implemented on top of the baseline above:
 ---
 
 ## Feature Overview
-- **Login & Register** — register picks role; login uses mobile + PIN only; session role stored in `localStorage` (prototype only).
+- **Login & Register** — register picks role; **Resident/Collector** login uses mobile + PIN; **LGU Officer** login uses **government email + password** (min. 10 characters in the UI); session role stored in `localStorage` (prototype only). LGU email login **skips the OTP page** and goes straight to the LGU dashboard in the static prototype.
 - **Dashboard**: high-level waste operations snapshot.
 - **Collection Schedule**: planned routes and collection timing.
 - **Report Management**: issue reporting and follow-up workflow.
@@ -108,11 +108,15 @@ Implemented on top of the baseline above:
 ---
 
 ## Auth, Registration & Navigation
-- Open **`html/index.html`** to log in, or **`html/register.html`** to register. Both pages intentionally **omit** the main app navbar.
-- After login or successful registration, the app stores **`bagoRole`** (`user` | `collector` | `lgu_officer`) from the account and opens the **dashboard**.
+- Open **`html/index.html`** (or **`html/auth-web-login.html`** for the wide marketing layout) to log in, or **`html/register.html`** to register. These pages intentionally **omit** the main app navbar.
+- After login or successful registration, the app stores **`bagoRole`** (`user` | `collector` | `lgu_officer`) from the account and opens the **dashboard** (LGU email login goes directly to **`dashboard-lgu.html`** without OTP).
 - If a role is already stored, visiting login or register **redirects to the dashboard**.
 - Inside the app, use **Logout** (injected on authenticated pages) to clear the role and return to login.
-- **Security note:** this is a **front-end prototype**. There is no real server-side authentication or password hashing.
+- **Prototype demo credentials (not production):**
+  - **Resident** — `html/js/prototype-page-loader.js` seeds localStorage mobile **`09171234567`** · PIN **`1234`**. With API + DB: **`09181234501`–`09181234505`** · PIN **`1234`**.
+  - **Collector** — local **`09171234568`** · PIN **`1234`**. With API: **`09171111001`–`09171111005`** · PIN **`1234`**.
+  - **LGU Officer** — government email **`m.santos@lipacity.gov.ph`** · password **`LipaDemo2026!`** (local fallback and SQL seed; matches the web login fields). The old mobile-only LGU demo **`09171234569` / `1234`** is **removed** on load from `localStorage` if still present.
+- **Security note:** demo passwords are **plaintext in docs and client seeds** for class demos only. With the API enabled, resident/collector PINs and the LGU password are stored as **bcrypt** hashes in MySQL (`app_identity.pin_hash` / `app_identity.password_hash`).
 
 ---
 
@@ -131,7 +135,7 @@ Navigation and direct URL access follow `role-access.js`. Typical allowed pages:
 - `qr-audit.html`, `xml-schedules-editor.html` (append `?mode=view` for read-only)
 
 ### LGU Officer (`lgu_officer`)
-- `index.html`, `register.html`
+- `index.html`, `register.html`, `auth-web-login.html`
 - `dashboard.html` (redirect shim), `dashboard-lgu.html` (home)
 - `schedule.html`, `report.html`, `collectors.html`, `compliance.html`, `eco-points.html`, `announcements.html`, `denr-reports.html`, `users.html`
 - `qr-audit.html`, `xml-schedules-editor.html`, `xml-barangays-editor.html` (append `?mode=view` for read-only)
@@ -193,7 +197,7 @@ For class review: **`sql/`** (schema and queries), **`xml/`** + **`xsl/`**, **`p
 
 ## API & database (Node + MySQL)
 
-**Stack (Priority 1):** Node.js **20+**, **Express 5**, **mysql2**, **bcryptjs** (PIN hash), **jsonwebtoken** (JWT), **CORS**. Schema source of truth: **`sql/bago_ph_database.sql`** (includes `app_identity` for mobile + PIN auth).
+**Stack (Priority 1):** Node.js **20+**, **Express 5**, **mysql2**, **bcryptjs** (PIN and password hashes), **jsonwebtoken** (JWT), **CORS**. Schema source of truth: **`sql/bago_ph_database.sql`** (includes **`app_identity`**: residents/collectors use **`mobile_number` + `pin_hash`**; LGU officers use **`gov_email` + `password_hash`** with `mobile_number` / `pin_hash` null).
 
 1. Install **MySQL / MariaDB** locally and create the database from the repo file (run **Section A + B** at minimum):
    ```bash
@@ -206,7 +210,18 @@ For class review: **`sql/`** (schema and queries), **`xml/`** + **`xsl/`**, **`p
 
 **Endpoints (summary):** `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me`, `GET /api/barangays`, `GET|POST|PATCH /api/schedules` (LGU writes), `GET|POST|PATCH /api/reports` (resident creates; LGU/collector updates). All protected routes require **`Authorization: Bearer <token>`** except barangays list.
 
-**Demo seed logins (PIN `1234` for all):** residents `09181234501`–`09181234505`; collectors `09171111001`–`09171111005`; LGU `09230000001`–`09230000005`. With the API running, login/register use the server first; if the API is unreachable, the app falls back to the original **localStorage-only** demo.
+**`POST /api/auth/login` body (either/or):**
+- **Resident or collector:** `{ "mobile": "09181234501", "pin": "1234" }` (11-digit Philippine mobile normalized server-side; PIN exactly 4 digits).
+- **LGU officer:** `{ "email": "m.santos@lipacity.gov.ph", "password": "LipaDemo2026!" }` (email lowercased server-side; password minimum **10** characters).
+
+**Demo seed data (after `mysql … < sql/bago_ph_database.sql`):**
+- **Residents** — mobiles **`09181234501`–`09181234505`** · PIN **`1234`** (bcrypt in `pin_hash`).
+- **Collectors** — **`09171111001`–`09171111005`** · PIN **`1234`**.
+- **LGU (single demo row)** — email **`m.santos@lipacity.gov.ph`** · password **`LipaDemo2026!`** (bcrypt in `password_hash`), linked to `lgu_admins.admin_id = 6` (*Maria Santos Mercado*). The previous five LGU seed identities (**`09230000001`–`09230000005`**, mobile + PIN only) are **removed** from the canonical SQL file.
+
+With the API running, the browser uses the server first; if the API is unreachable, **`html/js/prototype-page-loader.js`** falls back to **localStorage** for resident/collector mobiles and to **fixed demo email/password** for LGU (same values as above).
+
+**Existing databases:** run **`sql/migrations/001_lgu_officer_gov_email_login.sql`** once to add nullable columns, then import the updated LGU seed row from **`sql/bago_ph_database.sql`** section B (or insert manually per this README).
 
 **Single migration file:** schema changes should be applied by editing **`sql/bago_ph_database.sql`** (and re-importing on fresh DBs) or by adding numbered scripts under **`sql/migrations/`** documented next to your deploy process—avoid hand-editing production DB without updating the repo.
 

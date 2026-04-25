@@ -43,11 +43,15 @@
     return data;
   }
 
-  async function tryLogin(mobile, pin) {
+  async function tryLogin(mobile, pin, email, password) {
     if (!hasBase()) return null;
     setToken(null);
     try {
-      const data = await request("POST", "/api/auth/login", { mobile, pin });
+      var body =
+        email && String(email).indexOf("@") !== -1
+          ? { email: String(email).trim().toLowerCase(), password: String(password || "") }
+          : { mobile: mobile, pin: pin };
+      const data = await request("POST", "/api/auth/login", body);
       setToken(data.token);
       return { ok: true, role: data.role };
     } catch (e) {

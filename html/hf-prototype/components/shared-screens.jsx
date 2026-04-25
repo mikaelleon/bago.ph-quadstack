@@ -138,7 +138,7 @@ function LoginScreen() {
   const [mobile, setMobile] = React.useState("");
   const [pin, setPin] = React.useState("");
   const [govEmail, setGovEmail] = React.useState("m.santos@lipacity.gov.ph");
-  const [govPassword, setGovPassword] = React.useState("••••••••••");
+  const [govPassword, setGovPassword] = React.useState("LipaDemo2026!");
   function onMobileChange(value) {
     const digits = String(value || "").replace(/\D/g, "").slice(0, 10);
     setMobile(digits);

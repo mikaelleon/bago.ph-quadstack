@@ -121,6 +121,10 @@ window.BAGOPrototype = (function () {
     fallbackComponents.AdminSchedule = rolePage("LGU Admin Schedule");
     fallbackComponents.AdminReports = rolePage("LGU Admin Reports");
     fallbackComponents.AdminDENRReport = rolePage("DENR Report");
+    fallbackComponents.AdminResidents = rolePage("Residents registry");
+    fallbackComponents.AdminCollectors = rolePage("Collectors & fleet");
+    fallbackComponents.AdminAnnouncements = rolePage("Announcements composer");
+    fallbackComponents.AdminSettings = rolePage("LGU settings");
 
     // Web screens fallbacks
     fallbackComponents.AuthWebLogin = rolePage("Web Login");
@@ -232,12 +236,19 @@ window.BAGOPrototype = (function () {
     localStorage.setItem("bago_ph_accounts_v1", JSON.stringify(all));
   }
 
+  var DEMO_LGU_EMAIL = "m.santos@lipacity.gov.ph";
+  var DEMO_LGU_PASSWORD = "LipaDemo2026!";
+
   function ensureDemoAccounts() {
     var all = localAccounts();
+    var oldLgu = normalizeMobile("09171234569");
+    if (all[oldLgu]) {
+      delete all[oldLgu];
+      localStorage.setItem("bago_ph_accounts_v1", JSON.stringify(all));
+    }
     var demos = [
       { mobile: "09171234567", pin: "1234", role: "user", name: "Resident Demo" },
-      { mobile: "09171234568", pin: "1234", role: "collector", name: "Collector Demo" },
-      { mobile: "09171234569", pin: "1234", role: "lgu_officer", name: "LGU Admin Demo" }
+      { mobile: "09171234568", pin: "1234", role: "collector", name: "Collector Demo" }
     ];
     var changed = false;
     demos.forEach(function (d) {
@@ -250,7 +261,20 @@ window.BAGOPrototype = (function () {
     if (changed) {
       localStorage.setItem("bago_ph_accounts_v1", JSON.stringify(all));
     }
-    window.BAGODemoAccounts = demos;
+    window.BAGODemoAccounts = {
+      resident: demos[0],
+      collector: demos[1],
+      lgu_officer: { email: DEMO_LGU_EMAIL, password: DEMO_LGU_PASSWORD, note: "prototype / seed; not production" }
+    };
+  }
+
+  function tryLocalLguLogin(email, password) {
+    var e = String(email || "").trim().toLowerCase();
+    var p = String(password || "");
+    if (e !== DEMO_LGU_EMAIL || p !== DEMO_LGU_PASSWORD) {
+      return { ok: false, message: "Unknown government email or wrong password." };
+    }
+    return { ok: true, role: "lgu_officer", local: true };
   }
 
   function tryLocalLogin(mobile, pin) {
@@ -327,7 +351,8 @@ window.BAGOPrototype = (function () {
       lgu_officer: [
         "dashboard-lgu.html", "dashboard.html", "compliance.html", "users.html", "denr-reports.html",
         "xml-schedules-editor.html", "xml-barangays-editor.html", "announcements.html", "collectors.html",
-        "eco-points.html", "qr-audit.html", "admin-login.html", "admin-schedule.html", "admin-reports.html"
+        "eco-points.html", "qr-audit.html", "admin-login.html", "admin-schedule.html", "admin-reports.html",
+        "admin-residents.html", "admin-collectors-fleet.html", "admin-announcements.html", "admin-settings.html"
       ]
     };
     if ((allow[role] || []).indexOf(page) === -1) {
@@ -367,6 +392,62 @@ window.BAGOPrototype = (function () {
   }
 
   async function onLogin() {
+    var emailEl = document.querySelector("input[type=\"email\"]");
+    var email = emailEl ? String(emailEl.value || "").trim().toLowerCase() : "";
+    var useLgu = email.indexOf("@") !== -1;
+
+    if (useLgu) {
+      var passList = document.querySelectorAll("input[type=\"password\"]");
+      var password = passList.length ? String(passList[0].value || "") : "";
+      if (!email || password.length < 10) {
+        alert("Enter government email and password (min 10 characters).");
+        return;
+      }
+      if (apiHasBase()) {
+        try {
+          var outLgu = window.BAGOApi && window.BAGOApi.tryLogin
+            ? await window.BAGOApi.tryLogin(null, null, email, password)
+            : null;
+          if (!outLgu) {
+            var dataLgu = await apiRequest("POST", "/api/auth/login", { email: email, password: password });
+            localStorage.setItem("bagoToken", dataLgu.token);
+            outLgu = { ok: true, role: dataLgu.role };
+          }
+          if (outLgu.ok) {
+            setRole(outLgu.role);
+            go(dashboardFor(outLgu.role));
+            return;
+          }
+          alert(outLgu.message || "Login failed");
+          var fbLgu = tryLocalLguLogin(email, password);
+          if (fbLgu.ok) {
+            setRole(fbLgu.role);
+            go(dashboardFor(fbLgu.role));
+            return;
+          }
+          alert("API failed. Local fallback: " + (fbLgu.message || "login failed"));
+          return;
+        } catch (eLgu) {
+          var fbLgu2 = tryLocalLguLogin(email, password);
+          if (fbLgu2.ok) {
+            setRole(fbLgu2.role);
+            go(dashboardFor(fbLgu2.role));
+            return;
+          }
+          alert("API failed. Local fallback: " + (fbLgu2.message || eLgu.message || "Login failed"));
+          return;
+        }
+      }
+      var fbLgu3 = tryLocalLguLogin(email, password);
+      if (fbLgu3.ok) {
+        setRole(fbLgu3.role);
+        go(dashboardFor(fbLgu3.role));
+        return;
+      }
+      alert("API unavailable. " + (fbLgu3.message || "Login failed"));
+      return;
+    }
+
     var mobileInput = document.querySelector('input[type="tel"],input[placeholder*="63"]');
     var pinInput = document.querySelector('input[type="password"]');
     var mobile = normalizeMobile(mobileInput ? mobileInput.value : "");
@@ -613,7 +694,7 @@ window.BAGOPrototype = (function () {
       var txt = String(btn.textContent || "").trim().toLowerCase();
       if (!txt) return;
 
-      if (lastComponent === "LoginScreen" && txt.indexOf("log in") !== -1) {
+      if ((lastComponent === "LoginScreen" || lastComponent === "AuthWebLogin") && txt.indexOf("log in") !== -1) {
         event.preventDefault();
         onLogin();
       }
@@ -717,13 +798,13 @@ window.BAGOPrototype = (function () {
         go("register");
         return;
       }
-      if (textLc.indexOf("forgot pin") !== -1) {
+      if (textLc.indexOf("forgot pin") !== -1 || textLc.indexOf("forgot password") !== -1) {
         event.preventDefault();
         alert(
-          "Demo accounts:\n" +
-          "Resident: 09171234567 / 1234\n" +
-          "Collector: 09171234568 / 1234\n" +
-          "LGU Admin: 09171234569 / 1234"
+          "Demo credentials (prototype only):\n" +
+          "Resident — mobile 09171234567 · PIN 1234\n" +
+          "Collector — mobile 09171234568 · PIN 1234\n" +
+          "LGU Admin — email m.santos@lipacity.gov.ph · password LipaDemo2026!"
         );
         return;
       }

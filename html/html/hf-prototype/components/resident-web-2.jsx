@@ -649,14 +649,12 @@ function ResidentWebProfile() {
 }
 
 /* ──────────────────────────────────────────────────────────────────
-   28. Household QR Card (print view)
+   28. Household QR Card (print view) — 820 × 1100 letter sheet
    ────────────────────────────────────────────────────────────────── */
 function ResidentHouseholdQRCard() {
-  // QR-like dot pattern
   const qrRows = 21;
   const qrBits = [];
   for (let i = 0; i < qrRows * qrRows; i++) {
-    // deterministic pseudo-random with fixed finders in corners
     const r = Math.floor(i / qrRows), c = i % qrRows;
     const inTL = r < 7 && c < 7;
     const inTR = r < 7 && c >= qrRows - 7;
@@ -675,86 +673,105 @@ function ResidentHouseholdQRCard() {
   }
 
   return (
-    <div style={{ width: 1280, height: 820, padding: 40, background: '#F5F5F5', fontFamily: 'Poppins', display: 'flex', flexDirection: 'column', gap: 18 }}>
-      {/* Toolbar */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div>
-          <div style={{ fontSize: 12, color: '#757575' }}>← Back to Profile</div>
-          <div style={{ fontSize: 22, fontWeight: 700, marginTop: 4 }}>Household QR card</div>
-          <div style={{ fontSize: 13, color: '#757575' }}>Print on a 3 × 5 in. card or laminate. Show at every pickup.</div>
+    <div style={{ width: 820, height: 1100, background: 'white', fontFamily: 'Poppins', padding: 48, display: 'flex', flexDirection: 'column', boxShadow: '0 8px 30px rgba(0,0,0,0.06)', position: 'relative' }}>
+      {[[18, 18], [18, 1064], [784, 18], [784, 1064]].map(([l, t], i) => (
+        <div key={i} style={{ position: 'absolute', left: l, top: t, width: 18, height: 18, pointerEvents: 'none' }}>
+          <div style={{ position: 'absolute', top: 9, left: 0, right: 0, height: 1, background: '#BDBDBD' }}/>
+          <div style={{ position: 'absolute', left: 9, top: 0, bottom: 0, width: 1, background: '#BDBDBD' }}/>
         </div>
-        <div style={{ display: 'flex', gap: 10 }}>
-          <button style={{ height: 40, padding: '0 16px', border: '1px solid #BDBDBD', background: 'white', borderRadius: 8, fontFamily: 'Poppins', fontWeight: 600, fontSize: 13, cursor: 'pointer' }}>📥 Download PDF</button>
-          <button style={{ height: 40, padding: '0 20px', background: '#2E7D32', color: 'white', border: 'none', borderRadius: 8, fontFamily: 'Poppins', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>🖨️ Print card</button>
+      ))}
+
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+        <div style={{ width: 44, height: 44, borderRadius: 8, background: '#2E7D32', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>🌿</div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 20, fontWeight: 800, letterSpacing: -0.5 }}>BAGO.<span style={{ opacity: 0.85 }}>PH</span> · Household QR Card</div>
+          <div style={{ fontSize: 11, color: '#757575', marginTop: 2 }}>Lipa City Local Government Unit · Department of Environment & Natural Resources Office (ENRO)</div>
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <div style={{ fontSize: 9, color: '#9E9E9E', letterSpacing: 0.5, fontWeight: 600, textTransform: 'uppercase' }}>Issued</div>
+          <div style={{ fontSize: 12, fontWeight: 700, marginTop: 2 }}>Apr 24, 2026</div>
+          <div style={{ fontSize: 9, color: '#9E9E9E', marginTop: 4 }}>Valid: 1 year</div>
         </div>
       </div>
 
-      {/* Print preview */}
-      <div style={{ flex: 1, background: '#ECEAE3', borderRadius: 10, padding: '30px 50px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 32, overflow: 'hidden' }}>
-        {/* Card front */}
-        <div style={{ width: 380, height: 600, background: 'white', borderRadius: 14, boxShadow: '0 6px 30px rgba(0,0,0,0.15)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-          <div style={{ background: 'linear-gradient(135deg,#1B5E20,#2E7D32,#43A047)', color: 'white', padding: '20px 24px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 18, fontWeight: 800, letterSpacing: -0.5 }}>
-              <span style={{ fontSize: 20 }}>🌿</span>BAGO.<span style={{ opacity: 0.85 }}>PH</span>
+      <div style={{ marginTop: 28, fontSize: 9, color: '#9E9E9E', display: 'flex', alignItems: 'center', gap: 8, letterSpacing: 0.5, textTransform: 'uppercase', fontWeight: 600 }}>
+        <span>✂️ Cut along dashed line · 3.5 × 5 in.</span>
+        <div style={{ flex: 1, borderTop: '1.5px dashed #BDBDBD' }}/>
+      </div>
+
+      <div style={{ marginTop: 14, border: '1.5px dashed #BDBDBD', borderRadius: 14, padding: 6, alignSelf: 'center', width: 504, height: 720 }}>
+        <div style={{ width: '100%', height: '100%', borderRadius: 10, overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
+          <div style={{ background: 'linear-gradient(135deg,#1B5E20,#2E7D32,#43A047)', color: 'white', padding: '20px 24px', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: -40, right: -40, width: 140, height: 140, borderRadius: '50%', background: 'rgba(255,255,255,0.08)' }}/>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 22 }}>🌿</span>
+              <div>
+                <div style={{ fontSize: 18, fontWeight: 800, letterSpacing: -0.5 }}>BAGO.<span style={{ opacity: 0.85 }}>PH</span></div>
+                <div style={{ fontSize: 9, opacity: 0.85, fontWeight: 600, letterSpacing: 0.5 }}>HOUSEHOLD QR · LIPA CITY</div>
+              </div>
             </div>
-            <div style={{ fontSize: 10, letterSpacing: 0.5, opacity: 0.85, marginTop: 4, fontWeight: 600 }}>HOUSEHOLD QR CARD · LIPA CITY LGU</div>
           </div>
 
-          <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {/* QR */}
-            <div style={{ width: 230, height: 230, padding: 10, background: 'white', border: '1px solid #E0E0E0', borderRadius: 8 }}>
+          <div style={{ padding: '20px 24px 18px', display: 'flex', alignItems: 'center', gap: 18, borderBottom: '1px solid #F0F0F0' }}>
+            <div style={{ width: 180, height: 180, padding: 8, background: 'white', border: '1px solid #E0E0E0', borderRadius: 6, flexShrink: 0 }}>
               <div style={{ display: 'grid', gridTemplateColumns: `repeat(${qrRows}, 1fr)`, width: '100%', height: '100%', gap: 0 }}>
                 {qrBits.map((b, i) => (
                   <div key={i} style={{ background: b ? '#0D1B2A' : 'transparent', aspectRatio: '1 / 1' }}/>
                 ))}
               </div>
             </div>
-            <div style={{ fontFamily: 'ui-monospace, Menlo', fontSize: 12, fontWeight: 700, color: '#1B5E20', marginTop: 14, letterSpacing: 1 }}>BAGO-MARA-2025-00142</div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 9, color: '#9E9E9E', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase' }}>Household ID</div>
+              <div style={{ fontFamily: 'ui-monospace, Menlo', fontSize: 14, fontWeight: 800, color: '#1B5E20', marginTop: 4, letterSpacing: 0.6, lineHeight: 1.25 }}>BAGO-MARA<br/>-2025-00142</div>
+              <div style={{ fontSize: 9, color: '#9E9E9E', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', marginTop: 14 }}>Head of household</div>
+              <div style={{ fontSize: 14, fontWeight: 700, marginTop: 3, lineHeight: 1.25 }}>Maria S. Dela Cruz</div>
+              <div style={{ fontSize: 11, color: '#424242', marginTop: 6, lineHeight: 1.4 }}>128 Rizal St., Purok 3<br/>Brgy. Marawoy, Lipa City<br/>Batangas 4217</div>
+            </div>
           </div>
 
-          <div style={{ borderTop: '1px solid #F0F0F0', padding: '14px 24px', fontSize: 12 }}>
-            <div style={{ fontSize: 10, color: '#9E9E9E', fontWeight: 700, letterSpacing: 0.4, textTransform: 'uppercase' }}>Head of household</div>
-            <div style={{ fontSize: 15, fontWeight: 700, marginTop: 4 }}>Maria Dela Cruz</div>
-            <div style={{ fontSize: 11, color: '#757575', marginTop: 4, lineHeight: 1.5 }}>128 Rizal St., Purok 3<br/>Brgy. Marawoy, Lipa City</div>
-          </div>
-        </div>
-
-        {/* Card back */}
-        <div style={{ width: 380, height: 600, background: 'white', borderRadius: 14, boxShadow: '0 6px 30px rgba(0,0,0,0.15)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-          <div style={{ padding: '20px 24px', borderBottom: '1px solid #F0F0F0' }}>
-            <div style={{ fontSize: 13, fontWeight: 700 }}>Regular pickup schedule</div>
-            <div style={{ fontSize: 11, color: '#757575', marginTop: 2 }}>Purok 3, Brgy. Marawoy</div>
-          </div>
-          <div style={{ padding: '14px 24px' }}>
-            {[
-              ['Mon / Thu', '🟢 Biodegradable',    '7:00–9:00 am'],
-              ['Tue / Fri', '🔵 Non-biodegradable', '7:00–9:00 am'],
-              ['Wed',       '♻️ Recyclables',       '8:00–10:00 am'],
-              ['Sat',       '🟢 Biodegradable',    '7:00–9:00 am'],
-            ].map(([d, t, h], i) => (
-              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', fontSize: 12, borderBottom: i < 3 ? '1px dashed #F0F0F0' : 'none' }}>
-                <span style={{ width: 82, fontWeight: 600 }}>{d}</span>
-                <span style={{ flex: 1 }}>{t}</span>
-                <span style={{ color: '#757575' }}>{h}</span>
-              </div>
-            ))}
+          <div style={{ padding: '14px 24px', borderBottom: '1px solid #F0F0F0' }}>
+            <div style={{ fontSize: 10, color: '#9E9E9E', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase' }}>Regular pickup schedule · Purok 3</div>
+            <div style={{ marginTop: 6 }}>
+              {[
+                ['Mon · Thu', '🟢 Biodegradable',    '7–9 am'],
+                ['Tue · Fri', '🔵 Non-biodegradable', '7–9 am'],
+                ['Wed',       '♻️ Recyclables',       '8–10 am'],
+                ['Sat',       '🟢 Biodegradable',    '7–9 am'],
+              ].map(([d, t, h], i) => (
+                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', fontSize: 11, borderBottom: i < 3 ? '1px dashed #F0F0F0' : 'none' }}>
+                  <span style={{ width: 92, fontWeight: 700, color: '#212121' }}>{d}</span>
+                  <span style={{ flex: 1 }}>{t}</span>
+                  <span style={{ color: '#757575', fontWeight: 600 }}>{h}</span>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div style={{ padding: '14px 24px', borderTop: '1px solid #F0F0F0', background: '#F9FBF9', flex: 1 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: '#757575', letterSpacing: 0.4, textTransform: 'uppercase' }}>How to use</div>
-            <ul style={{ margin: '8px 0 0', paddingLeft: 18, fontSize: 11, color: '#424242', lineHeight: 1.7 }}>
+          <div style={{ padding: '14px 24px', background: '#F9FBF9', flex: 1 }}>
+            <div style={{ fontSize: 10, color: '#9E9E9E', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase' }}>How to use</div>
+            <ol style={{ margin: '6px 0 0', paddingLeft: 18, fontSize: 10.5, color: '#424242', lineHeight: 1.65 }}>
               <li>Show this card to the collector at every pickup.</li>
-              <li>The collector scans the QR from their app.</li>
-              <li>Earn eco-points automatically on each valid pickup.</li>
-              <li>Keep bins segregated to earn the full +15 points.</li>
-              <li>Lost the card? Reprint at bago.ph or barangay hall.</li>
-            </ul>
+              <li>Collector scans the QR from the BAGO.PH app.</li>
+              <li>Earn <strong>+10 pts</strong> per pickup, +5 bonus for proper segregation.</li>
+              <li>Lost or damaged? Reprint at <strong>bago.ph/qr</strong> or your barangay hall.</li>
+            </ol>
           </div>
 
-          <div style={{ borderTop: '1px solid #F0F0F0', padding: '12px 24px', textAlign: 'center', fontSize: 10, color: '#9E9E9E' }}>
-            Issued 2026 · RA 9003 compliant · Tampering voids this card
+          <div style={{ padding: '10px 24px', borderTop: '1px solid #F0F0F0', display: 'flex', alignItems: 'center', fontSize: 9, color: '#9E9E9E' }}>
+            <span>Issued under RA 9003 · Tampering voids card</span>
+            <div style={{ flex: 1 }}/>
+            <span style={{ fontFamily: 'ui-monospace, Menlo', fontWeight: 600 }}>v.2026.04</span>
           </div>
         </div>
+      </div>
+
+      <div style={{ marginTop: 24, display: 'flex', alignItems: 'center', gap: 10, padding: 14, background: '#F9FBF9', borderRadius: 8, border: '1px dashed #BDBDBD' }}>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#212121' }}>Printing tips</div>
+          <div style={{ fontSize: 10, color: '#757575', marginTop: 2, lineHeight: 1.5 }}>Print on 250-gsm card stock · color · actual size · landscape OFF.<br/>Laminate for durability — collectors scan the card daily.</div>
+        </div>
+        <button type="button" style={{ height: 36, padding: '0 14px', border: '1px solid #BDBDBD', background: 'white', borderRadius: 6, fontFamily: 'Poppins', fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>📥 Download PDF</button>
+        <button type="button" style={{ height: 36, padding: '0 18px', background: '#2E7D32', color: 'white', border: 'none', borderRadius: 6, fontFamily: 'Poppins', fontWeight: 700, fontSize: 12, cursor: 'pointer' }}>🖨️ Print</button>
       </div>
     </div>
   );

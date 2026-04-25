@@ -33,6 +33,10 @@ function normalizeMobile(raw) {
   return d;
 }
 
+function normalizeGovEmail(raw) {
+  return String(raw || "").trim().toLowerCase();
+}
+
 function normalizeRole(role) {
   if (!role) return "user";
   const cleaned = String(role).trim().toLowerCase().replace(/\s+/g, "_");
@@ -129,8 +133,8 @@ router.post("/register", async (req, res) => {
     }
 
     await conn.query(
-      `INSERT INTO app_identity (mobile_number, pin_hash, role, resident_id, collector_id, lgu_admin_id)
-       VALUES (?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO app_identity (mobile_number, pin_hash, gov_email, password_hash, role, resident_id, collector_id, lgu_admin_id)
+       VALUES (?, ?, NULL, NULL, ?, ?, ?, ?)`,
       [mobile, pin_hash, role, resident_id, collector_id, lgu_admin_id]
     );
 
@@ -168,34 +172,61 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
+  const email = normalizeGovEmail(req.body.email);
+  const password = String(req.body.password || "");
   const mobile = normalizeMobile(req.body.mobile);
   const pin = String(req.body.pin || "");
 
-  if (!mobile || !/^\d{4}$/.test(pin)) {
-    return res.status(400).json({ error: "Mobile and 4-digit PIN required" });
+  const useEmailLogin = Boolean(email && email.includes("@"));
+
+  if (useEmailLogin) {
+    if (!password || password.length < 10) {
+      return res.status(400).json({ error: "Government email and password (min 10 chars) required" });
+    }
+  } else {
+    if (!mobile || !/^\d{4}$/.test(pin)) {
+      return res.status(400).json({ error: "Mobile and 4-digit PIN required" });
+    }
   }
 
   try {
     const pool = getPool();
-    const [[row]] = await pool.query(
-      `SELECT identity_id, mobile_number, pin_hash, role, resident_id, collector_id, lgu_admin_id
-       FROM app_identity WHERE mobile_number = ?`,
-      [mobile]
-    );
-
-    if (!row) {
-      return res.status(401).json({ error: "Unknown mobile number or wrong PIN" });
-    }
-
-    const ok = await bcrypt.compare(pin, row.pin_hash);
-    if (!ok) {
-      return res.status(401).json({ error: "Unknown mobile number or wrong PIN" });
+    let row;
+    if (useEmailLogin) {
+      const [[r]] = await pool.query(
+        `SELECT identity_id, mobile_number, gov_email, password_hash, pin_hash, role, resident_id, collector_id, lgu_admin_id
+         FROM app_identity WHERE gov_email = ? AND role = 'lgu_officer'`,
+        [email]
+      );
+      row = r;
+      if (!row) {
+        return res.status(401).json({ error: "Unknown government email or wrong password" });
+      }
+      const ok = row.password_hash && (await bcrypt.compare(password, row.password_hash));
+      if (!ok) {
+        return res.status(401).json({ error: "Unknown government email or wrong password" });
+      }
+    } else {
+      const [[r]] = await pool.query(
+        `SELECT identity_id, mobile_number, gov_email, password_hash, pin_hash, role, resident_id, collector_id, lgu_admin_id
+         FROM app_identity WHERE mobile_number = ?`,
+        [mobile]
+      );
+      row = r;
+      if (!row) {
+        return res.status(401).json({ error: "Unknown mobile number or wrong PIN" });
+      }
+      const ok = row.pin_hash && (await bcrypt.compare(pin, row.pin_hash));
+      if (!ok) {
+        return res.status(401).json({ error: "Unknown mobile number or wrong PIN" });
+      }
     }
 
     const token = signToken({
       sub: row.identity_id,
       role: row.role,
       mobile: row.mobile_number,
+      gov_email: row.gov_email || undefined,
       resident_id: row.resident_id,
       collector_id: row.collector_id,
       lgu_admin_id: row.lgu_admin_id
@@ -218,7 +249,7 @@ router.get("/me", authMiddleware(true), async (req, res) => {
   try {
     const pool = getPool();
     const [[row]] = await pool.query(
-      `SELECT identity_id, mobile_number, role, resident_id, collector_id, lgu_admin_id
+      `SELECT identity_id, mobile_number, gov_email, role, resident_id, collector_id, lgu_admin_id
        FROM app_identity WHERE identity_id = ?`,
       [req.user.sub]
     );
