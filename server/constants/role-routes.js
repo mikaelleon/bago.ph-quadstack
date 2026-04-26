@@ -52,6 +52,18 @@ const ROLE_API_ACCESS = Object.freeze({
     create: Object.freeze(["user"]),
     update: Object.freeze(["collector", "lgu_officer"])
   }),
+  qr: Object.freeze({
+    scan: Object.freeze(["collector", "lgu_officer"])
+  }),
+  eco_points: Object.freeze({
+    credit: Object.freeze(["collector", "lgu_officer"]),
+    reconcile: Object.freeze(["lgu_officer"]),
+    ledger: Object.freeze(["user", "collector", "lgu_officer"])
+  }),
+  rewards: Object.freeze({
+    catalog: Object.freeze(["user", "collector", "lgu_officer"]),
+    redeem: Object.freeze(["user"])
+  }),
   barangays: Object.freeze({
     read: Object.freeze(["public", "user", "collector", "lgu_officer"])
   })

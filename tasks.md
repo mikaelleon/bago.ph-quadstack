@@ -1,4 +1,4 @@
-# BAGO.PH work breakdown from `srs.md`: 14 main tasks, 103 leaf subtasks, estimated effort `S×37 + M×63 + L×3` (103 total) to deliver deployable HTML/CSS/JS + Node/Express + Aiven MySQL platform with XML/XSLT exports, security hardening, quality gates, and Render deployment. Current completion: **32/103 subtasks (31%)**.
+# BAGO.PH work breakdown from `srs.md`: 14 main tasks, 103 leaf subtasks, estimated effort `S×37 + M×63 + L×3` (103 total) to deliver deployable HTML/CSS/JS + Node/Express + Aiven MySQL platform with XML/XSLT exports, security hardening, quality gates, and Render deployment. Current completion: **42/103 subtasks (41%)**.
 
 ## T-DB-01
 **Goal** — Stand up production-shaped database foundation on Aiven MySQL with SSL and migration workflow.
@@ -96,17 +96,17 @@
 **Goal** — Implement eco-points earning and redemption with QR validation, idempotent credits, and immutable ledger.
 **Source ref** — FR-03, F-07, F-10, SR-04, SR-05, SEC-04, SEC-05.
 **Subtasks**
-- [ ] (M) Add migration `sql/migrations/002_eco_points_ledger_immutable.sql` with append-only constraints and reversal pattern — immutable ledger schema.
-- [ ] (M) Create QR token generator service `server/services/qr-token.js` using UUIDv4 tokens and household mapping — QR generation module.
-- [ ] (M) Implement collector scan endpoint `POST /api/qr/scan` in `server/routes/qr.js` validating token and route context — scan validation API.
-- [ ] (M) Implement idempotent credit endpoint `POST /api/eco-points/credit` in `server/routes/eco-points.js` requiring `Idempotency-Key` header — duplicate-safe credit API.
-- [ ] (M) Implement redemption catalog endpoint `GET /api/rewards/catalog` and redemption endpoint `POST /api/rewards/redeem` in `server/routes/rewards.js` — redemption API pair.
-- [ ] (S) Add 30-day grace reconciliation endpoint `POST /api/eco-points/reconcile` with LGU-only access in `server/routes/eco-points.js` — grace policy endpoint.
-- [ ] (M) Build collector scan flow UI `html/qr-audit.html` + `html/js/collector-scan.js` for scan -> validate -> credit feedback — collector web flow.
-- [ ] (M) Build resident wallet + redemption UI in `html/eco-points.html` + `html/js/eco-wallet.js` consuming live ledger and catalog APIs — live wallet screen.
-- [ ] (S) Add audit entries for all eco-point writes in `server/services/audit-log.js` — eco-point write audit trail.
-- [ ] (M) Add tests `server/tests/eco-points-idempotency.test.js` and `server/tests/rewards-redeem.test.js` — passing idempotency + redemption tests.
-**Completion** — **0%** (0/10 subtasks).
+- [x] (M) Add migration `sql/migrations/002_eco_points_ledger_immutable.sql` with append-only constraints and reversal pattern — immutable ledger schema.
+- [x] (M) Create QR token generator service `server/services/qr-token.js` using UUIDv4 tokens and household mapping — QR generation module.
+- [x] (M) Implement collector scan endpoint `POST /api/qr/scan` in `server/routes/qr.js` validating token and route context — scan validation API.
+- [x] (M) Implement idempotent credit endpoint `POST /api/eco-points/credit` in `server/routes/eco-points.js` requiring `Idempotency-Key` header — duplicate-safe credit API.
+- [x] (M) Implement redemption catalog endpoint `GET /api/rewards/catalog` and redemption endpoint `POST /api/rewards/redeem` in `server/routes/rewards.js` — redemption API pair.
+- [x] (S) Add 30-day grace reconciliation endpoint `POST /api/eco-points/reconcile` with LGU-only access in `server/routes/eco-points.js` — grace policy endpoint.
+- [x] (M) Build collector scan flow UI `html/qr-audit.html` + `html/js/collector-scan.js` for scan -> validate -> credit feedback — collector web flow.
+- [x] (M) Build resident wallet + redemption UI in `html/eco-points.html` + `html/js/eco-wallet.js` consuming live ledger and catalog APIs — live wallet screen.
+- [x] (S) Add audit entries for all eco-point writes in `server/services/audit-log.js` — eco-point write audit trail.
+- [x] (M) Add tests `server/tests/eco-points-idempotency.test.js` and `server/tests/rewards-redeem.test.js` — passing idempotency + redemption tests.
+**Completion** — **100%** (10/10 subtasks).
 **Dependencies** — T-REPORT-05.
 **Done when**
 - Duplicate credit requests with same idempotency key create one ledger credit only.
