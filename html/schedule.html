@@ -1,13 +1,95 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>BAGO.PH - Schedule</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f0f2f5;}</style></head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BAGO.PH - Schedule</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #f5f7fa; color: #1f2937; }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 24px; }
+    .card { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 8px 24px rgba(0,0,0,.06); margin-bottom: 16px; }
+    h1 { margin: 0 0 12px; font-size: 24px; }
+    h2 { margin: 0 0 12px; font-size: 18px; }
+    ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+    .schedule-item { border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px; background: #fafafa; }
+    .bago-banner-wrap { display: grid; gap: 8px; }
+    .bago-banner-card { border-left: 4px solid #16a34a; background: #ecfdf5; padding: 10px; border-radius: 8px; display: grid; gap: 4px; }
+    form { display: grid; grid-template-columns: repeat(3, minmax(150px, 1fr)); gap: 10px; }
+    input, select, button { height: 36px; border-radius: 6px; border: 1px solid #d1d5db; padding: 0 10px; }
+    button { cursor: pointer; background: #0f766e; color: #fff; border: 0; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: left; font-size: 14px; }
+    #lgu-panel { display: none; }
+  </style>
+</head>
 <body>
-<main id="app"></main>
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
-<script type="text/babel" src="hf-prototype/components/shared.jsx"></script>
-<script type="text/babel" src="hf-prototype/components/resident-screens.jsx"></script>
-<script src="js/prototype-page-loader.js"></script>
-<script>window.BAGOPrototype.render("ResidentSchedule");</script>
-</body></html>
+  <main class="wrap">
+    <h1>Collection Schedule</h1>
+    <section id="resident-panel">
+      <div class="card">
+        <h2>Recent Schedule Updates</h2>
+        <div id="schedule-banner"></div>
+      </div>
+      <div class="card">
+        <h2>Upcoming Collections</h2>
+        <ul id="resident-schedule-list"></ul>
+      </div>
+    </section>
+
+    <section id="lgu-panel">
+      <div class="card">
+        <h2>Create Schedule</h2>
+        <form id="lgu-schedule-form">
+          <select id="lgu-barangay" required></select>
+          <select id="lgu-waste" required>
+            <option>Biodegradable</option>
+            <option>Non-Biodegradable</option>
+            <option>Recyclable</option>
+            <option>Residual</option>
+          </select>
+          <input id="lgu-date" type="date" required />
+          <input id="lgu-start" type="time" value="07:00" required />
+          <input id="lgu-end" type="time" value="09:00" required />
+          <select id="lgu-status" required>
+            <option>Scheduled</option>
+            <option>Updated</option>
+            <option>Cancelled</option>
+          </select>
+          <button type="submit">Save Schedule</button>
+        </form>
+      </div>
+      <div class="card">
+        <h2>Manage Schedules</h2>
+        <table>
+          <thead>
+            <tr><th>Barangay</th><th>Waste</th><th>Date</th><th>Time</th><th>Status</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="lgu-schedule-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script src="js/bago-env.js"></script>
+  <script src="js/bago-api.js"></script>
+  <script src="role-access.js"></script>
+  <script src="js/components/in-app-banner.js"></script>
+  <script src="js/schedule-resident.js"></script>
+  <script src="js/schedule-lgu.js"></script>
+  <script>
+    (async function () {
+      var role = localStorage.getItem("bagoRole") || "user";
+      var residentPanel = document.getElementById("resident-panel");
+      var lguPanel = document.getElementById("lgu-panel");
+      if (role === "lgu_officer") {
+        residentPanel.style.display = "none";
+        lguPanel.style.display = "block";
+        await window.BAGOScheduleLGU.initLguSchedule();
+      } else {
+        residentPanel.style.display = "block";
+        lguPanel.style.display = "none";
+        await window.BAGOScheduleResident.initResidentSchedule();
+      }
+    })();
+  </script>
+</body>
+</html>

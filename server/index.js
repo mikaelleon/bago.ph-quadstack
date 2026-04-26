@@ -10,6 +10,7 @@ const authRoutes = require("./routes/auth");
 const barangaysRoutes = require("./routes/barangays");
 const schedulesRoutes = require("./routes/schedules");
 const reportsRoutes = require("./routes/reports");
+const notificationsRoutes = require("./routes/notifications");
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -42,6 +43,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/barangays", barangaysRoutes);
 app.use("/api/schedules", schedulesRoutes);
 app.use("/api/reports", reportsRoutes);
+app.use("/api/notifications", notificationsRoutes);
 
 app.use("/api", (_req, res) => {
   res.status(404).json({ error: "Not found" });

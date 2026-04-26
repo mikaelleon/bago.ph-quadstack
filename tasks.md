@@ -1,4 +1,4 @@
-# BAGO.PH work breakdown from `srs.md`: 14 main tasks, 103 leaf subtasks, estimated effort `S×37 + M×63 + L×3` (103 total) to deliver deployable HTML/CSS/JS + Node/Express + Aiven MySQL platform with XML/XSLT exports, security hardening, quality gates, and Render deployment. Current completion: **15/103 subtasks (15%)**.
+# BAGO.PH work breakdown from `srs.md`: 14 main tasks, 103 leaf subtasks, estimated effort `S×37 + M×63 + L×3` (103 total) to deliver deployable HTML/CSS/JS + Node/Express + Aiven MySQL platform with XML/XSLT exports, security hardening, quality gates, and Render deployment. Current completion: **22/103 subtasks (21%)**.
 
 ## T-DB-01
 **Goal** — Stand up production-shaped database foundation on Aiven MySQL with SSL and migration workflow.
@@ -57,14 +57,14 @@
 **Goal** — Deliver schedule management end to end for LGU and resident views with in-app change banners.
 **Source ref** — FR-01, FR-02, F-03, F-08.
 **Subtasks**
-- [ ] (M) Implement schedule CRUD endpoints `GET/POST/PATCH/DELETE /api/schedules` in `server/routes/schedules.js` with role restrictions — functional schedule API.
-- [ ] (S) Add schedule query service `server/services/schedules-service.js` using parameterized SQL and barangay/date filters — reusable data service.
-- [ ] (M) Build LGU schedule editor UI in `html/schedule.html` + `html/js/schedule-lgu.js` for create/update/cancel actions — live LGU edit screen.
-- [ ] (M) Build resident schedule list/calendar view in `html/js/schedule-resident.js` consuming `GET /api/schedules` — live resident view.
-- [ ] (S) Add in-app notification banner component `html/js/components/in-app-banner.js` for schedule change events — reusable banner module.
-- [ ] (M) Create endpoint `GET /api/notifications/schedule` in `server/routes/notifications.js` and wire banner polling in resident page — visible schedule change banner.
-- [ ] (S) Add API tests `server/tests/schedules-api.test.js` for CRUD + role permissions — passing schedule tests.
-**Completion** — **0%** (0/7 subtasks).
+- [x] (M) Implement schedule CRUD endpoints `GET/POST/PATCH/DELETE /api/schedules` in `server/routes/schedules.js` with role restrictions — functional schedule API.
+- [x] (S) Add schedule query service `server/services/schedules-service.js` using parameterized SQL and barangay/date filters — reusable data service.
+- [x] (M) Build LGU schedule editor UI in `html/schedule.html` + `html/js/schedule-lgu.js` for create/update/cancel actions — live LGU edit screen.
+- [x] (M) Build resident schedule list/calendar view in `html/js/schedule-resident.js` consuming `GET /api/schedules` — live resident view.
+- [x] (S) Add in-app notification banner component `html/js/components/in-app-banner.js` for schedule change events — reusable banner module.
+- [x] (M) Create endpoint `GET /api/notifications/schedule` in `server/routes/notifications.js` and wire banner polling in resident page — visible schedule change banner.
+- [x] (S) Add API tests `server/tests/schedules-api.test.js` for CRUD + role permissions — passing schedule tests.
+**Completion** — **100%** (7/7 subtasks).
 **Dependencies** — T-ROLE-03.
 **Done when**
 - LGU can create/update/cancel schedule from web screen.
