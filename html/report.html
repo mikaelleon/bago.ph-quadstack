@@ -1,13 +1,94 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>BAGO.PH - Report</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f0f2f5;}</style></head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BAGO.PH - Reports</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous" />
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #f5f7fa; color: #1f2937; }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 24px; }
+    .card { background: #fff; border-radius: 10px; padding: 16px; margin-bottom: 16px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
+    h1 { margin: 0 0 12px; }
+    h2 { margin: 0 0 10px; font-size: 18px; }
+    form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    form textarea, form button { grid-column: span 2; }
+    input, select, textarea, button { border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 10px; font: inherit; }
+    button { background: #0f766e; color: #fff; border: 0; cursor: pointer; }
+    #lgu-report-map { width: 100%; height: 420px; border-radius: 8px; }
+    .status-steps { display: flex; gap: 8px; padding-left: 18px; flex-wrap: wrap; }
+    .status-steps li { color: #6b7280; }
+    .status-steps li.done { color: #15803d; font-weight: 700; }
+    #lgu-view { display: none; }
+  </style>
+</head>
 <body>
-<main id="app"></main>
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
-<script type="text/babel" src="hf-prototype/components/shared.jsx"></script>
-<script type="text/babel" src="hf-prototype/components/resident-screens.jsx"></script>
-<script src="js/prototype-page-loader.js"></script>
-<script>window.BAGOPrototype.render("ResidentReport");</script>
-</body></html>
+  <main class="wrap">
+    <h1>Waste Reports</h1>
+
+    <section id="resident-view">
+      <div class="card">
+        <h2>Submit Report</h2>
+        <form id="resident-report-form">
+          <select id="report-issue" required>
+            <option>Missed Pickup</option>
+            <option>Overflowing Bin</option>
+            <option>Illegal Dumping</option>
+            <option>Blocked Road</option>
+            <option>Other</option>
+          </select>
+          <select id="report-barangay" required></select>
+          <input id="report-street" placeholder="Street address" required />
+          <input id="report-photo" type="file" accept="image/*" capture="environment" />
+          <textarea id="report-description" rows="4" placeholder="Describe issue (optional)"></textarea>
+          <button type="submit">Submit Report</button>
+        </form>
+        <div id="report-submit-status"></div>
+      </div>
+      <div class="card">
+        <h2>Status Updates</h2>
+        <div id="report-banner"></div>
+      </div>
+      <div class="card">
+        <h2>My Report Timeline</h2>
+        <div id="resident-report-timeline"></div>
+      </div>
+    </section>
+
+    <section id="lgu-view">
+      <div class="card">
+        <h2>LGU Report Map Overlay</h2>
+        <div id="lgu-report-map"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
+  <script src="js/bago-env.js"></script>
+  <script src="js/bago-api.js"></script>
+  <script src="role-access.js"></script>
+  <script src="js/components/in-app-banner.js"></script>
+  <script src="js/lib/image-compress.js"></script>
+  <script src="js/report-submit.js"></script>
+  <script src="js/report-map.js"></script>
+  <script src="js/report-detail.js"></script>
+  <script>
+    (async function () {
+      var role = localStorage.getItem("bagoRole") || "user";
+      var resident = document.getElementById("resident-view");
+      var lgu = document.getElementById("lgu-view");
+      if (role === "lgu_officer" || role === "collector") {
+        resident.style.display = "none";
+        lgu.style.display = "block";
+        await window.BAGOReportMap.loadReportMap();
+      } else {
+        resident.style.display = "block";
+        lgu.style.display = "none";
+        await window.BAGOReportSubmit.initResidentReportSubmit();
+        await window.BAGOReportDetail.loadReportStatusBanners();
+        await window.BAGOReportDetail.loadTimeline();
+      }
+    })();
+  </script>
+</body>
+</html>

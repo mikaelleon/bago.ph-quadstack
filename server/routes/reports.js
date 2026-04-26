@@ -1,11 +1,23 @@
 "use strict";
 
 const express = require("express");
+const path = require("path");
+const multer = require("multer");
 const { getPool } = require("../db");
 const { authMiddleware } = require("../middleware/auth");
 const { requireApiAccess } = require("../middleware/route-policy");
+const {
+  writeReportImage,
+  buildSignedImageUrl,
+  verifyImageToken,
+  readReportImage
+} = require("../services/report-media");
 
 const router = express.Router();
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 1024 * 1024 * 2 }
+});
 
 router.use(authMiddleware(true));
 
@@ -21,6 +33,7 @@ router.get("/", async (req, res) => {
   const pool = getPool();
   const role = req.user.role;
   const residentId = req.user.resident_id;
+  const filterStatus = String(req.query.status || "").trim();
 
   let sql = `
     SELECT r.report_id, r.reference_number, r.resident_id, r.barangay_id, b.barangay_name,
@@ -32,15 +45,28 @@ router.get("/", async (req, res) => {
     JOIN residents res ON res.resident_id = r.resident_id
   `;
   const params = [];
+  const where = [];
   if (role === "user") {
     if (!residentId) return res.json([]);
-    sql += " WHERE r.resident_id = ?";
+    where.push("r.resident_id = ?");
     params.push(residentId);
+  }
+  if (filterStatus) {
+    where.push("r.status = ?");
+    params.push(filterStatus);
+  }
+  if (where.length) {
+    sql += " WHERE " + where.join(" AND ");
   }
   sql += " ORDER BY r.submitted_at DESC";
 
   try {
     const [rows] = await pool.query(sql, params);
+    const hostBase = `${req.protocol}://${req.get("host")}`;
+    rows.forEach((row) => {
+      const image = readReportImage(row.report_id);
+      row.image_url = image ? buildSignedImageUrl(hostBase, row.report_id) : null;
+    });
     return res.json(rows);
   } catch (e) {
     console.error(e);
@@ -48,7 +74,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", requireApiAccess("reports", "create"), async (req, res) => {
+router.post("/", requireApiAccess("reports", "create"), upload.single("photo"), async (req, res) => {
   const resident_id = req.user.resident_id;
   if (!resident_id) {
     return res.status(403).json({ error: "Resident profile required to submit reports" });
@@ -98,6 +124,13 @@ router.post("/", requireApiAccess("reports", "create"), async (req, res) => {
       [reference_number, ins.insertId]
     );
 
+    if (req.file && req.file.buffer) {
+      const filePath = writeReportImage(ins.insertId, req.file.buffer, req.file.mimetype);
+      await conn.query(
+        "UPDATE waste_reports SET description = CONCAT(IFNULL(description,''), ?) WHERE report_id = ?",
+        [` [img:${path.basename(filePath)}]`, ins.insertId]
+      );
+    }
     await conn.commit();
 
     const [[row]] = await pool.query(
@@ -110,6 +143,7 @@ router.post("/", requireApiAccess("reports", "create"), async (req, res) => {
        WHERE r.report_id = ?`,
       [ins.insertId]
     );
+    row.image_url = buildSignedImageUrl(`${req.protocol}://${req.get("host")}`, row.report_id);
     return res.status(201).json(row);
   } catch (e) {
     await conn.rollback();
@@ -120,7 +154,7 @@ router.post("/", requireApiAccess("reports", "create"), async (req, res) => {
   }
 });
 
-router.patch("/:id", requireApiAccess("reports", "update"), async (req, res) => {
+async function patchReport(req, res) {
   const id = Number(req.params.id);
   if (!id) return res.status(400).json({ error: "Invalid id" });
 
@@ -171,6 +205,41 @@ router.patch("/:id", requireApiAccess("reports", "update"), async (req, res) => 
     console.error(e);
     return res.status(500).json({ error: "Failed to update report" });
   }
+}
+
+router.patch("/:id", requireApiAccess("reports", "update"), patchReport);
+
+router.patch("/:id/status", requireApiAccess("reports", "update"), async (req, res) => {
+  return patchReport(req, res);
+});
+
+router.get("/:id/image-url", authMiddleware(true), async (req, res) => {
+  const id = Number(req.params.id);
+  if (!id) return res.status(400).json({ error: "Invalid id" });
+  return res.json({ image_url: buildSignedImageUrl(`${req.protocol}://${req.get("host")}`, id) });
+});
+
+router.get("/image/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  const token = String(req.query.token || "");
+  if (!id || !verifyImageToken(token, id)) {
+    return res.status(403).json({ error: "Invalid or expired media token" });
+  }
+  const file = readReportImage(id);
+  if (!file) return res.status(404).json({ error: "Image not found" });
+  const ext = path.extname(file.filename).toLowerCase();
+  const mime =
+    ext === ".jpg" || ext === ".jpeg"
+      ? "image/jpeg"
+      : ext === ".png"
+        ? "image/png"
+        : ext === ".webp"
+          ? "image/webp"
+          : ext === ".gif"
+            ? "image/gif"
+            : "application/octet-stream";
+  res.setHeader("Content-Type", mime);
+  return res.sendFile(file.path);
 });
 
 module.exports = router;

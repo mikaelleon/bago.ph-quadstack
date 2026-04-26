@@ -1,4 +1,4 @@
-# BAGO.PH work breakdown from `srs.md`: 14 main tasks, 103 leaf subtasks, estimated effort `S×37 + M×63 + L×3` (103 total) to deliver deployable HTML/CSS/JS + Node/Express + Aiven MySQL platform with XML/XSLT exports, security hardening, quality gates, and Render deployment. Current completion: **22/103 subtasks (21%)**.
+# BAGO.PH work breakdown from `srs.md`: 14 main tasks, 103 leaf subtasks, estimated effort `S×37 + M×63 + L×3` (103 total) to deliver deployable HTML/CSS/JS + Node/Express + Aiven MySQL platform with XML/XSLT exports, security hardening, quality gates, and Render deployment. Current completion: **32/103 subtasks (31%)**.
 
 ## T-DB-01
 **Goal** — Stand up production-shaped database foundation on Aiven MySQL with SSL and migration workflow.
@@ -75,17 +75,17 @@
 **Goal** — Deliver report submission and resolution workflow with media, geolocation, compression, map overlay, and status notifications.
 **Source ref** — FR-02, F-04, SR-01, SR-02, SR-03, SEC-06.
 **Subtasks**
-- [ ] (M) Implement report upload endpoint `POST /api/reports` in `server/routes/reports.js` with multipart validation and metadata persistence — report create API.
-- [ ] (M) Add secure media storage service `server/services/report-media.js` with signed URL generation for access — signed image access flow.
-- [ ] (M) Add report status endpoints `PATCH /api/reports/:id/status` and `GET /api/reports` filters in `server/routes/reports.js` — status workflow API.
-- [ ] (S) Implement browser file capture field `<input type="file" capture>` in `html/report.html` + `html/js/report-submit.js` — capture-enabled report form.
-- [ ] (M) Add Geolocation API capture per submission in `html/js/report-submit.js` with permission prompt and fallback handling — location-tagged submission.
-- [ ] (M) Add client compression module `html/js/lib/image-compress.js` targeting <=500KB before upload — compressed upload artifact.
-- [ ] (M) Add LGU report map overlay in `html/report.html` + `html/js/report-map.js` using Leaflet + OpenStreetMap CDN — live map overlay view.
-- [ ] (S) Publish resident status-change banners in `GET /api/notifications/reports` via `server/routes/notifications.js` — report update notifications.
-- [ ] (M) Add frontend status timeline UI `html/js/report-detail.js` showing Open/Acknowledged/In Progress/Resolved/Rejected — visible workflow timeline.
-- [ ] (S) Add test suite `server/tests/reports-flow.test.js` for create + status transitions + signed URL access checks — passing report tests.
-**Completion** — **0%** (0/10 subtasks).
+- [x] (M) Implement report upload endpoint `POST /api/reports` in `server/routes/reports.js` with multipart validation and metadata persistence — report create API.
+- [x] (M) Add secure media storage service `server/services/report-media.js` with signed URL generation for access — signed image access flow.
+- [x] (M) Add report status endpoints `PATCH /api/reports/:id/status` and `GET /api/reports` filters in `server/routes/reports.js` — status workflow API.
+- [x] (S) Implement browser file capture field `<input type="file" capture>` in `html/report.html` + `html/js/report-submit.js` — capture-enabled report form.
+- [x] (M) Add Geolocation API capture per submission in `html/js/report-submit.js` with permission prompt and fallback handling — location-tagged submission.
+- [x] (M) Add client compression module `html/js/lib/image-compress.js` targeting <=500KB before upload — compressed upload artifact.
+- [x] (M) Add LGU report map overlay in `html/report.html` + `html/js/report-map.js` using Leaflet + OpenStreetMap CDN — live map overlay view.
+- [x] (S) Publish resident status-change banners in `GET /api/notifications/reports` via `server/routes/notifications.js` — report update notifications.
+- [x] (M) Add frontend status timeline UI `html/js/report-detail.js` showing Open/Acknowledged/In Progress/Resolved/Rejected — visible workflow timeline.
+- [x] (S) Add test suite `server/tests/reports-flow.test.js` for create + status transitions + signed URL access checks — passing report tests.
+**Completion** — **100%** (10/10 subtasks).
 **Dependencies** — T-ROLE-03, T-SCHED-04.
 **Done when**
 - Resident can submit compressed, geo-tagged report with image.
