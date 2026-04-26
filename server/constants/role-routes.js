@@ -64,6 +64,10 @@ const ROLE_API_ACCESS = Object.freeze({
     catalog: Object.freeze(["user", "collector", "lgu_officer"]),
     redeem: Object.freeze(["user"])
   }),
+  announcements: Object.freeze({
+    create: Object.freeze(["lgu_officer"]),
+    read: Object.freeze(["user", "collector", "lgu_officer"])
+  }),
   barangays: Object.freeze({
     read: Object.freeze(["public", "user", "collector", "lgu_officer"])
   })

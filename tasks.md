@@ -1,4 +1,4 @@
-# BAGO.PH work breakdown from `srs.md`: 14 main tasks, 103 leaf subtasks, estimated effort `S×37 + M×63 + L×3` (103 total) to deliver deployable HTML/CSS/JS + Node/Express + Aiven MySQL platform with XML/XSLT exports, security hardening, quality gates, and Render deployment. Current completion: **42/103 subtasks (41%)**.
+# BAGO.PH work breakdown from `srs.md`: 14 main tasks, 103 leaf subtasks, estimated effort `S×37 + M×63 + L×3` (103 total) to deliver deployable HTML/CSS/JS + Node/Express + Aiven MySQL platform with XML/XSLT exports, security hardening, quality gates, and Render deployment. Current completion: **48/103 subtasks (47%)**.
 
 ## T-DB-01
 **Goal** — Stand up production-shaped database foundation on Aiven MySQL with SSL and migration workflow.
@@ -117,13 +117,13 @@
 **Goal** — Deliver announcement and in-app notification pipeline with email/SMS hook points.
 **Source ref** — FR-03, F-08, NFR-04.
 **Subtasks**
-- [ ] (M) Implement announcement endpoints `GET/POST /api/announcements` in `server/routes/announcements.js` with barangay targeting — announcement API.
-- [ ] (S) Add in-app banner feed endpoint `GET /api/notifications` in `server/routes/notifications.js` merging schedule/report/announcement events — unified banner feed.
-- [ ] (M) Build LGU announcement compose UI in `html/announcements.html` + `html/js/announcements-admin.js` — LGU broadcast screen.
-- [ ] (S) Build resident/collector banner display module `html/js/in-app-notifications.js` consuming `/api/notifications` — visible in-app notifications.
-- [ ] (M) Add provider hook interface `server/integrations/messaging-hooks.js` for future email/SMS adapters (stub adapters + config) — extensible comms hook artifact.
-- [ ] (S) Add tests `server/tests/announcements-api.test.js` for role-restricted creation and targeted retrieval — passing announcement tests.
-**Completion** — **0%** (0/6 subtasks).
+- [x] (M) Implement announcement endpoints `GET/POST /api/announcements` in `server/routes/announcements.js` with barangay targeting — announcement API.
+- [x] (S) Add in-app banner feed endpoint `GET /api/notifications` in `server/routes/notifications.js` merging schedule/report/announcement events — unified banner feed.
+- [x] (M) Build LGU announcement compose UI in `html/announcements.html` + `html/js/announcements-admin.js` — LGU broadcast screen.
+- [x] (S) Build resident/collector banner display module `html/js/in-app-notifications.js` consuming `/api/notifications` — visible in-app notifications.
+- [x] (M) Add provider hook interface `server/integrations/messaging-hooks.js` for future email/SMS adapters (stub adapters + config) — extensible comms hook artifact.
+- [x] (S) Add tests `server/tests/announcements-api.test.js` for role-restricted creation and targeted retrieval — passing announcement tests.
+**Completion** — **100%** (6/6 subtasks).
 **Dependencies** — T-SCHED-04, T-REPORT-05.
 **Done when**
 - LGU can publish announcement targeted by barangay.
