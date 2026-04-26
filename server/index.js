@@ -15,6 +15,8 @@ const ecoPointsRoutes = require("./routes/eco-points");
 const rewardsRoutes = require("./routes/rewards");
 const qrRoutes = require("./routes/qr");
 const announcementsRoutes = require("./routes/announcements");
+const analyticsRoutes = require("./routes/analytics");
+const exportsRoutes = require("./routes/exports");
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -52,6 +54,9 @@ app.use("/api/eco-points", ecoPointsRoutes);
 app.use("/api/rewards", rewardsRoutes);
 app.use("/api/qr", qrRoutes);
 app.use("/api/announcements", announcementsRoutes);
+app.use("/api/analytics", analyticsRoutes);
+app.use("/api/exports", exportsRoutes);
+app.use("/xsl", express.static(path.resolve(__dirname, "..", "xsl")));
 
 app.use("/api", (_req, res) => {
   res.status(404).json({ error: "Not found" });

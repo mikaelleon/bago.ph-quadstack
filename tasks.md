@@ -1,4 +1,4 @@
-# BAGO.PH work breakdown from `srs.md`: 14 main tasks, 103 leaf subtasks, estimated effort `S×37 + M×63 + L×3` (103 total) to deliver deployable HTML/CSS/JS + Node/Express + Aiven MySQL platform with XML/XSLT exports, security hardening, quality gates, and Render deployment. Current completion: **48/103 subtasks (47%)**.
+# BAGO.PH work breakdown from `srs.md`: 14 main tasks, 103 leaf subtasks, estimated effort `S×37 + M×63 + L×3` (103 total) to deliver deployable HTML/CSS/JS + Node/Express + Aiven MySQL platform with XML/XSLT exports, security hardening, quality gates, and Render deployment. Current completion: **57/103 subtasks (55%)**.
 
 ## T-DB-01
 **Goal** — Stand up production-shaped database foundation on Aiven MySQL with SSL and migration workflow.
@@ -134,16 +134,16 @@
 **Goal** — Build analytics, exports, and DENR-oriented output pipeline from live MySQL data.
 **Source ref** — FR-04, F-06, F-09, PERF-05.
 **Subtasks**
-- [ ] (M) Implement analytics query service `server/services/analytics-service.js` for collection, reports, compliance, eco-points metrics — reusable metric queries.
-- [ ] (M) Add LGU analytics endpoint `GET /api/analytics/overview` in `server/routes/analytics.js` with period filters — analytics API.
-- [ ] (M) Build LGU dashboard cards in `html/dashboard-lgu.html` + `html/js/dashboard-lgu.js` from overview API — live metric cards.
-- [ ] (M) Add charts with Chart.js CDN in `html/js/lgu-charts.js` for compliance, report SLA, eco-points trends — analytics charts artifact.
-- [ ] (M) Add CSV export endpoint `GET /api/exports/csv?type=...` in `server/routes/exports.js` — downloadable CSV export.
-- [ ] (L) Add XML export endpoint `GET /api/exports/xml` in `server/routes/exports.js` with filters (barangay, date range, role) sourced from MySQL — filtered XML export API.
-- [ ] (L) Create XSL templates `xsl/denr-report.xsl` and export transform route `GET /api/exports/denr-html` in `server/routes/exports.js` — XSL-driven printable HTML.
-- [ ] (L) Add PDF generation endpoint `GET /api/exports/denr-pdf` in `server/routes/exports.js` using transformed HTML source — downloadable DENR PDF.
-- [ ] (S) Add endpoint tests `server/tests/exports.test.js` covering XML filter behavior and CSV/PDF response headers — passing export tests.
-**Completion** — **0%** (0/9 subtasks).
+- [x] (M) Implement analytics query service `server/services/analytics-service.js` for collection, reports, compliance, eco-points metrics — reusable metric queries.
+- [x] (M) Add LGU analytics endpoint `GET /api/analytics/overview` in `server/routes/analytics.js` with period filters — analytics API.
+- [x] (M) Build LGU dashboard cards in `html/dashboard-lgu.html` + `html/js/dashboard-lgu.js` from overview API — live metric cards.
+- [x] (M) Add charts with Chart.js CDN in `html/js/lgu-charts.js` for compliance, report SLA, eco-points trends — analytics charts artifact.
+- [x] (M) Add CSV export endpoint `GET /api/exports/csv?type=...` in `server/routes/exports.js` — downloadable CSV export.
+- [x] (L) Add XML export endpoint `GET /api/exports/xml` in `server/routes/exports.js` with filters (barangay, date range, role) sourced from MySQL — filtered XML export API.
+- [x] (L) Create XSL templates `xsl/denr-report.xsl` and export transform route `GET /api/exports/denr-html` in `server/routes/exports.js` — XSL-driven printable HTML.
+- [x] (L) Add PDF generation endpoint `GET /api/exports/denr-pdf` in `server/routes/exports.js` using transformed HTML source — downloadable DENR PDF.
+- [x] (S) Add endpoint tests `server/tests/exports.test.js` covering XML filter behavior and CSV/PDF response headers — passing export tests.
+**Completion** — **100%** (9/9 subtasks).
 **Dependencies** — T-ECO-06, T-ANN-07.
 **Done when**
 - LGU dashboard renders live cards and charts from API.

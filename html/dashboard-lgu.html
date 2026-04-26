@@ -1,14 +1,63 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>BAGO.PH - LGU Dashboard</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#eceff1;}</style></head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BAGO.PH - LGU Dashboard</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #eceff1; color: #1f2937; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 24px; }
+    .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .card { background: #fff; border-radius: 10px; padding: 14px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
+    .metric { font-size: 28px; font-weight: 700; margin-top: 6px; }
+    .charts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+    canvas { width: 100%; height: 260px; }
+    .actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .actions a { display: inline-block; padding: 8px 10px; background: #0f766e; color: #fff; border-radius: 6px; text-decoration: none; }
+  </style>
+</head>
 <body>
-<main id="app"></main>
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
-<script src="js/bago-env.js"></script><script src="js/bago-api.js"></script>
-<script type="text/babel" src="hf-prototype/components/shared.jsx"></script>
-<script type="text/babel" src="hf-prototype/components/admin-screens.jsx"></script>
-<script src="js/prototype-page-loader.js"></script>
-<script>window.BAGOPrototype.render("AdminDashboard");</script>
-</body></html>
+  <main class="wrap">
+    <h1>LGU Analytics Dashboard</h1>
+    <div id="dashboard-error" style="color:#b91c1c;"></div>
+    <section class="grid">
+      <div class="card"><div>Schedules</div><div id="metric-schedules" class="metric">0</div></div>
+      <div class="card"><div>Reports Total</div><div id="metric-reports-total" class="metric">0</div></div>
+      <div class="card"><div>Open Reports</div><div id="metric-reports-open" class="metric">0</div></div>
+      <div class="card"><div>Resolved Reports</div><div id="metric-reports-resolved" class="metric">0</div></div>
+      <div class="card"><div>Residents</div><div id="metric-residents" class="metric">0</div></div>
+      <div class="card"><div>Collectors</div><div id="metric-collectors" class="metric">0</div></div>
+      <div class="card"><div>Eco Points Total</div><div id="metric-eco" class="metric">0</div></div>
+      <div class="card"><div>Compliance Avg</div><div id="metric-compliance" class="metric">0</div></div>
+    </section>
+    <section class="charts">
+      <div class="card"><h3>Reports by Status</h3><canvas id="chart-reports"></canvas></div>
+      <div class="card"><h3>Schedules by Status</h3><canvas id="chart-schedules"></canvas></div>
+      <div class="card"><h3>Eco Points Trend</h3><canvas id="chart-eco"></canvas></div>
+    </section>
+    <section class="actions">
+      <a href="#" id="btn-export-overview">Export CSV (Overview)</a>
+      <a href="#" id="btn-export-schedules">Export CSV (Schedules)</a>
+      <a href="#" id="btn-export-xml">Export XML</a>
+      <a href="#" id="btn-export-denr-html">DENR HTML</a>
+      <a href="#" id="btn-export-denr-pdf">DENR PDF</a>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="js/bago-env.js"></script>
+  <script src="js/bago-api.js"></script>
+  <script src="js/lgu-charts.js"></script>
+  <script src="js/dashboard-lgu.js"></script>
+  <script>
+    (function () {
+      window.BAGODashboardLGU.initDashboardLGU();
+      const base = (window.BAGOApi.base() || "") + "/api/exports";
+      document.getElementById("btn-export-overview").href = base + "/csv?type=overview";
+      document.getElementById("btn-export-schedules").href = base + "/csv?type=schedules";
+      document.getElementById("btn-export-xml").href = base + "/xml";
+      document.getElementById("btn-export-denr-html").href = base + "/denr-html";
+      document.getElementById("btn-export-denr-pdf").href = base + "/denr-pdf";
+    })();
+  </script>
+</body>
+</html>
