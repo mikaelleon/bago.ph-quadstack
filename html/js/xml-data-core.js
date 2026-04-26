@@ -78,6 +78,21 @@
     localStorage.removeItem(storageKey);
   }
 
+  function sortRows(rows, keyFn, dir) {
+    var out = rows.slice();
+    out.sort(function (a, b) {
+      var va = keyFn(a);
+      var vb = keyFn(b);
+      var cmp = String(va).localeCompare(String(vb), undefined, { numeric: true, sensitivity: "base" });
+      return cmp * (dir || 1);
+    });
+    return out;
+  }
+
+  function filterRows(rows, predicate) {
+    return rows.filter(predicate);
+  }
+
   global.BAGO_XML_CORE = {
     STORAGE_SCHEDULES: STORAGE_SCHEDULES,
     STORAGE_BARANGAYS: STORAGE_BARANGAYS,
@@ -88,6 +103,8 @@
     saveToStorage: saveToStorage,
     downloadXml: downloadXml,
     clearStorage: clearStorage,
-    serializeDocument: serializeDocument
+    serializeDocument: serializeDocument,
+    sortRows: sortRows,
+    filterRows: filterRows
   };
 })(window);

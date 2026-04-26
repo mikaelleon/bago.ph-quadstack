@@ -453,26 +453,33 @@
     var routes = doc.getElementsByTagName("weekly_route_calendar")[0];
     var r = routes.getElementsByTagName("route")[index];
     if (!r) return;
-    var wd = prompt("Weekday", getText(r, "weekday"));
-    if (wd === null) return;
-    var code = prompt("Route code", getText(r, "route_code"));
-    if (code === null) return;
-    var areas = prompt("Areas", getText(r, "areas"));
-    if (areas === null) return;
-    var ws = prompt("Window start (HH:MM)", getText(r, "window_start"));
-    if (ws === null) return;
-    var we = prompt("Window end (HH:MM)", getText(r, "window_end"));
-    if (we === null) return;
-    var st = prompt("Status (active / limited)", getText(r, "status"));
-    if (st === null) return;
-    setText(r, "weekday", wd);
-    setText(r, "route_code", code);
-    setText(r, "areas", areas);
-    setText(r, "window_start", ws);
-    setText(r, "window_end", we);
-    setText(r, "status", st);
-    saveBrowser();
-    renderTables();
+    window.BAGOXmlModal
+      .openModal({
+        title: "Edit route",
+        fields: [
+          { name: "weekday", label: "Weekday", value: getText(r, "weekday") },
+          { name: "route_code", label: "Route code", value: getText(r, "route_code") },
+          { name: "areas", label: "Areas", value: getText(r, "areas") },
+          { name: "window_start", label: "Window start (HH:MM)", value: getText(r, "window_start") },
+          { name: "window_end", label: "Window end (HH:MM)", value: getText(r, "window_end") },
+          { name: "status", label: "Status (active/limited)", value: getText(r, "status") }
+        ],
+        validate: function (v) {
+          if (!v.weekday || !v.route_code) return "Weekday and route code required";
+          return true;
+        }
+      })
+      .then(function (v) {
+        if (!v) return;
+        setText(r, "weekday", v.weekday);
+        setText(r, "route_code", v.route_code);
+        setText(r, "areas", v.areas);
+        setText(r, "window_start", v.window_start);
+        setText(r, "window_end", v.window_end);
+        setText(r, "status", v.status);
+        saveBrowser();
+        renderTables();
+      });
   }
 
   function delRoute(index) {
@@ -505,23 +512,31 @@
     var holder = doc.getElementsByTagName("barangay_schedules")[0];
     var b = holder.getElementsByTagName("barangay")[index];
     if (!b) return;
-    var name = prompt("Barangay name", getText(b, "name"));
-    if (name === null) return;
-    var pd = prompt("Primary day", getText(b, "primary_day"));
-    if (pd === null) return;
-    var tw = prompt("Time window", getText(b, "time_window"));
-    if (tw === null) return;
-    var fq = prompt("Frequency", getText(b, "frequency"));
-    if (fq === null) return;
-    var notes = prompt("Notes", getText(b, "notes"));
-    if (notes === null) return;
-    setText(b, "name", name);
-    setText(b, "primary_day", pd);
-    setText(b, "time_window", tw);
-    setText(b, "frequency", fq);
-    setText(b, "notes", notes);
-    saveBrowser();
-    renderTables();
+    window.BAGOXmlModal
+      .openModal({
+        title: "Edit barangay schedule",
+        fields: [
+          { name: "name", label: "Barangay name", value: getText(b, "name") },
+          { name: "primary_day", label: "Primary day", value: getText(b, "primary_day") },
+          { name: "time_window", label: "Time window", value: getText(b, "time_window") },
+          { name: "frequency", label: "Frequency", value: getText(b, "frequency") },
+          { name: "notes", label: "Notes", value: getText(b, "notes") }
+        ],
+        validate: function (v) {
+          if (!window.BAGOXmlValidators.validBarangayName(v.name)) return "Invalid barangay name";
+          return true;
+        }
+      })
+      .then(function (v) {
+        if (!v) return;
+        setText(b, "name", v.name);
+        setText(b, "primary_day", v.primary_day);
+        setText(b, "time_window", v.time_window);
+        setText(b, "frequency", v.frequency);
+        setText(b, "notes", v.notes);
+        saveBrowser();
+        renderTables();
+      });
   }
 
   function delBarangay(index) {
@@ -553,17 +568,23 @@
     var holder = doc.getElementsByTagName("special_dates")[0];
     var e = holder.getElementsByTagName("entry")[index];
     if (!e) return;
-    var d = prompt("Date (YYYY-MM-DD)", getText(e, "date"));
-    if (d === null) return;
-    var desc = prompt("Description", getText(e, "description"));
-    if (desc === null) return;
-    var act = prompt("Action / adjustment", getText(e, "action"));
-    if (act === null) return;
-    setText(e, "date", d);
-    setText(e, "description", desc);
-    setText(e, "action", act);
-    saveBrowser();
-    renderTables();
+    window.BAGOXmlModal
+      .openModal({
+        title: "Edit special date",
+        fields: [
+          { name: "date", label: "Date (YYYY-MM-DD)", value: getText(e, "date") },
+          { name: "description", label: "Description", value: getText(e, "description") },
+          { name: "action", label: "Action / adjustment", value: getText(e, "action") }
+        ]
+      })
+      .then(function (v) {
+        if (!v) return;
+        setText(e, "date", v.date);
+        setText(e, "description", v.description);
+        setText(e, "action", v.action);
+        saveBrowser();
+        renderTables();
+      });
   }
 
   function delSpecial(index) {
@@ -593,23 +614,33 @@
     var holder = doc.getElementsByTagName("collector_shifts")[0];
     var s = holder.getElementsByTagName("shift")[index];
     if (!s) return;
-    var team = prompt("Team", getText(s, "team"));
-    if (team === null) return;
-    var lead = prompt("Lead", getText(s, "lead"));
-    if (lead === null) return;
-    var ad = prompt("Assigned days", getText(s, "assigned_days"));
-    if (ad === null) return;
-    var st = prompt("Start (HH:MM)", getText(s, "start_time"));
-    if (st === null) return;
-    var en = prompt("End (HH:MM)", getText(s, "end_time"));
-    if (en === null) return;
-    setText(s, "team", team);
-    setText(s, "lead", lead);
-    setText(s, "assigned_days", ad);
-    setText(s, "start_time", st);
-    setText(s, "end_time", en);
-    saveBrowser();
-    renderTables();
+    window.BAGOXmlModal
+      .openModal({
+        title: "Edit shift",
+        fields: [
+          { name: "team", label: "Team", value: getText(s, "team") },
+          { name: "lead", label: "Lead", value: getText(s, "lead") },
+          { name: "assigned_days", label: "Assigned days", value: getText(s, "assigned_days") },
+          { name: "start_time", label: "Start (HH:MM)", value: getText(s, "start_time") },
+          { name: "end_time", label: "End (HH:MM)", value: getText(s, "end_time") }
+        ],
+        validate: function (v) {
+          if (v.lead && v.lead.indexOf("@") > -1 && !window.BAGOXmlValidators.validGovEmail(v.lead)) {
+            return "Lead email must be gov domain if email used";
+          }
+          return true;
+        }
+      })
+      .then(function (v) {
+        if (!v) return;
+        setText(s, "team", v.team);
+        setText(s, "lead", v.lead);
+        setText(s, "assigned_days", v.assigned_days);
+        setText(s, "start_time", v.start_time);
+        setText(s, "end_time", v.end_time);
+        saveBrowser();
+        renderTables();
+      });
   }
 
   function delShift(index) {
@@ -719,6 +750,12 @@
       el("btn-add-barangay").onclick = addBarangay;
       el("btn-add-special").onclick = addSpecial;
       el("btn-add-shift").onclick = addShift;
+      var prev = el("btn-xsl-preview");
+      if (prev) {
+        prev.onclick = function () {
+          window.open("../xml/schedules.xml", "_blank");
+        };
+      }
     } else {
       el("btn-export").onclick = function () {
         syncMetaFromForm();
@@ -726,6 +763,12 @@
         C.downloadXml("schedules-export.xml", doc, C.PI_SCHEDULES);
         el("save-status").textContent = "Downloaded copy of current data.";
       };
+      var prevView = el("btn-xsl-preview");
+      if (prevView) {
+        prevView.onclick = function () {
+          window.open("../xml/schedules.xml", "_blank");
+        };
+      }
     }
 
     ["filter-route-day", "filter-route-q", "filter-barangay-day", "filter-barangay-q", "filter-special-q", "filter-shift-q"].forEach(function (id) {

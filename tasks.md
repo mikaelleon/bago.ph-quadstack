@@ -1,4 +1,4 @@
-# BAGO.PH work breakdown from `srs.md`: 14 main tasks, 103 leaf subtasks, estimated effort `S×37 + M×63 + L×3` (103 total) to deliver deployable HTML/CSS/JS + Node/Express + Aiven MySQL platform with XML/XSLT exports, security hardening, quality gates, and Render deployment. Current completion: **57/103 subtasks (55%)**.
+# BAGO.PH work breakdown from `srs.md`: 14 main tasks, 103 leaf subtasks, estimated effort `S×37 + M×63 + L×3` (103 total) to deliver deployable HTML/CSS/JS + Node/Express + Aiven MySQL platform with XML/XSLT exports, security hardening, quality gates, and Render deployment. Current completion: **64/103 subtasks (62%)**.
 
 ## T-DB-01
 **Goal** — Stand up production-shaped database foundation on Aiven MySQL with SSL and migration workflow.
@@ -154,15 +154,15 @@
 **Goal** — Complete XML/XSLT editor layer with view mode, modal CRUD, and strict field validation.
 **Source ref** — F-08, FR-04, NFR-04, NFR-05.
 **Subtasks**
-- [ ] (M) Refactor `html/xml-schedules-editor.html` + `html/js/xml-schedules-editor.js` to modal-based CRUD (remove `prompt()`) — modal CRUD schedules editor.
-- [ ] (M) Refactor `html/xml-barangays-editor.html` + `html/js/xml-barangays-editor.js` to modal-based CRUD (remove `prompt()`) — modal CRUD barangays editor.
-- [ ] (S) Add shared modal component `html/js/components/xml-editor-modal.js` used by both editors — reusable modal artifact.
-- [ ] (M) Add validation module `html/js/xml-editor-validators.js` for PH mobile format, 4-digit PIN, gov-email pattern, barangay whitelist — field validation rules.
+- [x] (M) Refactor `html/xml-schedules-editor.html` + `html/js/xml-schedules-editor.js` to modal-based CRUD (remove `prompt()`) — modal CRUD schedules editor.
+- [x] (M) Refactor `html/xml-barangays-editor.html` + `html/js/xml-barangays-editor.js` to modal-based CRUD (remove `prompt()`) — modal CRUD barangays editor.
+- [x] (S) Add shared modal component `html/js/components/xml-editor-modal.js` used by both editors — reusable modal artifact.
+- [x] (M) Add validation module `html/js/xml-editor-validators.js` for PH mobile format, 4-digit PIN, gov-email pattern, barangay whitelist — field validation rules.
 - [x] (S) Enforce `?mode=view` read-only restrictions in both editor scripts with disabled controls and guard checks — read-only behavior.
-- [ ] (M) Improve filter/sort utilities in `html/js/xml-data-core.js` for deterministic sorting and multi-filter handling — stable editor behavior.
-- [ ] (M) Add export controls in editors for XML download and XSL preview trigger (`xsl/*.xsl`) — verifiable export actions.
-- [ ] (S) Add browser regression checklist `docs/qa/xml-xslt-checklist.md` for Firefox XSLT path and editor modes — QA artifact.
-**Completion** — **13%** (1/8 subtasks).
+- [x] (M) Improve filter/sort utilities in `html/js/xml-data-core.js` for deterministic sorting and multi-filter handling — stable editor behavior.
+- [x] (M) Add export controls in editors for XML download and XSL preview trigger (`xsl/*.xsl`) — verifiable export actions.
+- [x] (S) Add browser regression checklist `docs/qa/xml-xslt-checklist.md` for Firefox XSLT path and editor modes — QA artifact.
+**Completion** — **100%** (8/8 subtasks).
 **Dependencies** — T-SCHED-04, T-ROLE-03.
 **Done when**
 - No `prompt()` remains in XML editors.

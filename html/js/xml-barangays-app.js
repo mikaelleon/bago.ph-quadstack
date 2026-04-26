@@ -203,26 +203,33 @@
     if (viewMode) return;
     var b = doc.documentElement.getElementsByTagName("barangay")[index];
     if (!b) return;
-    var name = prompt("Barangay name", b.getAttribute("name") || "");
-    if (name === null) return;
-    b.setAttribute("name", name);
-    var cr = prompt("Collection rate", getText(b, "collection_rate"));
-    if (cr === null) return;
-    var comp = prompt("Compliance rate", getText(b, "compliance_rate"));
-    if (comp === null) return;
-    var rep = prompt("Open reports", getText(b, "open_reports"));
-    if (rep === null) return;
-    var ep = prompt("Eco-points", getText(b, "eco_points"));
-    if (ep === null) return;
-    var st = prompt("Status (On Track / Monitor / Urgent)", getText(b, "status"));
-    if (st === null) return;
-    setText(b, "collection_rate", cr);
-    setText(b, "compliance_rate", comp);
-    setText(b, "open_reports", rep);
-    setText(b, "eco_points", ep);
-    setText(b, "status", st);
-    saveBrowser();
-    renderTable();
+    window.BAGOXmlModal
+      .openModal({
+        title: "Edit barangay metrics",
+        fields: [
+          { name: "name", label: "Barangay name", value: b.getAttribute("name") || "" },
+          { name: "collection_rate", label: "Collection rate", value: getText(b, "collection_rate") },
+          { name: "compliance_rate", label: "Compliance rate", value: getText(b, "compliance_rate") },
+          { name: "open_reports", label: "Open reports", value: getText(b, "open_reports") },
+          { name: "eco_points", label: "Eco-points", value: getText(b, "eco_points") },
+          { name: "status", label: "Status", value: getText(b, "status") }
+        ],
+        validate: function (v) {
+          if (!window.BAGOXmlValidators.validBarangayName(v.name)) return "Invalid barangay name";
+          return true;
+        }
+      })
+      .then(function (v) {
+        if (!v) return;
+        b.setAttribute("name", v.name);
+        setText(b, "collection_rate", v.collection_rate);
+        setText(b, "compliance_rate", v.compliance_rate);
+        setText(b, "open_reports", v.open_reports);
+        setText(b, "eco_points", v.eco_points);
+        setText(b, "status", v.status);
+        saveBrowser();
+        renderTable();
+      });
   }
 
   function delRow(index) {
@@ -324,12 +331,24 @@
           saveBrowser();
         });
       });
+      var prev = el("btn-xsl-preview");
+      if (prev) {
+        prev.onclick = function () {
+          window.open("../xml/barangays.xml", "_blank");
+        };
+      }
     } else {
       el("btn-export").onclick = function () {
         syncHeaderFromForm();
         C.downloadXml("barangays-export.xml", doc, C.PI_BARANGAYS);
         el("save-status").textContent = "Downloaded copy of current data.";
       };
+      var prevView = el("btn-xsl-preview");
+      if (prevView) {
+        prevView.onclick = function () {
+          window.open("../xml/barangays.xml", "_blank");
+        };
+      }
     }
 
     el("filter-barangay-q").addEventListener("input", renderTable);

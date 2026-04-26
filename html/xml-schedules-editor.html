@@ -1,13 +1,89 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>BAGO.PH - Schedules Editor</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#eceff1;}</style></head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BAGO.PH - XML Schedules Editor</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #f3f4f6; color: #111827; }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 16px; }
+    .card { background: #fff; border-radius: 10px; padding: 12px; margin-bottom: 12px; box-shadow: 0 6px 18px rgba(0,0,0,.06); }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; }
+    input, button { height: 34px; border: 1px solid #d1d5db; border-radius: 6px; padding: 0 8px; font: inherit; }
+    button { cursor: pointer; background: #0f766e; border: 0; color: #fff; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { border-bottom: 1px solid #e5e7eb; padding: 6px; text-align: left; }
+    th.sortable { cursor: pointer; }
+    #view-mode-banner { display: none; color: #b45309; font-weight: 600; margin-bottom: 8px; }
+  </style>
+</head>
 <body>
-<main id="app"></main>
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
-<script type="text/babel" src="hf-prototype/components/shared.jsx"></script>
-<script type="text/babel" src="hf-prototype/components/admin-screens.jsx"></script>
-<script src="js/prototype-page-loader.js"></script>
-<script>window.BAGOPrototype.render("AdminSchedule");</script>
-</body></html>
+  <main class="wrap">
+    <div id="view-mode-banner">View mode active (`?mode=view`). Edit controls disabled.</div>
+    <div class="card row">
+      <input id="meta-title" placeholder="Title" />
+      <input id="meta-tagline" placeholder="Tagline" />
+      <input id="meta-proponent" placeholder="Proponent" />
+      <input id="meta-coverage" placeholder="Coverage" />
+      <input id="stat-routes" placeholder="Routes planned" />
+      <input id="stat-ontime" placeholder="On-time completion" />
+      <input id="stat-barangays" placeholder="Barangays on schedule" />
+      <input id="stat-exceptions" placeholder="Exceptions" />
+    </div>
+    <div class="card row">
+      <button id="btn-save-browser">Save Browser Copy</button>
+      <button id="btn-export">Export XML</button>
+      <button id="btn-xsl-preview">XSL Preview</button>
+      <button id="btn-reload-file">Reload File</button>
+      <button id="btn-clear-storage">Clear Browser Copy</button>
+      <button id="btn-add-route" class="xml-crud-only">Add Route</button>
+      <button id="btn-add-barangay" class="xml-crud-only">Add Barangay</button>
+      <button id="btn-add-special" class="xml-crud-only">Add Special Date</button>
+      <button id="btn-add-shift" class="xml-crud-only">Add Shift</button>
+      <span id="save-status"></span>
+    </div>
+    <div class="card">
+      <div class="row"><input id="filter-route-day" placeholder="Filter route day"><input id="filter-route-q" placeholder="Search routes"></div>
+      <table><thead><tr>
+        <th class="sortable" data-section="routes" data-col="0" data-label="Weekday">Weekday</th>
+        <th class="sortable" data-section="routes" data-col="1" data-label="Code">Code</th>
+        <th class="sortable" data-section="routes" data-col="2" data-label="Areas">Areas</th>
+        <th class="sortable" data-section="routes" data-col="3" data-label="Window">Window</th>
+        <th class="sortable" data-section="routes" data-col="4" data-label="Status">Status</th>
+        <th>Actions</th></tr></thead><tbody id="tbody-routes"></tbody></table>
+    </div>
+    <div class="card">
+      <div class="row"><input id="filter-barangay-day" placeholder="Filter barangay day"><input id="filter-barangay-q" placeholder="Search barangays"></div>
+      <table><thead><tr>
+        <th class="sortable" data-section="barangay" data-col="0" data-label="Barangay">Barangay</th>
+        <th class="sortable" data-section="barangay" data-col="1" data-label="Primary Day">Primary Day</th>
+        <th class="sortable" data-section="barangay" data-col="2" data-label="Time Window">Time Window</th>
+        <th class="sortable" data-section="barangay" data-col="3" data-label="Frequency">Frequency</th>
+        <th class="sortable" data-section="barangay" data-col="4" data-label="Notes">Notes</th>
+        <th>Actions</th></tr></thead><tbody id="tbody-barangay"></tbody></table>
+    </div>
+    <div class="card">
+      <div class="row"><input id="filter-special-q" placeholder="Search special dates"></div>
+      <table><thead><tr>
+        <th class="sortable" data-section="special" data-col="0" data-label="Date">Date</th>
+        <th class="sortable" data-section="special" data-col="1" data-label="Description">Description</th>
+        <th class="sortable" data-section="special" data-col="2" data-label="Action">Action</th>
+        <th>Actions</th></tr></thead><tbody id="tbody-special"></tbody></table>
+    </div>
+    <div class="card">
+      <div class="row"><input id="filter-shift-q" placeholder="Search shifts"></div>
+      <table><thead><tr>
+        <th class="sortable" data-section="shifts" data-col="0" data-label="Team">Team</th>
+        <th class="sortable" data-section="shifts" data-col="1" data-label="Lead">Lead</th>
+        <th class="sortable" data-section="shifts" data-col="2" data-label="Assigned Days">Assigned Days</th>
+        <th class="sortable" data-section="shifts" data-col="3" data-label="Time">Time</th>
+        <th>Actions</th></tr></thead><tbody id="tbody-shifts"></tbody></table>
+    </div>
+  </main>
+  <script type="application/xml" id="schedules-xml-fallback"><ecolinisph_schedules><title>BAGO.PH</title><tagline/><proponent/><coverage_area/><statistics><weekly_routes_planned>0</weekly_routes_planned><on_time_completion>0%</on_time_completion><barangays_on_schedule>0</barangays_on_schedule><exceptions_this_month>0</exceptions_this_month></statistics><weekly_route_calendar/><barangay_schedules/><special_dates/><collector_shifts/></ecolinisph_schedules></script>
+  <script src="js/xml-data-core.js"></script>
+  <script src="js/components/xml-editor-modal.js"></script>
+  <script src="js/xml-editor-validators.js"></script>
+  <script src="js/xml-schedules-app.js"></script>
+</body>
+</html>
