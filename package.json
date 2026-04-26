@@ -23,7 +23,7 @@
     "dev:web": "serve html --listen 5500 --no-port-switching",
     "dev:all": "concurrently --kill-others-on-fail \"npm run dev:api\" \"npm run dev:web\"",
     "start": "node server/index.js",
-    "test": "node -e \"console.log('No tests configured.'); process.exit(0)\""
+    "test": "node --test \"server/tests/**/*.test.js\""
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "concurrently": "^9.2.1",
-    "serve": "^14.2.6"
+    "serve": "^14.2.6",
+    "supertest": "^7.1.4"
   }
 }

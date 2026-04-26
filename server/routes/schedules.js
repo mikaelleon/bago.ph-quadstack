@@ -2,7 +2,8 @@
 
 const express = require("express");
 const { getPool } = require("../db");
-const { authMiddleware, requireRole } = require("../middleware/auth");
+const { authMiddleware } = require("../middleware/auth");
+const { requireApiAccess } = require("../middleware/route-policy");
 
 const router = express.Router();
 
@@ -32,7 +33,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", requireRole("lgu_officer"), async (req, res) => {
+router.post("/", requireApiAccess("schedules", "write"), async (req, res) => {
   const lgu_admin_id = req.user.lgu_admin_id;
   if (!lgu_admin_id) {
     return res.status(403).json({ error: "LGU admin record required" });
@@ -79,7 +80,7 @@ router.post("/", requireRole("lgu_officer"), async (req, res) => {
   }
 });
 
-router.patch("/:id", requireRole("lgu_officer"), async (req, res) => {
+router.patch("/:id", requireApiAccess("schedules", "write"), async (req, res) => {
   const id = Number(req.params.id);
   const lgu_admin_id = req.user.lgu_admin_id;
   if (!id || !lgu_admin_id) return res.status(400).json({ error: "Invalid request" });

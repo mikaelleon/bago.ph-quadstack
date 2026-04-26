@@ -1,4 +1,4 @@
-# BAGO.PH work breakdown from `srs.md`: 14 main tasks, 103 leaf subtasks, estimated effort `S×37 + M×63 + L×3` (103 total) to deliver deployable HTML/CSS/JS + Node/Express + Aiven MySQL platform with XML/XSLT exports, security hardening, quality gates, and Render deployment. Current completion: **13/103 subtasks (13%)**.
+# BAGO.PH work breakdown from `srs.md`: 14 main tasks, 103 leaf subtasks, estimated effort `S×37 + M×63 + L×3` (103 total) to deliver deployable HTML/CSS/JS + Node/Express + Aiven MySQL platform with XML/XSLT exports, security hardening, quality gates, and Render deployment. Current completion: **15/103 subtasks (15%)**.
 
 ## T-DB-01
 **Goal** — Stand up production-shaped database foundation on Aiven MySQL with SSL and migration workflow.
@@ -43,10 +43,10 @@
 **Subtasks**
 - [x] (M) Refactor `html/role-access.js` route matrix to explicit per-role allowlists matching active pages — deterministic client guard map.
 - [x] (S) Add navbar role injection map in `html/js/prototype-page-loader.js` (or split into `html/js/navbar-role.js`) — role-specific navbar rendering.
-- [ ] (M) Mirror role matrix in backend constants `server/constants/role-routes.js` and apply in route handlers — shared authorization source.
-- [ ] (M) Add integration tests `server/tests/role-guards.test.js` covering disallowed role access (403) per protected endpoint group — passing guard tests.
+- [x] (M) Mirror role matrix in backend constants `server/constants/role-routes.js` and apply in route handlers — shared authorization source.
+- [x] (M) Add integration tests `server/tests/role-guards.test.js` covering disallowed role access (403) per protected endpoint group — passing guard tests.
 - [x] (S) Add redirect-to-dashboard behavior for disallowed URLs in `html/js/role-redirects.js` — documented behavior change in browser.
-**Completion** — **60%** (3/5 subtasks).
+**Completion** — **100%** (5/5 subtasks).
 **Dependencies** — T-AUTH-02.
 **Done when**
 - Same role matrix enforced in browser and API.

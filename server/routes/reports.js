@@ -2,7 +2,8 @@
 
 const express = require("express");
 const { getPool } = require("../db");
-const { authMiddleware, requireRole } = require("../middleware/auth");
+const { authMiddleware } = require("../middleware/auth");
+const { requireApiAccess } = require("../middleware/route-policy");
 
 const router = express.Router();
 
@@ -47,7 +48,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", requireRole("user"), async (req, res) => {
+router.post("/", requireApiAccess("reports", "create"), async (req, res) => {
   const resident_id = req.user.resident_id;
   if (!resident_id) {
     return res.status(403).json({ error: "Resident profile required to submit reports" });
@@ -119,7 +120,7 @@ router.post("/", requireRole("user"), async (req, res) => {
   }
 });
 
-router.patch("/:id", requireRole("lgu_officer", "collector"), async (req, res) => {
+router.patch("/:id", requireApiAccess("reports", "update"), async (req, res) => {
   const id = Number(req.params.id);
   if (!id) return res.status(400).json({ error: "Invalid id" });
 
