@@ -20,6 +20,12 @@
     .status-steps li { color: #6b7280; }
     .status-steps li.done { color: #15803d; font-weight: 700; }
     #lgu-view { display: none; }
+    #lgu-report-list { max-height: 260px; overflow: auto; border: 1px solid #e5e7eb; border-radius: 8px; }
+    .report-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 10px; border-bottom: 1px solid #e5e7eb; }
+    .report-row:last-child { border-bottom: 0; }
+    .report-row button { padding: 6px 10px; font-size: 13px; }
+    .status-controls { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 8px; }
+    .muted { color: #6b7280; font-size: 13px; }
   </style>
 </head>
 <body>
@@ -60,6 +66,22 @@
         <h2>LGU Report Map Overlay</h2>
         <div id="lgu-report-map"></div>
       </div>
+      <div class="card">
+        <h2>Update Report Status</h2>
+        <div id="lgu-report-list"></div>
+        <form id="lgu-report-status-form" style="margin-top:10px;">
+          <input id="lgu-report-id" placeholder="Report ID" required />
+          <select id="lgu-report-status" required>
+            <option value="Open">Open</option>
+            <option value="Acknowledged">Acknowledged</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Resolved">Resolved</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+          <button type="submit">Apply Status</button>
+        </form>
+        <div id="lgu-report-status-message" class="muted"></div>
+      </div>
     </section>
   </main>
 
@@ -80,7 +102,7 @@
       if (role === "lgu_officer" || role === "collector") {
         resident.style.display = "none";
         lgu.style.display = "block";
-        await window.BAGOReportMap.loadReportMap();
+        await window.BAGOReportMap.initLguReportTools();
       } else {
         resident.style.display = "block";
         lgu.style.display = "none";

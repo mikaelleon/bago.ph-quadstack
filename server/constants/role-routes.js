@@ -6,6 +6,7 @@ const ROLE_PAGE_ACCESS = Object.freeze({
     "register.html",
     "dashboard.html",
     "dashboard-resident.html",
+    "resident-web-qrcard.html",
     "schedule.html",
     "report.html",
     "eco-points.html",
@@ -53,7 +54,9 @@ const ROLE_API_ACCESS = Object.freeze({
     update: Object.freeze(["collector", "lgu_officer"])
   }),
   qr: Object.freeze({
-    scan: Object.freeze(["collector", "lgu_officer"])
+    scan: Object.freeze(["collector", "lgu_officer"]),
+    card_read: Object.freeze(["user"]),
+    card_issue: Object.freeze(["lgu_officer"])
   }),
   eco_points: Object.freeze({
     credit: Object.freeze(["collector", "lgu_officer"]),

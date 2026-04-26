@@ -2,7 +2,7 @@
 
 ## Summary
 - Total subtasks: **96**
-- Completed: **54 (56%)**
+- Completed: **57 (59%)**
 - Effort breakdown: **S×37 + M×55 + L×4**
 
 | Area prefix | % complete |
@@ -11,9 +11,9 @@
 | `T-AUTH` | 8 / 9 (89%) |
 | `T-ROLE` | 4 / 6 (67%) |
 | `T-SCHED` | 6 / 6 (100%) |
-| `T-REPORT` | 8 / 9 (89%) |
-| `T-ECO` | 7 / 8 (88%) |
-| `T-ANALYTICS` | 6 / 9 (67%) |
+| `T-REPORT` | 9 / 9 (100%) |
+| `T-ECO` | 8 / 8 (100%) |
+| `T-ANALYTICS` | 7 / 9 (78%) |
 | `T-XML` | 6 / 8 (75%) |
 | `T-NFR` | 3 / 9 (33%) |
 | `T-PERF` | 1 / 6 (17%) |
@@ -105,9 +105,9 @@
 - [x] (M) Support report status workflow APIs (`Open→...→Resolved/Rejected`) — `PATCH /api/reports/:id`, `PATCH /api/reports/:id/status` in `server/routes/reports.js`.
 - [x] (M) Render LGU/collector map overlay using Leaflet + OSM CDN — `html/js/report-map.js`, `html/report.html`.
 - [x] (S) Publish resident report-status notifications feed — `GET /api/notifications/reports` in `server/routes/notifications.js`.
-- [ ] (M) Add LGU status-action controls to live LGU report page (not only API) — `html/report.html`, `html/js/report-map.js`/new LGU module.
+- [x] (M) Add LGU status-action controls to live LGU report page (not only API) — `html/report.html`, `html/js/report-map.js`/new LGU module.
 - [x] (S) Keep signed media URL + token verification for report images — `server/services/report-media.js`, `/api/reports/image/:id`.
-**Completion** — **8 / 9 subtasks (89%)**.  
+**Completion** — **9 / 9 subtasks (100%)**.  
 **Dependencies** — T-ROLE-03, T-SCHED-04.  
 **Done when**
 - Resident can submit geo-tagged report with compressed photo.
@@ -118,7 +118,7 @@
 **Goal** — Deliver auditable eco-points lifecycle (scan, credit, ledger, redeem).  
 **Source ref** — FR-03, F-07, F-10, SR-04, SR-05, SEC-04, SEC-05.  
 **Subtasks**
-- [ ] (M) Implement live household QR card issuance/display flow (currently shell pages only) — `html/resident-web-qrcard.html` + API/service.
+- [x] (M) Implement live household QR card issuance/display flow (currently shell pages only) — `html/resident-web-qrcard.html` + API/service.
 - [x] (M) Implement collector QR scan endpoint with token validation — `POST /api/qr/scan` in `server/routes/qr.js`.
 - [x] (M) Implement idempotent eco-point credit endpoint requiring `Idempotency-Key` — `POST /api/eco-points/credit` in `server/routes/eco-points.js`.
 - [x] (M) Keep immutable eco-points ledger schema migration — `sql/migrations/002_eco_points_ledger_immutable.sql`.
@@ -126,7 +126,7 @@
 - [x] (M) Implement redemption endpoint with ledger debit — `POST /api/rewards/redeem` in `server/routes/rewards.js`.
 - [x] (S) Implement 30-day grace reconciliation endpoint (LGU only) — `POST /api/eco-points/reconcile` in `server/routes/eco-points.js`.
 - [x] (S) Record eco-point and QR actions in audit service calls — `server/services/audit-log.js`, `server/routes/eco-points.js`, `server/routes/qr.js`, `server/routes/rewards.js`.
-**Completion** — **7 / 8 subtasks (88%)**.  
+**Completion** — **8 / 8 subtasks (100%)**.  
 **Dependencies** — T-REPORT-05.  
 **Done when**
 - Collector scan creates exactly one credit per idempotency window.
@@ -145,8 +145,8 @@
 - [x] (M) Provide XML export from MySQL schedules dataset — `GET /api/exports/xml` in `server/routes/exports.js`.
 - [ ] (L) Make DENR HTML export explicitly XSL-driven transform output (currently template string HTML) — `GET /api/exports/denr-html` + XSL transform pipeline.
 - [ ] (L) Make DENR PDF export generated from XSL-transformed HTML output (currently minimal PDF builder) — `GET /api/exports/denr-pdf`.
-- [ ] (M) Ship live compliance page wired to analytics API (not prototype shell) — `html/compliance.html` + new JS module.
-**Completion** — **6 / 9 subtasks (67%)**.  
+- [x] (M) Ship live compliance page wired to analytics API (not prototype shell) — `html/compliance.html` + new JS module.
+**Completion** — **7 / 9 subtasks (78%)**.  
 **Dependencies** — T-ECO-06, T-REPORT-05.  
 **Done when**
 - LGU sees live card/chart analytics in production page.

@@ -7,6 +7,7 @@ const ROLE_PAGE_ACCESS = {
     "register.html",
     "dashboard.html",
     "dashboard-resident.html",
+    "resident-web-qrcard.html",
     "schedule.html",
     "report.html",
     "eco-points.html",

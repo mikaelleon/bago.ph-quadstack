@@ -1,13 +1,51 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>BAGO.PH - Compliance</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#eceff1;}</style></head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BAGO.PH - Compliance</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #f3f6fb; color: #1f2937; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 24px; }
+    .card { background: #fff; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.05); padding: 16px; margin-bottom: 14px; }
+    h1 { margin: 0 0 14px; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .metric { border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px; background: #f9fafb; }
+    .metric .label { font-size: 12px; color: #6b7280; margin-bottom: 4px; }
+    .metric .value { font-size: 24px; font-weight: 700; color: #0f172a; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 10px; border-bottom: 1px solid #e5e7eb; }
+    th { font-size: 12px; color: #4b5563; text-transform: uppercase; letter-spacing: .04em; }
+    .muted { color: #6b7280; }
+    @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
 <body>
-<main id="app"></main>
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
-<script type="text/babel" src="hf-prototype/components/shared.jsx"></script>
-<script type="text/babel" src="hf-prototype/components/admin-screens.jsx"></script>
-<script src="js/prototype-page-loader.js"></script>
-<script>window.BAGOPrototype.render("AdminDashboard");</script>
-</body></html>
+  <main class="wrap">
+    <h1>Compliance Overview</h1>
+    <section class="card">
+      <div class="grid">
+        <div class="metric"><div class="label">Compliance Avg</div><div id="m-compliance" class="value">--</div></div>
+        <div class="metric"><div class="label">Open Reports</div><div id="m-open" class="value">--</div></div>
+        <div class="metric"><div class="label">Resolved Reports</div><div id="m-resolved" class="value">--</div></div>
+        <div class="metric"><div class="label">Total Residents</div><div id="m-residents" class="value">--</div></div>
+      </div>
+    </section>
+    <section class="card">
+      <h2>Waste Report Status Mix</h2>
+      <table>
+        <thead>
+          <tr><th>Status</th><th>Count</th></tr>
+        </thead>
+        <tbody id="status-rows"></tbody>
+      </table>
+      <p id="compliance-message" class="muted"></p>
+    </section>
+  </main>
+
+  <script src="js/bago-env.js"></script>
+  <script src="js/bago-api.js"></script>
+  <script src="role-access.js"></script>
+  <script src="js/compliance.js"></script>
+</body>
+</html>

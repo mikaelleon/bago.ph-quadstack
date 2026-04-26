@@ -1,15 +1,60 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>BAGO.PH - Household QR Card</title><style>body{margin:0;min-height:100vh;background:#f0f2f5;display:flex;justify-content:center;align-items:flex-start;padding:24px;box-sizing:border-box;}#app{display:flex;justify-content:center;}</style></head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BAGO.PH - Household QR Card</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #eef2f7; color: #1f2937; }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 24px; }
+    .card { background: #fff; border-radius: 12px; box-shadow: 0 10px 24px rgba(0,0,0,.06); padding: 20px; }
+    h1 { margin: 0 0 14px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .meta { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; }
+    .token { font-family: "Courier New", monospace; font-size: 18px; font-weight: 700; letter-spacing: .8px; }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: #ecfeff; color: #0f766e; }
+    .muted { color: #6b7280; }
+    button { border: 0; border-radius: 8px; padding: 10px 14px; background: #0f766e; color: #fff; font: inherit; cursor: pointer; }
+    button.secondary { background: #374151; }
+    .actions { display: flex; gap: 10px; margin-top: 12px; }
+    #qr-status { margin-top: 12px; font-size: 14px; }
+    @media (max-width: 780px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
 <body>
-<main id="app"></main>
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
-<script src="js/bago-env.js"></script><script src="js/bago-api.js"></script>
-<script type="text/babel" src="hf-prototype/components/shared.jsx"></script>
-<script type="text/babel" src="hf-prototype/components/resident-web.jsx"></script>
-<script type="text/babel" src="hf-prototype/components/resident-web-2.jsx"></script>
-<script src="js/prototype-page-loader.js"></script>
-<script>window.BAGOPrototype.render("ResidentHouseholdQRCard");</script>
-</body></html>
+  <main class="wrap">
+    <h1>Household QR Card</h1>
+    <section class="card">
+      <div id="qr-loading" class="muted">Loading QR card...</div>
+      <div id="qr-root" style="display:none;">
+        <div class="grid">
+          <div class="meta">
+            <div><strong>Resident</strong></div>
+            <div id="qr-full-name"></div>
+            <div class="muted" style="margin-top:10px;"><strong>Household ID</strong></div>
+            <div id="qr-household-id"></div>
+            <div class="muted" style="margin-top:10px;"><strong>Barangay</strong></div>
+            <div id="qr-barangay"></div>
+          </div>
+          <div class="meta">
+            <div><strong>Secure Token</strong></div>
+            <div id="qr-token" class="token"></div>
+            <div style="margin-top:10px;"><span id="qr-status-badge" class="badge"></span></div>
+            <div class="muted" style="margin-top:10px;">Issued: <span id="qr-issued-date"></span></div>
+          </div>
+        </div>
+        <div class="actions">
+          <button id="btn-copy-token" type="button">Copy Token</button>
+          <button id="btn-refresh-token" type="button" class="secondary">Refresh Card</button>
+        </div>
+        <div id="qr-status"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/bago-env.js"></script>
+  <script src="js/bago-api.js"></script>
+  <script src="role-access.js"></script>
+  <script src="js/resident-qrcard.js"></script>
+</body>
+</html>
