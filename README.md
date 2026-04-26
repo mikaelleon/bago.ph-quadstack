@@ -7,8 +7,7 @@
 - [Project Title](#project-title)
 - [Group Members](#group-members)
 - [Description of the System](#description-of-the-system)
-- [Features Completed (30% Baseline)](#features-completed-30-baseline)
-- [Current Project Progress (~85%)](#current-project-progress-85)
+- [Implementation Milestones (Progress Tracker)](#implementation-milestones-progress-tracker)
 - [Who This Is For](#who-this-is-for)
 - [Feature Overview](#feature-overview)
 - [Auth, Registration & Navigation](#auth-registration--navigation)
@@ -17,7 +16,8 @@
 - [XML, XSLT & Interactive Editors](#xml-xslt--interactive-editors)
 - [Can Do / Cannot Do Yet](#can-do--cannot-do-yet)
 - [Setup Walkthrough](#setup-walkthrough)
-- [API & database (Node + MySQL)](#api--database-node--mysql)
+- [API & Aiven MySQL Database (Node + Express)](#api--aiven-mysql-database-node--express)
+- [Deployment (Render)](#deployment-render)
 - [Folder Structure (high level)](#folder-structure-high-level)
 - [Notes](#notes)
 - [Future / Missing Improvements](#future--missing-improvements)
@@ -25,7 +25,7 @@
 ---
 
 ## Project Title
-**BAGO.PH Web Prototype** — a barangay-focused waste operations web prototype for Lipa City–style LGU workflows, built for course milestone delivery and public demonstration.
+**BAGO.PH Waste Operations Platform** — a barangay-focused waste operations platform for Lipa City–style LGU workflows, built for deployable municipal operations.
 
 ---
 
@@ -35,62 +35,69 @@
 - Kenneth Elijah N. Castillo — CTO / Frontend Developer
 - Miguel Yuan M. Mercado — CPO / Database Administrator
 
-**Course:** FreeElective 1 | Technopreneurship  
-**Section:** IT3B | University of Batangas — CITEC  
-**Academic Year:** 2025–2026
-
 ---
 
 ## Description of the System
-BAGO.PH is a **web-based prototype** of a waste management platform meant to connect **residents**, **garbage collectors**, and **LGU officers** in one place. It is designed to reduce confusion around schedules, make reporting easier, and give local government a clearer picture of collection, compliance, and community engagement.
+BAGO.PH is a **web-based waste management platform** that connects **residents**, **garbage collectors**, and **LGU officers** in one system. It is designed to reduce schedule confusion, improve issue reporting, and give local government stronger operational visibility for collection, compliance, and community engagement.
 
-The prototype focuses on **clear screens and flows** rather than live production services: schedules and reports are shown as **demonstration content**. **Login or registration** stores a **role** in the browser (`localStorage`) and **unlocks the main app navbar**; until then, login and registration screens stay **without the main navigation bar**. Role-based rules control which HTML pages appear in the menu and which URLs are allowed.
-
----
-
-## Features Completed (30% Baseline)
-Baseline milestone work includes:
-
-**Done (original 30% scope)**
-- [x] Landing page and login form (HTML + CSS)
-- [x] Collection schedule viewer with XML data display
-- [x] XML schedule data structured and valid
-- [x] XSL transformation of `schedules.xml` to an HTML table
-- [x] Waste issue report submission form
-- [x] Basic LGU overview / dashboard page
-- [x] SQL database schema and full DDL (8-table design)
-- [x] Sample SQL DML queries (SELECT, INSERT, UPDATE, DELETE)
-- [x] Consistent CSS design system across pages
-- [x] Barangay XML data file with XSL transformation
-
-**Originally planned for later milestones (see also [Future / Missing Improvements](#future--missing-improvements))**
-- [ ] Eco-points wallet dashboard (deeper than current mock screens)
-- [ ] QR code verification system (production-grade)
-- [ ] LGU analytics charts (live charts)
-- [ ] Push notification simulation
-- [x] Full database connection and backend logic (Node + Express + MySQL + JWT + bcrypt implemented)
+The platform currently combines **deployed-ready backend services** and **role-focused web screens**. **Login or registration** stores a **role** in the browser (`localStorage`) as a client bridge and **unlocks the main app navbar**; until then, login and registration screens stay **without the main navigation bar**. Role-based rules control which HTML pages appear in the menu and which URLs are allowed, while server routes enforce protected access.
 
 ---
 
-## Current Project Progress (~85%)
-Implemented on top of the 30% baseline:
+## Implementation Milestones (Progress Tracker)
 
-- [x] **Dedicated login & registration** — `index.html` and `auth-web-login.html`: **Resident / Collector** use mobile + 4-digit PIN; **LGU Admin** uses **government email + password**. `register.html` supports sign-up with role selection.
-- [x] **Role-aware web auth variants** — added role-specific pages and components (`auth-web-register-collector.html`, `auth-web-register-lgu.html`, `AuthWebRegisterCollector`, `AuthWebRegisterAdmin`).
-- [x] **Auth flow bridge in loader** — `window.BAGOPrototype` now exposes registration/apply methods, OTP continuation, LGU application submit path, and modal helpers.
-- [x] **Logout/sign-out coverage** — collector and LGU web dashboards now have proper sign-out buttons wired to confirmation and session cleanup.
-- [x] **Demo credentials UX** — removed accidental popups; credentials now appear only via explicit **Demo credentials** button in a modal with per-role **Copy** actions.
-- [x] **Responsive auth layouts** — `auth-web.jsx` and `shared-screens.jsx` updated to fit viewport (`100dvh`) and adapt to mobile breakpoints (stacked sections, responsive grid/forms).
-- [x] **Client-side access control** — `html/role-access.js` and `prototype-page-loader.js` enforce role/page guards and auth-page redirects in static prototype mode.
-- [x] **Official Lipa City barangay list** — all **72 barangays** in `html/js/lipa-barangays.js`, populated via `lipa-barangays-select.js`; `xml/barangays.xml` regenerated.
-- [x] **XML / XSLT + interactive editors** — `xml-schedules-editor.html` and `xml-barangays-editor.html` support filter/sort/CRUD/export with read-only `?mode=view`.
-- [x] **SQL + API integration path** — `sql/bago_ph_database.sql` structured and aligned with backend auth changes; API routes support mobile/PIN and LGU email/password login.
+### Milestone 1 — Foundation & Auth (15%)
+- [x] Landing, login, and register pages without navbar.
+- [x] CSS design system applied across auth and app screens.
+- [x] Mobile + PIN flow for resident and collector roles.
+- [x] Government email + password flow for LGU role.
+- [x] `localStorage` role bridge for client session routing.
+- [x] Demo credentials modal with per-role copy actions.
 
-**Still pending for finalization**
-- [ ] Eco-points wallet depth beyond current mock
-- [ ] Production-grade QR verification pipeline
-- [ ] Live analytics chart feeds across all LGU analytics screens
-- [ ] Push notification simulation/dispatch channel
+### Milestone 2 — Role-Based Pages & Client Guards (30%)
+- [x] Full HTML page set per role.
+- [x] Navbar injection on authenticated pages.
+- [x] `role-access.js` URL guards.
+- [x] Redirect-to-dashboard behavior for disallowed routes.
+- [x] Logout/sign-out wired across resident, collector, and LGU dashboards.
+- [x] Responsive auth layouts.
+
+### Milestone 3 — XML / XSLT + Interactive Editors (50%)
+- [x] `schedules.xml` and `barangays.xml` with all 72 Lipa barangays.
+- [x] XSLT 1.0 transforms for browser-viewable tables.
+- [x] `xml-schedules-editor.html` with filter, sort, CRUD, export.
+- [x] `xml-barangays-editor.html` with filter, sort, CRUD, export.
+- [x] `?mode=view` read-only mode for both XML editor pages.
+
+### Milestone 4 — Backend API + Aiven MySQL (70%)
+- [x] 8-table schema with `app_identity` split.
+- [x] `sql/migrations/` folder for incremental DB updates.
+- [x] Express routes: `/auth/*`, `/barangays`, `/schedules`, `/reports`.
+- [ ] Aiven MySQL swap from local MySQL.
+- [ ] Universal server-side role checks on every protected route.
+- [x] JWT middleware and bcrypt hashing for auth flows.
+
+### Milestone 5 — Dynamic Data, CRUD & XML/XSL Export Pipeline (90%)
+- [ ] All role dashboards consume live API data; localStorage only as offline fallback.
+- [ ] End-to-end CRUD for schedules, reports, barangays, eco-points, announcements, DENR reports, users, and QR audit log.
+- [ ] XML export endpoint pulling from MySQL with filters (barangay, date range, role).
+- [ ] XSL-driven export to printable HTML and downloadable PDF for DENR submissions, plus CSV export.
+- [ ] Modal CRUD forms replacing `prompt()` dialogs.
+- [ ] Field validation rules across all forms (PH mobile, 4-digit PIN, gov-email, barangay whitelist).
+- [ ] Push/in-app announcement dispatch.
+- [ ] Live charts on LGU analytics, compliance, and eco-points screens.
+- [ ] Deeper eco-points wallet with real balances and redemption ledger.
+- [ ] QR verification pipeline: scan -> validate -> audit log.
+
+### Milestone 6 — Deployment & Hardening (100%)
+- [ ] Render deployment of API + static frontend.
+- [ ] Aiven MySQL provisioned with automated backups.
+- [ ] HTTPS, strict CORS, rate limiting, and CSRF hardening.
+- [ ] Audit log table for LGU write actions.
+- [ ] RA 10173 consent text and data privacy controls.
+- [ ] Live URL and demo accounts documented in README.
+- [ ] Cross-browser QA (Chrome, Edge, Firefox-with-XSLT).
+- [ ] Automated tests + WCAG accessibility audit.
 
 ---
 
@@ -102,7 +109,7 @@ Implemented on top of the 30% baseline:
 ---
 
 ## Feature Overview
-- **Login & Register** — register picks role; **Resident/Collector** login uses mobile + PIN; **LGU Officer** login uses **government email + password** (min. 10 characters in the UI); session role stored in `localStorage` (prototype only). LGU email login **skips the OTP page** and goes straight to the LGU dashboard in the static prototype.
+- **Login & Register** — register picks role; **Resident/Collector** login uses mobile + PIN; **LGU Officer** login uses **government email + password** (min. 10 characters in the UI); session role stored in `localStorage` as client role bridge. LGU email login **skips the OTP page** and goes straight to the LGU dashboard.
 - **Dashboard**: high-level waste operations snapshot.
 - **Collection Schedule**: planned routes and collection timing.
 - **Report Management**: issue reporting and follow-up workflow.
@@ -123,11 +130,11 @@ Implemented on top of the 30% baseline:
 - If a role is already stored, visiting login or register **redirects to the dashboard**.
 - Inside the app, use **Logout** (injected on authenticated pages) to clear the role and return to login.
 - On auth screens, demo accounts now open through an explicit **Demo credentials** button (modal with per-role copy buttons), not via background click handlers.
-- **Prototype demo credentials (not production):**
+- **Demo credentials (non-production):**
   - **Resident** — `html/js/prototype-page-loader.js` seeds localStorage mobile **`09171234567`** · PIN **`1234`**. With API + DB: **`09181234501`–`09181234505`** · PIN **`1234`**.
   - **Collector** — local **`09171234568`** · PIN **`1234`**. With API: **`09171111001`–`09171111005`** · PIN **`1234`**.
   - **LGU Officer** — government email **`m.santos@lipacity.gov.ph`** · password **`LipaDemo2026!`** (local fallback and SQL seed; matches the web login fields). The old mobile-only LGU demo **`09171234569` / `1234`** is **removed** on load from `localStorage` if still present.
-- **Security note:** demo passwords are **plaintext in docs and client seeds** for class demos only. With the API enabled, resident/collector PINs and the LGU password are stored as **bcrypt** hashes in MySQL (`app_identity.pin_hash` / `app_identity.password_hash`).
+- **Security note:** demo passwords are **plaintext in docs and client seeds** for local development only. With the API enabled, resident/collector PINs and the LGU password are stored as **bcrypt** hashes in MySQL (`app_identity.pin_hash` / `app_identity.password_hash`).
 
 ---
 
@@ -179,15 +186,15 @@ If a page is not allowed for the current role, the app redirects to that role’
 
 ### Can Do
 - Role-based menus and URL guards; login, register, logout (client-side).
-- Full prototype navigation and mock workflows.
+- Full role-based navigation and core workflows.
 - 72-barangay dropdowns and barangays XML sample.
 - XML editors: filter, sort, CRUD, export, browser persistence (schedules & barangays).
 - XSL transformation when opening XML files in a suitable browser.
 
 ### Cannot Do Yet
-- **With API off:** same as before — no live DB (static / `localStorage` only).
-- **With API on:** core auth and selected schedules/reports are live via MySQL; many UI-heavy pages still use mock/demo content until fully migrated.
-- No production identity provider (OAuth, etc.); prototype JWT + bcrypt only.
+- **With API off:** static mode can still run using `localStorage`.
+- **With API on:** core auth and selected schedules/reports are live via MySQL; several UI-heavy pages still need full API migration.
+- No production identity provider (OAuth, etc.); current JWT + bcrypt stack remains app-native.
 - No automatic write-back of exported XML into the repository (manual file replace).
 - XSLT in the browser is **not** extended with interactive sorting; use the HTML tools instead.
 
@@ -195,29 +202,32 @@ If a page is not allowed for the current role, the app redirects to that role’
 
 ## Setup Walkthrough
 1. Clone or download this repository.
-2. Open `bago.ph-quadstack/html/`.
-3. Open **`index.html`** in a modern browser (Chrome is fine for the app; **Firefox** is recommended if you open **`xml/*.xml`** directly to see XSLT).
-4. **Log in** or go to **`register.html`** to create a session with a role.
-5. Explore pages from the navbar; use **Logout** to return to login.
-6. Optional: open **`xml-schedules-editor.html`** / **`xml-barangays-editor.html`** from the Schedule page links or dashboard (role permitting). Append **`?mode=view`** for read-only.
-7. Optional: serve the folder with a simple HTTP server if you need `fetch()` to load `../xml/*.xml` without file-scheme restrictions (otherwise embedded fallbacks still work).
-
-For class review: **`sql/`** (schema and queries), **`xml/`** + **`xsl/`**, **`prompt/`** docs.
+2. Provision an **Aiven MySQL** service and note the host, port, database, user, password, and CA certificate.
+3. Copy `.env.example` to `.env`, then set `DATABASE_URL` using the Aiven URI format with SSL required:  
+   `mysql://USER:PASSWORD@HOST:PORT/DATABASE?ssl-mode=REQUIRED`
+4. Open **MySQL Workbench**, connect to the Aiven host over SSL, and import `sql/bago_ph_database.sql`.
+5. From project root, run `npm install`.
+6. Start app in development mode with `npm run dev` (serves Express API + static frontend).
+7. Verify `GET /health`, then open the app in browser and test role login flows.
+8. Optional: open `xml-schedules-editor.html` / `xml-barangays-editor.html`; append `?mode=view` for read-only.
 
 ---
 
-## API & database (Node + MySQL)
+## API & Aiven MySQL Database (Node + Express)
 
-**Stack (Priority 1):** Node.js **20+**, **Express 5**, **mysql2**, **bcryptjs** (PIN and password hashes), **jsonwebtoken** (JWT), **CORS**. Schema source of truth: **`sql/bago_ph_database.sql`** (includes **`app_identity`**: residents/collectors use **`mobile_number` + `pin_hash`**; LGU officers use **`gov_email` + `password_hash`** with `mobile_number` / `pin_hash` null).
+**Stack:** Node.js **20+**, **Express 5**, **mysql2**, **bcryptjs**, **jsonwebtoken**, **CORS**.  
+Frontend is **pure HTML/CSS/vanilla JS** with **XML + XSLT 1.0** data views.  
+Schema source of truth: **`sql/bago_ph_database.sql`** with **`app_identity`** split auth model.
 
-1. Install **MySQL / MariaDB** locally and create the database from the repo file (run **Section A + B** at minimum):
-   ```bash
-   mysql -u root -p < sql/bago_ph_database.sql
-   ```
-2. From the project root: `npm install` (once).
-3. Copy **`.env.example`** to **`.env`** and set `DATABASE_URL` or `DB_*` variables. Set a long **`JWT_SECRET`** for anything beyond local demos.
-4. Start the API: **`npm run dev`** (default **http://localhost:3000**). Check **`GET /health`**.
-5. Serve **`html/`** over HTTP (e.g. VS Code Live Server on port **5500**) so `fetch()` to the API is not blocked. The default API base in **`html/js/bago-env.js`** is `http://localhost:3000`; change **`window.__BAGO_API_BASE__`** there if your API port differs.
+**Aiven connection and SSL**
+- Use `DATABASE_URL` for local and cloud runtime:  
+  `mysql://USER:PASSWORD@HOST:PORT/DATABASE?ssl-mode=REQUIRED`
+- If using CA pinning, provide cert path/content through env (for example `DB_SSL_CA`) and load into mysql2 SSL config.
+- For Render, keep SSL enforced (`ssl-mode=REQUIRED`) and do not disable certificate validation in production.
+
+**Connection pooling**
+- API uses pooled mysql2 connections for concurrent auth, schedule, and report requests.
+- Configure pool limits through env (for example `DB_CONN_LIMIT`) to match Render instance size and Aiven plan.
 
 **Endpoints (summary):** `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me`, `GET /api/barangays`, `GET|POST|PATCH /api/schedules` (LGU writes), `GET|POST|PATCH /api/reports` (resident creates; LGU/collector updates). All protected routes require **`Authorization: Bearer <token>`** except barangays list.
 
@@ -230,11 +240,33 @@ For class review: **`sql/`** (schema and queries), **`xml/`** + **`xsl/`**, **`p
 - **Collectors** — **`09171111001`–`09171111005`** · PIN **`1234`**.
 - **LGU (single demo row)** — email **`m.santos@lipacity.gov.ph`** · password **`LipaDemo2026!`** (bcrypt in `password_hash`), linked to `lgu_admins.admin_id = 6` (*Maria Santos Mercado*). The previous five LGU seed identities (**`09230000001`–`09230000005`**, mobile + PIN only) are **removed** from the canonical SQL file.
 
-With the API running, the browser uses the server first; if the API is unreachable, **`html/js/prototype-page-loader.js`** falls back to **localStorage** for resident/collector mobiles and to **fixed demo email/password** for LGU (same values as above).
+With API running, browser prefers server data; if API unreachable in local runs, **`html/js/prototype-page-loader.js`** can fall back to **localStorage** for selected flows.
 
 **Existing databases:** run **`sql/migrations/001_lgu_officer_gov_email_login.sql`** once to add nullable columns, then import the updated LGU seed row from **`sql/bago_ph_database.sql`** section B (or insert manually per this README).
 
 **Single migration file:** schema changes should be applied by editing **`sql/bago_ph_database.sql`** (and re-importing on fresh DBs) or by adding numbered scripts under **`sql/migrations/`** documented next to your deploy process—avoid hand-editing production DB without updating the repo.
+
+**Render `DB_*` environment variables (alternative to `DATABASE_URL`)**
+- `DB_HOST`
+- `DB_PORT`
+- `DB_USER`
+- `DB_PASSWORD`
+- `DB_NAME`
+- `DB_SSL_CA` (CA certificate text or mounted secret file path)
+- `DB_CONN_LIMIT`
+
+---
+
+## Deployment (Render)
+
+- **Service type:** Render Web Service running Node.js 20+ Express app.
+- **Build command:** `npm install`
+- **Start command:** `npm start` (or project-defined production start script)
+- **Health check route:** `/health`
+- **Static frontend path:** Express serves `html/` as static assets in same service as API.
+- **Required env vars:** `NODE_ENV=production`, `JWT_SECRET`, and either `DATABASE_URL` (recommended) or `DB_*` variables listed above.
+- **CORS:** allow frontend origin(s) from deployed domain only.
+- **Frontend API base:** set deployed API URL in `window.__BAGO_API_BASE__` (see `html/js/bago-env.js`) so browser requests point to Render host.
 
 ---
 
@@ -252,13 +284,13 @@ With the API running, the browser uses the server first; if the API is unreachab
 ---
 
 ## Notes
-- Prototype aligns with RA 9003 and SDGs 11, 12, and 13 direction.
-- Build is for demonstration and milestone progression, not production deployment.
+- Platform aligns with RA 9003 and SDGs 11, 12, and 13 direction.
+- Platform roadmap aligns with RA 10173 privacy and deployable LGU operations requirements.
 
 ---
 
 ## Future / Missing Improvements
-Work that still **needs** or **would benefit from** implementation for a production or thesis-final system:
+Work that still needs implementation for full municipal-scale deployment:
 
 **Backend & data**
 - Broaden **server-side role checks** across every route and screen path (some static flows still fallback to local logic).
@@ -271,10 +303,6 @@ Work that still **needs** or **would benefit from** implementation for a product
 - **LGU analytics** with live charts and export pipelines.
 - **Push notifications** (or email/SMS) when schedules or announcements change.
 
-**XML / XSLT**
-- Optional **single backend** that serves transformed XML or JSON so all browsers behave consistently without `file://` limits.
-- If interactive sorting is ever required **inside** raw XSLT output without JavaScript, that would need a **different architecture** (e.g. server-rendered pages or a SPA); current approach uses **HTML editors** for interactivity.
-
 **Security, compliance & ops**
 - **HTTPS**, CSRF protection, rate limiting, and audit logs for LGU actions.
 - **RA 10173**-aligned consent and data-minimization for any production deployment.
@@ -286,6 +314,4 @@ Work that still **needs** or **would benefit from** implementation for a product
 - **Internationalization** (Filipino/English toggles) if required by stakeholders.
 
 **Testing & quality**
-- Automated tests (unit/e2e), accessibility audit (WCAG), and cross-browser QA beyond the prototype happy path.
-
-This list is not exhaustive; it reflects the gap between the **current static + client-side prototype** and a **deployable municipal system**.
+- Automated tests (unit/e2e), accessibility audit (WCAG), and cross-browser QA.
