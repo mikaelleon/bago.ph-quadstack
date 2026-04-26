@@ -1,259 +1,262 @@
-# BAGO.PH work breakdown from `srs.md`: 14 main tasks, 103 leaf subtasks, estimated effort `S×37 + M×63 + L×3` (103 total) to deliver deployable HTML/CSS/JS + Node/Express + Aiven MySQL platform with XML/XSLT exports, security hardening, quality gates, and Render deployment. Current completion: **64/103 subtasks (62%)**.
+# BAGO.PH Work Breakdown (`srs.md` + `progress-and-flows.md`)
+
+## Summary
+- Total subtasks: **96**
+- Completed: **54 (56%)**
+- Effort breakdown: **S×37 + M×55 + L×4**
+
+| Area prefix | % complete |
+|---|---:|
+| `T-DB` | 3 / 8 (38%) |
+| `T-AUTH` | 8 / 9 (89%) |
+| `T-ROLE` | 4 / 6 (67%) |
+| `T-SCHED` | 6 / 6 (100%) |
+| `T-REPORT` | 8 / 9 (89%) |
+| `T-ECO` | 7 / 8 (88%) |
+| `T-ANALYTICS` | 6 / 9 (67%) |
+| `T-XML` | 6 / 8 (75%) |
+| `T-NFR` | 3 / 9 (33%) |
+| `T-PERF` | 1 / 6 (17%) |
+| `T-QUALITY` | 1 / 6 (17%) |
+| `T-DIAGRAM` | 0 / 5 (0%) |
+| `T-DEPLOY` | 1 / 7 (14%) |
 
 ## T-DB-01
-**Goal** — Stand up production-shaped database foundation on Aiven MySQL with SSL and migration workflow.
-**Source ref** — FR-01, FR-02, FR-04, NFR-03, NFR-05, SEC-03, SEC-08, F-10.
+**Goal** — Stabilize production database baseline for Aiven MySQL with repeatable schema/migration operations.  
+**Source ref** — FR-01, FR-02, FR-04, NFR-03, NFR-05, SEC-03, SEC-08, F-10.  
 **Subtasks**
-- [ ] (M) Provision Aiven MySQL service and capture connection metadata in `docs/ops/aiven-setup.md` — documented Aiven instance + SSL parameters.
-- [ ] (S) Create `.env.example` entries for `DATABASE_URL`, `DB_SSL_CA`, `DB_CONN_LIMIT`, `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` — updated `.env.example`.
-- [ ] (M) Import `sql/bago_ph_database.sql` into Aiven via MySQL Workbench and record import checksum in `docs/ops/db-import-log.md` — reproducible import log.
-- [ ] (S) Create `sql/seeds/001_demo_accounts.sql` for resident/collector/LGU demo accounts aligned to current auth model — seed SQL file committed.
-- [ ] (M) Add migration baseline file `sql/migrations/000_init_schema.sql` and migration README at `sql/migrations/README.md` — versioned migration process.
-- [ ] (M) Implement SSL-enabled mysql2 pool in `server/db/pool.js` using Aiven CA config — pooled connection module with SSL.
-- [ ] (M) Add parameterized query helper `server/db/query.js` wrapping `pool.execute` with standardized error mapping — reusable safe query utility.
-**Completion** — **0%** (0/7 subtasks).
-**Dependencies** — none.
+- [ ] (M) Provision Aiven MySQL and capture instance details + SSL requirements — `docs/ops/aiven-setup.md`.
+- [x] (S) Keep canonical schema import script versioned — `sql/bago_ph_database.sql`.
+- [x] (S) Keep seed dataset in canonical schema file — seed inserts in `sql/bago_ph_database.sql`.
+- [x] (S) Maintain migration folder with numbered SQL scripts — `sql/migrations/001_lgu_officer_gov_email_login.sql`, `sql/migrations/002_eco_points_ledger_immutable.sql`.
+- [ ] (M) Add migration baseline/readme for full replay order — `sql/migrations/README.md` + `sql/migrations/000_init_schema.sql`.
+- [ ] (M) Upgrade DB pool to SSL-aware mysql2 config (`DB_SSL_CA`, strict SSL) — `server/db.js`.
+- [ ] (M) Add shared parameterized query helper wrapper and adopt in services — `server/db/query.js`.
+- [ ] (M) Add Aiven import log + validation checklist artifact — `docs/ops/db-import-log.md`.
+**Completion** — **3 / 8 subtasks (38%)**.  
+**Dependencies** — none.  
 **Done when**
-- DB connection from local server to Aiven succeeds with SSL required.
-- Schema + seed scripts run without manual SQL edits outside repo.
-- Backend imports `server/db/query.js` without raw string-concatenated SQL.
+- Aiven connection path documented and reproducible from repo docs.
+- DB pool enforces SSL for cloud DB.
+- Query helper exists and used for all new data access code.
 
 ## T-AUTH-02
-**Goal** — Deliver complete auth flows for resident/collector mobile+PIN and LGU gov-email+password.
-**Source ref** — FR-01, F-01, SEC-02, SEC-03, SR-06.
+**Goal** — Deliver complete authentication/session flow for resident, collector, and LGU officer.  
+**Source ref** — FR-01, F-01, SEC-02, SEC-03, SR-06.  
 **Subtasks**
-- [x] (M) Add registration endpoint `POST /api/auth/register` in `server/routes/auth.js` writing to `app_identity` with role-specific fields — tested registration API.
-- [x] (M) Add login endpoint `POST /api/auth/login` in `server/routes/auth.js` supporting `{mobile,pin}` and `{email,password}` payloads — dual-mode login API.
-- [ ] (S) Implement bcrypt hashing utility in `server/lib/passwords.js` for PIN/password create + verify — shared hash helper.
-- [x] (S) Add JWT issue/verify helper `server/lib/jwt.js` with expiration and role claims — signed token utility.
-- [x] (M) Create auth middleware `server/middleware/auth-jwt.js` validating bearer token on protected routes — enforced auth middleware.
-- [x] (M) Implement role middleware `server/middleware/require-role.js` to gate resident/collector/lgu_officer routes — server-side role guard.
-- [x] (S) Add logout/session clear client logic in `html/js/auth-session.js` removing token/role from storage and redirecting to login — logout behavior change.
-- [x] (M) Wire login and register forms in `html/js/auth-web-login.js` and `html/js/register.js` to API instead of local-only flow — live auth UI integration.
-**Completion** — **88%** (7/8 subtasks).
-**Dependencies** — T-DB-01.
+- [x] (M) Implement registration API for role-based identity creation — `POST /api/auth/register` in `server/routes/auth.js`.
+- [x] (M) Implement login API supporting mobile+PIN and gov-email+password — `POST /api/auth/login` in `server/routes/auth.js`.
+- [x] (S) Hash credentials with bcrypt during auth create/verify paths — `server/routes/auth.js`.
+- [x] (S) Issue expiring JWT token and verify claims — `server/middleware/auth.js` (`signToken()`, `verifyToken()`).
+- [x] (S) Enforce bearer auth middleware on protected APIs — `authMiddleware()` in `server/middleware/auth.js`.
+- [x] (M) Support gov-email LGU login branch in UI/API bridge — `html/js/prototype-page-loader.js`, `html/js/bago-api.js`.
+- [x] (M) Support resident/collector mobile+PIN login branch in UI/API bridge — `html/js/prototype-page-loader.js`, `html/js/bago-api.js`.
+- [x] (S) Implement logout/session clear path for frontend role/token bridge — `appendLogoutNav()` in `html/role-access.js`.
+- [ ] (L) Replace prototype-dependent auth screens with pure HTML/JS auth flow (no `window.BAGOPrototype.render`) — `html/index.html`, `html/register.html`, `html/otp.html`, `html/auth-web-*.html`.
+**Completion** — **8 / 9 subtasks (89%)**.  
+**Dependencies** — T-DB-01.  
 **Done when**
-- Valid resident/collector and LGU credentials return JWT + role payload.
-- Invalid credentials return 401 without revealing account existence.
-- Logout clears storage and blocks protected page access on refresh.
+- Both credential modes authenticate against live API.
+- All protected pages fail closed without valid JWT/session.
+- Auth entry flow no longer depends on prototype renderer.
 
 ## T-ROLE-03
-**Goal** — Align client and server role enforcement across pages and endpoints.
-**Source ref** — FR-01, F-01, F-10, SEC-03.
+**Goal** — Keep client and server role-access controls consistent and auditable.  
+**Source ref** — FR-01, F-01, F-10, SEC-03.  
 **Subtasks**
-- [x] (M) Refactor `html/role-access.js` route matrix to explicit per-role allowlists matching active pages — deterministic client guard map.
-- [x] (S) Add navbar role injection map in `html/js/prototype-page-loader.js` (or split into `html/js/navbar-role.js`) — role-specific navbar rendering.
-- [x] (M) Mirror role matrix in backend constants `server/constants/role-routes.js` and apply in route handlers — shared authorization source.
-- [x] (M) Add integration tests `server/tests/role-guards.test.js` covering disallowed role access (403) per protected endpoint group — passing guard tests.
-- [x] (S) Add redirect-to-dashboard behavior for disallowed URLs in `html/js/role-redirects.js` — documented behavior change in browser.
-**Completion** — **100%** (5/5 subtasks).
-**Dependencies** — T-AUTH-02.
+- [x] (S) Maintain client role-page matrix and guard behavior — `ROLE_PAGE_ACCESS` + `enforceAccessControl()` in `html/role-access.js`.
+- [x] (S) Inject logout/nav behavior for authenticated sessions — `appendLogoutNav()` in `html/role-access.js`.
+- [x] (M) Maintain server role-page/api matrix mirror — `server/constants/role-routes.js`.
+- [x] (M) Enforce per-resource API policy middleware on protected routes — `server/middleware/route-policy.js`.
+- [ ] (M) Eliminate matrix drift between `html/role-access.js` and `html/js/prototype-page-loader.js` allowlists — unified source/adapter module.
+- [ ] (M) Remove duplicate prototype route-guard path after auth page migration — simplify to single role guard chain.
+**Completion** — **4 / 6 subtasks (67%)**.  
+**Dependencies** — T-AUTH-02.  
 **Done when**
-- Same role matrix enforced in browser and API.
-- Protected endpoint access by wrong role consistently returns 403.
-- Direct URL entry to disallowed page redirects to correct dashboard.
+- One authoritative role matrix drives both client and server.
+- Forbidden role access returns redirect (client) and 403 (server) consistently.
+- No stale prototype-only allowlist remains.
 
 ## T-SCHED-04
-**Goal** — Deliver schedule management end to end for LGU and resident views with in-app change banners.
-**Source ref** — FR-01, FR-02, F-03, F-08.
+**Goal** — Provide end-to-end schedule management for LGU edits and resident/collector visibility.  
+**Source ref** — FR-02, F-03, FR-03.  
 **Subtasks**
-- [x] (M) Implement schedule CRUD endpoints `GET/POST/PATCH/DELETE /api/schedules` in `server/routes/schedules.js` with role restrictions — functional schedule API.
-- [x] (S) Add schedule query service `server/services/schedules-service.js` using parameterized SQL and barangay/date filters — reusable data service.
-- [x] (M) Build LGU schedule editor UI in `html/schedule.html` + `html/js/schedule-lgu.js` for create/update/cancel actions — live LGU edit screen.
-- [x] (M) Build resident schedule list/calendar view in `html/js/schedule-resident.js` consuming `GET /api/schedules` — live resident view.
-- [x] (S) Add in-app notification banner component `html/js/components/in-app-banner.js` for schedule change events — reusable banner module.
-- [x] (M) Create endpoint `GET /api/notifications/schedule` in `server/routes/notifications.js` and wire banner polling in resident page — visible schedule change banner.
-- [x] (S) Add API tests `server/tests/schedules-api.test.js` for CRUD + role permissions — passing schedule tests.
-**Completion** — **100%** (7/7 subtasks).
-**Dependencies** — T-ROLE-03.
+- [x] (M) Implement schedule CRUD endpoints with role policy — `server/routes/schedules.js`.
+- [x] (M) Keep schedule service abstraction with parameterized SQL — `server/services/schedules-service.js`.
+- [x] (M) Ship LGU schedule editor UI for create/update/delete — `html/schedule.html`, `html/js/schedule-lgu.js`.
+- [x] (S) Ship resident/collector read view for upcoming schedules — `html/js/schedule-resident.js`.
+- [x] (S) Expose schedule notification feed endpoint — `GET /api/notifications/schedule` in `server/routes/notifications.js`.
+- [x] (M) Render in-app schedule change banner in schedule page — `html/js/components/in-app-banner.js`, `html/js/schedule-resident.js`.
+**Completion** — **6 / 6 subtasks (100%)**.  
+**Dependencies** — T-ROLE-03.  
 **Done when**
-- LGU can create/update/cancel schedule from web screen.
-- Resident schedule page reflects DB-backed updates.
-- Schedule changes appear in resident in-app banner feed.
+- LGU can fully manage schedule rows from web page.
+- Residents/collectors see live schedule list from API.
+- Schedule updates surface in notification banner feed.
 
 ## T-REPORT-05
-**Goal** — Deliver report submission and resolution workflow with media, geolocation, compression, map overlay, and status notifications.
-**Source ref** — FR-02, F-04, SR-01, SR-02, SR-03, SEC-06.
+**Goal** — Complete waste report intake and status workflow with media, geolocation, and map visibility.  
+**Source ref** — FR-02, F-04, SR-01, SR-02, SR-03, SEC-06.  
 **Subtasks**
-- [x] (M) Implement report upload endpoint `POST /api/reports` in `server/routes/reports.js` with multipart validation and metadata persistence — report create API.
-- [x] (M) Add secure media storage service `server/services/report-media.js` with signed URL generation for access — signed image access flow.
-- [x] (M) Add report status endpoints `PATCH /api/reports/:id/status` and `GET /api/reports` filters in `server/routes/reports.js` — status workflow API.
-- [x] (S) Implement browser file capture field `<input type="file" capture>` in `html/report.html` + `html/js/report-submit.js` — capture-enabled report form.
-- [x] (M) Add Geolocation API capture per submission in `html/js/report-submit.js` with permission prompt and fallback handling — location-tagged submission.
-- [x] (M) Add client compression module `html/js/lib/image-compress.js` targeting <=500KB before upload — compressed upload artifact.
-- [x] (M) Add LGU report map overlay in `html/report.html` + `html/js/report-map.js` using Leaflet + OpenStreetMap CDN — live map overlay view.
-- [x] (S) Publish resident status-change banners in `GET /api/notifications/reports` via `server/routes/notifications.js` — report update notifications.
-- [x] (M) Add frontend status timeline UI `html/js/report-detail.js` showing Open/Acknowledged/In Progress/Resolved/Rejected — visible workflow timeline.
-- [x] (S) Add test suite `server/tests/reports-flow.test.js` for create + status transitions + signed URL access checks — passing report tests.
-**Completion** — **100%** (10/10 subtasks).
-**Dependencies** — T-ROLE-03, T-SCHED-04.
+- [x] (S) Keep report file-capture input in report form — `<input type="file" capture>` in `html/report.html`.
+- [x] (M) Capture geolocation per report submit and attach coordinates — `captureLocation()` in `html/js/report-submit.js`.
+- [x] (M) Compress report images client-side before upload — `html/js/lib/image-compress.js`.
+- [x] (M) Support multipart upload endpoint with metadata validation — `POST /api/reports` in `server/routes/reports.js`.
+- [x] (M) Support report status workflow APIs (`Open→...→Resolved/Rejected`) — `PATCH /api/reports/:id`, `PATCH /api/reports/:id/status` in `server/routes/reports.js`.
+- [x] (M) Render LGU/collector map overlay using Leaflet + OSM CDN — `html/js/report-map.js`, `html/report.html`.
+- [x] (S) Publish resident report-status notifications feed — `GET /api/notifications/reports` in `server/routes/notifications.js`.
+- [ ] (M) Add LGU status-action controls to live LGU report page (not only API) — `html/report.html`, `html/js/report-map.js`/new LGU module.
+- [x] (S) Keep signed media URL + token verification for report images — `server/services/report-media.js`, `/api/reports/image/:id`.
+**Completion** — **8 / 9 subtasks (89%)**.  
+**Dependencies** — T-ROLE-03, T-SCHED-04.  
 **Done when**
-- Resident can submit compressed, geo-tagged report with image.
-- LGU/collector can update report status through API + UI.
-- Resident sees status-change notification and timeline update.
+- Resident can submit geo-tagged report with compressed photo.
+- Collector/LGU can transition status via UI and API.
+- Resident sees timeline/notification updates from backend state.
 
 ## T-ECO-06
-**Goal** — Implement eco-points earning and redemption with QR validation, idempotent credits, and immutable ledger.
-**Source ref** — FR-03, F-07, F-10, SR-04, SR-05, SEC-04, SEC-05.
+**Goal** — Deliver auditable eco-points lifecycle (scan, credit, ledger, redeem).  
+**Source ref** — FR-03, F-07, F-10, SR-04, SR-05, SEC-04, SEC-05.  
 **Subtasks**
-- [x] (M) Add migration `sql/migrations/002_eco_points_ledger_immutable.sql` with append-only constraints and reversal pattern — immutable ledger schema.
-- [x] (M) Create QR token generator service `server/services/qr-token.js` using UUIDv4 tokens and household mapping — QR generation module.
-- [x] (M) Implement collector scan endpoint `POST /api/qr/scan` in `server/routes/qr.js` validating token and route context — scan validation API.
-- [x] (M) Implement idempotent credit endpoint `POST /api/eco-points/credit` in `server/routes/eco-points.js` requiring `Idempotency-Key` header — duplicate-safe credit API.
-- [x] (M) Implement redemption catalog endpoint `GET /api/rewards/catalog` and redemption endpoint `POST /api/rewards/redeem` in `server/routes/rewards.js` — redemption API pair.
-- [x] (S) Add 30-day grace reconciliation endpoint `POST /api/eco-points/reconcile` with LGU-only access in `server/routes/eco-points.js` — grace policy endpoint.
-- [x] (M) Build collector scan flow UI `html/qr-audit.html` + `html/js/collector-scan.js` for scan -> validate -> credit feedback — collector web flow.
-- [x] (M) Build resident wallet + redemption UI in `html/eco-points.html` + `html/js/eco-wallet.js` consuming live ledger and catalog APIs — live wallet screen.
-- [x] (S) Add audit entries for all eco-point writes in `server/services/audit-log.js` — eco-point write audit trail.
-- [x] (M) Add tests `server/tests/eco-points-idempotency.test.js` and `server/tests/rewards-redeem.test.js` — passing idempotency + redemption tests.
-**Completion** — **100%** (10/10 subtasks).
-**Dependencies** — T-REPORT-05.
+- [ ] (M) Implement live household QR card issuance/display flow (currently shell pages only) — `html/resident-web-qrcard.html` + API/service.
+- [x] (M) Implement collector QR scan endpoint with token validation — `POST /api/qr/scan` in `server/routes/qr.js`.
+- [x] (M) Implement idempotent eco-point credit endpoint requiring `Idempotency-Key` — `POST /api/eco-points/credit` in `server/routes/eco-points.js`.
+- [x] (M) Keep immutable eco-points ledger schema migration — `sql/migrations/002_eco_points_ledger_immutable.sql`.
+- [x] (S) Expose reward catalog API for redemption options — `GET /api/rewards/catalog` in `server/routes/rewards.js`.
+- [x] (M) Implement redemption endpoint with ledger debit — `POST /api/rewards/redeem` in `server/routes/rewards.js`.
+- [x] (S) Implement 30-day grace reconciliation endpoint (LGU only) — `POST /api/eco-points/reconcile` in `server/routes/eco-points.js`.
+- [x] (S) Record eco-point and QR actions in audit service calls — `server/services/audit-log.js`, `server/routes/eco-points.js`, `server/routes/qr.js`, `server/routes/rewards.js`.
+**Completion** — **7 / 8 subtasks (88%)**.  
+**Dependencies** — T-REPORT-05.  
 **Done when**
-- Duplicate credit requests with same idempotency key create one ledger credit only.
-- QR scan flow validates token and writes auditable transaction event.
-- Resident can redeem catalog item with ledger debit and balance update.
+- Collector scan creates exactly one credit per idempotency window.
+- Ledger remains append-only with compensating entries.
+- Resident can redeem reward against real ledger balance.
 
-## T-ANN-07
-**Goal** — Deliver announcement and in-app notification pipeline with email/SMS hook points.
-**Source ref** — FR-03, F-08, NFR-04.
+## T-ANALYTICS-07
+**Goal** — Provide LGU analytics and regulatory export surfaces from MySQL-backed data.  
+**Source ref** — FR-04, F-06, F-09, PERF-05.  
 **Subtasks**
-- [x] (M) Implement announcement endpoints `GET/POST /api/announcements` in `server/routes/announcements.js` with barangay targeting — announcement API.
-- [x] (S) Add in-app banner feed endpoint `GET /api/notifications` in `server/routes/notifications.js` merging schedule/report/announcement events — unified banner feed.
-- [x] (M) Build LGU announcement compose UI in `html/announcements.html` + `html/js/announcements-admin.js` — LGU broadcast screen.
-- [x] (S) Build resident/collector banner display module `html/js/in-app-notifications.js` consuming `/api/notifications` — visible in-app notifications.
-- [x] (M) Add provider hook interface `server/integrations/messaging-hooks.js` for future email/SMS adapters (stub adapters + config) — extensible comms hook artifact.
-- [x] (S) Add tests `server/tests/announcements-api.test.js` for role-restricted creation and targeted retrieval — passing announcement tests.
-**Completion** — **100%** (6/6 subtasks).
-**Dependencies** — T-SCHED-04, T-REPORT-05.
+- [x] (M) Implement aggregated metric queries and series service — `server/services/analytics-service.js`.
+- [x] (M) Expose analytics overview endpoint with role guard — `GET /api/analytics/overview` in `server/routes/analytics.js`.
+- [x] (M) Render dashboard cards from analytics response — `html/dashboard-lgu.html`, `html/js/dashboard-lgu.js`.
+- [x] (M) Render charts via Chart.js CDN on LGU dashboard — `html/js/lgu-charts.js`.
+- [x] (S) Provide CSV exports for overview/schedules — `GET /api/exports/csv` in `server/routes/exports.js`.
+- [x] (M) Provide XML export from MySQL schedules dataset — `GET /api/exports/xml` in `server/routes/exports.js`.
+- [ ] (L) Make DENR HTML export explicitly XSL-driven transform output (currently template string HTML) — `GET /api/exports/denr-html` + XSL transform pipeline.
+- [ ] (L) Make DENR PDF export generated from XSL-transformed HTML output (currently minimal PDF builder) — `GET /api/exports/denr-pdf`.
+- [ ] (M) Ship live compliance page wired to analytics API (not prototype shell) — `html/compliance.html` + new JS module.
+**Completion** — **6 / 9 subtasks (67%)**.  
+**Dependencies** — T-ECO-06, T-REPORT-05.  
 **Done when**
-- LGU can publish announcement targeted by barangay.
-- Residents/collectors receive announcement in in-app banner feed.
-- Email/SMS hook interface exists with documented future adapter contract.
+- LGU sees live card/chart analytics in production page.
+- XML export is filterable and MySQL-backed.
+- DENR HTML/PDF flow uses declared XSL transform path end-to-end.
 
-## T-ANALYTICS-08
-**Goal** — Build analytics, exports, and DENR-oriented output pipeline from live MySQL data.
-**Source ref** — FR-04, F-06, F-09, PERF-05.
+## T-XML-08
+**Goal** — Complete XML/XSLT editing workflow with robust UX and persistence path.  
+**Source ref** — F-08, FR-04, NFR-04, NFR-05.  
 **Subtasks**
-- [x] (M) Implement analytics query service `server/services/analytics-service.js` for collection, reports, compliance, eco-points metrics — reusable metric queries.
-- [x] (M) Add LGU analytics endpoint `GET /api/analytics/overview` in `server/routes/analytics.js` with period filters — analytics API.
-- [x] (M) Build LGU dashboard cards in `html/dashboard-lgu.html` + `html/js/dashboard-lgu.js` from overview API — live metric cards.
-- [x] (M) Add charts with Chart.js CDN in `html/js/lgu-charts.js` for compliance, report SLA, eco-points trends — analytics charts artifact.
-- [x] (M) Add CSV export endpoint `GET /api/exports/csv?type=...` in `server/routes/exports.js` — downloadable CSV export.
-- [x] (L) Add XML export endpoint `GET /api/exports/xml` in `server/routes/exports.js` with filters (barangay, date range, role) sourced from MySQL — filtered XML export API.
-- [x] (L) Create XSL templates `xsl/denr-report.xsl` and export transform route `GET /api/exports/denr-html` in `server/routes/exports.js` — XSL-driven printable HTML.
-- [x] (L) Add PDF generation endpoint `GET /api/exports/denr-pdf` in `server/routes/exports.js` using transformed HTML source — downloadable DENR PDF.
-- [x] (S) Add endpoint tests `server/tests/exports.test.js` covering XML filter behavior and CSV/PDF response headers — passing export tests.
-**Completion** — **100%** (9/9 subtasks).
-**Dependencies** — T-ECO-06, T-ANN-07.
+- [x] (M) Keep schedules XML editor with filter/sort/CRUD controls — `html/xml-schedules-editor.html`, `html/js/xml-schedules-app.js`.
+- [x] (M) Keep barangays XML editor with filter/sort/CRUD controls — `html/xml-barangays-editor.html`, `html/js/xml-barangays-app.js`.
+- [x] (M) Keep modal-based CRUD forms replacing `prompt()` — `html/js/components/xml-editor-modal.js`, XML app scripts.
+- [x] (M) Keep field validation hooks (barangay, gov email, pin, mobile) — `html/js/xml-editor-validators.js`.
+- [x] (S) Keep `?mode=view` read-only behavior for both editor pages — XML app scripts.
+- [x] (S) Keep XSL preview + XML export actions in editors — XML editor pages/scripts.
+- [ ] (L) Add server persistence endpoint for edited XML content (currently localStorage/download only) — new API route/service + editor wiring.
+- [ ] (M) Reconcile legacy XSL root mismatch (`/technosystem`) to active XML roots or retire file — `xsl/ecolinisph.xsl`.
+**Completion** — **6 / 8 subtasks (75%)**.  
+**Dependencies** — T-SCHED-04, T-ROLE-03.  
 **Done when**
-- LGU dashboard renders live cards and charts from API.
-- XML export returns filtered MySQL-backed dataset.
-- DENR HTML/PDF exports generated from XSL transform path.
-
-## T-XML-09
-**Goal** — Complete XML/XSLT editor layer with view mode, modal CRUD, and strict field validation.
-**Source ref** — F-08, FR-04, NFR-04, NFR-05.
-**Subtasks**
-- [x] (M) Refactor `html/xml-schedules-editor.html` + `html/js/xml-schedules-editor.js` to modal-based CRUD (remove `prompt()`) — modal CRUD schedules editor.
-- [x] (M) Refactor `html/xml-barangays-editor.html` + `html/js/xml-barangays-editor.js` to modal-based CRUD (remove `prompt()`) — modal CRUD barangays editor.
-- [x] (S) Add shared modal component `html/js/components/xml-editor-modal.js` used by both editors — reusable modal artifact.
-- [x] (M) Add validation module `html/js/xml-editor-validators.js` for PH mobile format, 4-digit PIN, gov-email pattern, barangay whitelist — field validation rules.
-- [x] (S) Enforce `?mode=view` read-only restrictions in both editor scripts with disabled controls and guard checks — read-only behavior.
-- [x] (M) Improve filter/sort utilities in `html/js/xml-data-core.js` for deterministic sorting and multi-filter handling — stable editor behavior.
-- [x] (M) Add export controls in editors for XML download and XSL preview trigger (`xsl/*.xsl`) — verifiable export actions.
-- [x] (S) Add browser regression checklist `docs/qa/xml-xslt-checklist.md` for Firefox XSLT path and editor modes — QA artifact.
-**Completion** — **100%** (8/8 subtasks).
-**Dependencies** — T-SCHED-04, T-ROLE-03.
-**Done when**
-- No `prompt()` remains in XML editors.
-- Both editors support filter/sort/CRUD and honor `?mode=view`.
-- Validation errors block invalid field submission with clear messages.
+- XML editors fully usable in edit and view-only modes.
+- No prompt-based CRUD remains.
+- XML changes can persist through controlled backend path (optional mode) or documented authoritative process.
 
 ## T-NFR-10
-**Goal** — Apply security and compliance controls required for production operations.
-**Source ref** — NFR-06, SR-06, SEC-01..SEC-08.
+**Goal** — Implement security/privacy operational controls required by SRS NFR/SR/SEC sections.  
+**Source ref** — NFR-06, SR-06, SEC-01..SEC-08.  
 **Subtasks**
-- [x] (M) Configure strict CORS allowlist in `server/middleware/cors.js` and wire in `server/index.js` — origin-locked API behavior.
-- [ ] (M) Add rate limiting middleware `server/middleware/rate-limit.js` for auth/report/export routes — request throttling artifact.
-- [ ] (M) Create audit log table migration `sql/migrations/003_audit_log.sql` and write service `server/services/audit-log.js` — persistent audit logging.
-- [ ] (S) Enforce 30-minute LGU idle timeout in `html/js/auth-session.js` and token refresh/reauth behavior — measurable idle timeout behavior.
-- [ ] (M) Add RA 10173 consent banner component `html/js/components/consent-banner.js` on auth and first-login pages — privacy consent UX.
-- [ ] (M) Create `html/privacy.html` with data usage, retention, and rights content linked from auth/footer — privacy policy page artifact.
-- [ ] (S) Add secrets policy doc `docs/security/secrets-policy.md` forbidding committed credentials and defining env-var handling — compliance documentation.
-- [ ] (S) Add security tests `server/tests/security-middleware.test.js` for CORS and rate limits — passing security tests.
-**Completion** — **13%** (1/8 subtasks).
-**Dependencies** — T-AUTH-02, T-ROLE-03.
+- [ ] (M) Enforce HTTPS redirect/block strategy for production traffic — Express middleware + deploy config.
+- [x] (M) Enforce configurable CORS policy in API bootstrap — `server/index.js` CORS config using `CORS_ORIGIN`.
+- [ ] (M) Add API rate limiting middleware for auth/report/export abuse paths — `server/middleware/rate-limit.js`.
+- [ ] (M) Add DB migration for persistent audit table used by `writeAudit()` — `sql/migrations/003_lgu_action_log.sql`.
+- [x] (S) Keep best-effort audit write service used by critical flows — `server/services/audit-log.js`.
+- [ ] (M) Implement 30-minute LGU idle timeout with forced re-auth on privileged actions — frontend session module.
+- [ ] (M) Add RA 10173 consent capture UI on onboarding/auth — new consent component + storage policy.
+- [ ] (S) Add privacy policy page linked in auth/app footer — `html/privacy.html`.
+- [x] (S) Keep secrets in env-var-driven config (no hardcoded runtime secrets) — `server/index.js`, `server/middleware/auth.js`, `server/db.js`, `.env` usage.
+**Completion** — **3 / 9 subtasks (33%)**.  
+**Dependencies** — T-AUTH-02, T-ROLE-03.  
 **Done when**
-- CORS rejects non-allowlisted origins in production mode.
-- Rate limits enforced on sensitive endpoints.
-- Privacy consent + policy page visible and linked in UI.
+- Sensitive endpoints are throttled and audited in DB table.
+- LGU privileged sessions auto-expire at 30 minutes idle.
+- Privacy consent + policy are visible and enforceable.
 
 ## T-PERF-11
-**Goal** — Hit performance targets with DB indexes and web delivery optimization.
-**Source ref** — NFR-01, NFR-03, PERF-01..PERF-07.
+**Goal** — Meet SRS performance targets with DB, transport, and frontend optimization.  
+**Source ref** — NFR-01, NFR-03, PERF-01..PERF-07.  
 **Subtasks**
-- [ ] (M) Add index migration `sql/migrations/004_perf_indexes.sql` for top-10 read paths (`schedules`, `reports`, `eco_points_ledger`, `barangays`) — query index artifacts.
-- [ ] (M) Create DB performance script `scripts/bench/top-queries.sql` and baseline report `docs/perf/query-baseline.md` — measured query timings.
-- [ ] (M) Enable gzip/brotli compression middleware in `server/middleware/compression.js` and wire in `server/index.js` — compressed responses.
-- [ ] (S) Set cache headers for static assets in `server/middleware/static-cache.js` (hashed JS/CSS long TTL; HTML short TTL) — cache policy behavior.
-- [ ] (M) Add Lighthouse CI config `.lighthouserc.json` and script `npm run perf:lighthouse` targeting dashboard/schedule/report pages — automated perf check.
-- [ ] (S) Add perf budget doc `docs/perf/budgets.md` mapping SRS thresholds to measurable probes — performance contract artifact.
-**Completion** — **0%** (0/6 subtasks).
-**Dependencies** — T-SCHED-04, T-REPORT-05, T-ANALYTICS-08.
+- [x] (S) Keep foundational indexes in schema for major tables — indexes in `sql/bago_ph_database.sql` and `sql/migrations/002_eco_points_ledger_immutable.sql`.
+- [ ] (M) Add dedicated performance index migration for current hot queries — `sql/migrations/004_perf_indexes.sql`.
+- [ ] (M) Add query benchmark script and baseline report — `scripts/bench/top-queries.sql`, `docs/perf/query-baseline.md`.
+- [ ] (M) Enable gzip/brotli response compression — middleware wired in `server/index.js`.
+- [ ] (S) Add static asset cache-header policy for HTML vs JS/CSS/media — static serving middleware.
+- [ ] (M) Add Lighthouse CI budget checks for primary screens — `.lighthouserc.json` + `npm run perf:lighthouse`.
+**Completion** — **1 / 6 subtasks (17%)**.  
+**Dependencies** — T-SCHED-04, T-REPORT-05, T-ANALYTICS-07.  
 **Done when**
-- Indexed queries show measurable improvement in baseline report.
-- Compression and cache headers active in response inspection.
-- Lighthouse run produces passing scores for agreed budgets.
+- Hot query latency tracked and improved against baseline.
+- Compression and caching visible in response headers.
+- Lighthouse budgets enforced in repeatable CI/local command.
 
 ## T-QUALITY-12
-**Goal** — Validate accessibility and cross-browser quality on primary user flows.
-**Source ref** — NFR-04, Quality Attributes (Accessibility, Usability, Portability).
+**Goal** — Validate accessibility and cross-browser quality for primary user flows.  
+**Source ref** — NFR-04, Quality Attributes (Usability, Accessibility, Portability).  
 **Subtasks**
-- [ ] (M) Build WCAG checklist `docs/qa/wcag-2.1-aa-checklist.md` for login, schedule, report, dashboard, eco-points flows — auditable accessibility matrix.
-- [ ] (M) Fix semantic/ARIA issues in `html/*.html` and shared scripts `html/js/components/*.js` identified in checklist — accessibility behavior improvements.
-- [ ] (S) Add keyboard navigation test script `docs/qa/keyboard-nav-test.md` and execute against primary flows — keyboard QA artifact.
-- [ ] (S) Run NVDA/JAWS spot checks and record outcomes in `docs/qa/screen-reader-results.md` — screen-reader verification report.
-- [ ] (M) Create cross-browser QA matrix `docs/qa/cross-browser-matrix.md` for Chrome, Edge, Firefox (including XML/XSLT paths) — browser compatibility evidence.
-- [ ] (S) Add smoke test script `scripts/qa/smoke-checklist.md` and run before release — repeatable QA routine artifact.
-**Completion** — **0%** (0/6 subtasks).
-**Dependencies** — T-XML-09, T-ANALYTICS-08, T-NFR-10.
+- [ ] (S) Create WCAG 2.1 AA checklist for login/schedule/report/eco/analytics flows — `docs/qa/wcag-2.1-aa-checklist.md`.
+- [ ] (M) Fix semantic label/focus/ARIA gaps identified by checklist — `html/*.html`, `html/js/components/*.js`.
+- [ ] (S) Add keyboard-only QA script and execute against core flows — `docs/qa/keyboard-nav-test.md`.
+- [ ] (S) Add screen-reader spot-check notes (NVDA/JAWS) — `docs/qa/screen-reader-results.md`.
+- [x] (S) Keep XML/XSLT browser-path QA checklist artifact — `docs/qa/xml-xslt-checklist.md`.
+- [ ] (S) Add full cross-browser QA matrix (Chrome/Edge/Firefox primary flows + XML path) — `docs/qa/cross-browser-matrix.md`.
+**Completion** — **1 / 6 subtasks (17%)**.  
+**Dependencies** — T-XML-08, T-ANALYTICS-07, T-NFR-10.  
 **Done when**
-- WCAG checklist completed with no critical blockers on primary flows.
-- NVDA/JAWS spot-check issues triaged and resolved or documented.
-- Cross-browser matrix shows pass status for required browsers/features.
+- WCAG blockers resolved on primary live pages.
+- Keyboard and screen-reader checks documented with outcomes.
+- Browser compatibility matrix shows pass/fail per required flow.
 
 ## T-DIAGRAM-13
-**Goal** — Deliver software analysis/design artifacts for SRS Section 3 in repo docs.
-**Source ref** — SRS 3.1, 3.2, 3.3, 3.4.
+**Goal** — Produce SRS Section 3 design artifacts in repo docs.  
+**Source ref** — SRS §3.1, §3.2, §3.3, §3.4.  
 **Subtasks**
-- [ ] (S) Create `docs/diagrams/flowchart-existing.mmd` and `docs/diagrams/flowchart-proposed.mmd` Mermaid flowcharts — committed flowchart files.
-- [ ] (S) Create `docs/diagrams/use-case.mmd` listing actors and core use cases — use case diagram artifact.
-- [ ] (M) Create `docs/diagrams/dfd-level-0.mmd`, `docs/diagrams/dfd-level-1.mmd`, `docs/diagrams/dfd-level-2.mmd` — DFD L0/L1/L2 artifacts.
-- [ ] (M) Create `docs/diagrams/erd.mmd` with 8 tables and key relations from SRS — ERD artifact.
-- [ ] (S) Export PNG copies into `docs/diagrams/png/` via Mermaid CLI script `scripts/docs/export-diagrams.sh` (or `.ps1`) — image outputs for sharing.
-- [ ] (S) Add index page `docs/diagrams/README.md` linking all diagram sources and exports — documentation entrypoint.
-**Completion** — **0%** (0/6 subtasks).
-**Dependencies** — T-DB-01, T-ROLE-03, T-ANALYTICS-08.
+- [ ] (S) Create existing/proposed flowchart diagrams — `docs/diagrams/flowchart-existing.mmd`, `docs/diagrams/flowchart-proposed.mmd`.
+- [ ] (S) Create actor/use-case diagram — `docs/diagrams/use-case.mmd`.
+- [ ] (M) Create DFD Level 0/1/2 diagrams — `docs/diagrams/dfd-level-0.mmd`, `docs/diagrams/dfd-level-1.mmd`, `docs/diagrams/dfd-level-2.mmd`.
+- [ ] (M) Create ERD covering 8 core entities and key relations — `docs/diagrams/erd.mmd`.
+- [ ] (S) Add diagrams index/readme with export instructions — `docs/diagrams/README.md`.
+**Completion** — **0 / 5 subtasks (0%)**.  
+**Dependencies** — T-DB-01, T-ROLE-03, T-ANALYTICS-07.  
 **Done when**
-- Mermaid source files exist for all required diagram types.
-- ERD includes exactly 8 SRS tables and named key relationships.
-- Diagram README links source + generated images.
+- All SRS-required diagrams exist in versioned docs path.
+- ERD matches implemented schema tables/relations.
+- Diagram index links all sources and output process.
 
 ## T-DEPLOY-14
-**Goal** — Deploy full stack on Render with verified health, backups, environment inventory, and live-demo documentation.
-**Source ref** — NFR-02, NFR-06, SEC-01, SEC-08, PERF-06.
+**Goal** — Ship production deployment package and operational runbook for Render + Aiven.  
+**Source ref** — NFR-02, SEC-01, SEC-08, PERF-06, Appendix B.  
 **Subtasks**
-- [ ] (M) Add Render config `render.yaml` for web service build/start and env var bindings — versioned deployment config.
-- [x] (S) Implement `/health` route in `server/routes/health.js` and register in `server/index.js` — health endpoint artifact.
-- [ ] (M) Create deployment runbook `docs/ops/render-deploy.md` with build cmd, start cmd, rollback, log access — deployment guide artifact.
-- [ ] (S) Create env inventory `docs/ops/env-vars.md` documenting required, optional, and secret vars per environment — env contract doc.
-- [ ] (M) Verify Aiven automated backups and record evidence in `docs/ops/aiven-backup-verification.md` — backup verification artifact.
-- [ ] (S) Update `README.md` with "Live Demo" block including deployed URL, `/health` check URL, and demo account guidance — documented live access.
-- [ ] (M) Run post-deploy smoke test script `scripts/ops/post-deploy-checklist.md` against live URL — signed-off deployment checklist.
-**Completion** — **14%** (1/7 subtasks).
-**Dependencies** — T-PERF-11, T-QUALITY-12, T-DIAGRAM-13, T-NFR-10.
+- [ ] (M) Add Render infrastructure config file — `render.yaml`.
+- [x] (S) Keep health endpoint for liveness checks — `GET /health` in `server/index.js`.
+- [ ] (M) Add Render deploy/rollback runbook — `docs/ops/render-deploy.md`.
+- [ ] (S) Add explicit env-var inventory doc — `docs/ops/env-vars.md`.
+- [ ] (S) Add Aiven backup verification record/process — `docs/ops/aiven-backup-verification.md`.
+- [ ] (S) Add README live demo block with deployed URL + health URL + demo notes — `README.md`.
+- [ ] (M) Add post-deploy smoke checklist artifact — `scripts/ops/post-deploy-checklist.md`.
+**Completion** — **1 / 7 subtasks (14%)**.  
+**Dependencies** — T-PERF-11, T-QUALITY-12, T-DIAGRAM-13, T-NFR-10.  
 **Done when**
-- Render service live and `/health` returns healthy status.
-- Required environment variables documented and present in deployment.
-- README contains working live-demo section with verification links.
+- Deploy process reproducible from repo docs/config.
+- Health and environment readiness verifiable after deploy.
+- README exposes live demo entry and verification links.
 
