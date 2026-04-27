@@ -12,6 +12,11 @@
     return document.getElementById(id);
   }
 
+  function setState(message) {
+    var node = q("lgu-schedule-state");
+    if (node) node.textContent = String(message || "");
+  }
+
   function asTime(v) {
     if (!v) return "";
     return String(v).slice(0, 5);
@@ -30,13 +35,20 @@
   }
 
   async function loadSchedules() {
+    setState(t("common.loading", "Loading..."));
     schedules = await window.BAGOApi.request("GET", "/api/schedules");
     renderTable();
+    setState("");
   }
 
   function renderTable() {
     var body = q("lgu-schedule-tbody");
     body.innerHTML = "";
+    if (!schedules.length) {
+      body.innerHTML =
+        "<tr><td colspan='6'>" + esc(t("schedule.empty", "No schedules found yet.")) + "</td></tr>";
+      return;
+    }
     schedules.forEach(function (row) {
       var tr = document.createElement("tr");
       tr.innerHTML =
@@ -121,8 +133,12 @@
   }
 
   async function initLguSchedule() {
-    await loadBarangays();
-    await loadSchedules();
+    try {
+      await loadBarangays();
+      await loadSchedules();
+    } catch (err) {
+      setState(err && err.message ? err.message : t("schedule.load_failed", "Failed to load schedules."));
+    }
     q("lgu-schedule-form").addEventListener("submit", onCreateSubmit);
   }
 

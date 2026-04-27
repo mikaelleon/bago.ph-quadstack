@@ -8,6 +8,15 @@
     if (n) n.textContent = String(value);
   }
 
+  function hasData(out) {
+    if (!out || !out.totals) return false;
+    var keys = Object.keys(out.totals);
+    for (var i = 0; i < keys.length; i++) {
+      if (Number(out.totals[keys[i]] || 0) > 0) return true;
+    }
+    return false;
+  }
+
   async function loadOverview() {
     const out = await window.BAGOApi.request("GET", "/api/analytics/overview");
     setCard("metric-schedules", out.totals.schedules_total);
@@ -23,9 +32,17 @@
 
   async function initDashboardLGU() {
     try {
+      q("dashboard-state").textContent = "Loading dashboard...";
+      q("dashboard-error").textContent = "";
       const out = await loadOverview();
+      if (!hasData(out)) {
+        q("dashboard-state").textContent = "No analytics data available yet.";
+      } else {
+        q("dashboard-state").textContent = "";
+      }
       if (window.BAGOLguCharts) window.BAGOLguCharts.render(out.series);
     } catch (err) {
+      q("dashboard-state").textContent = "";
       q("dashboard-error").textContent = err.message || "Failed to load dashboard";
     }
   }

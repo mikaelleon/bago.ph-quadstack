@@ -163,6 +163,10 @@
         return cmp * sortState.dir;
       });
     }
+    if (!rows.length) {
+      tbody.innerHTML = "<tr><td colspan='7'>" + esc(t("common.no_data", "No data found.")) + "</td></tr>";
+      return;
+    }
     rows.forEach(function (row) {
       var i = row.i;
       var b = row.node;
@@ -328,6 +332,7 @@
       });
     }
 
+    el("save-status").textContent = t("common.loading", "Loading...");
     C.loadXmlAsync({
       storageKey: C.STORAGE_BARANGAYS,
       fetchPath: "../xml/barangays.xml",
@@ -335,6 +340,9 @@
     }).then(function (d) {
       doc = d;
       fullRefresh();
+      el("save-status").textContent = "";
+    }).catch(function (err) {
+      el("save-status").textContent = (err && err.message) || t("xml.load_failed", "Failed to load XML.");
     });
 
     if (!viewMode) {

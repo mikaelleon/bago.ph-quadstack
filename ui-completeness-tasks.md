@@ -2,7 +2,7 @@
 
 ## Summary
 - Total subtasks: `210`
-- Completed: `78 (37%)`
+- Completed: `93 (44%)`
 - Effort breakdown: `S×166 + M×35 + L×9`
 
 | Main task | % complete |
@@ -10,7 +10,7 @@
 | `T-UI-01` | 93% |
 | `T-UI-02` | 100% |
 | `T-UI-03` | 100% |
-| `T-UI-04` | 41% |
+| `T-UI-04` | 57% |
 | `T-UI-05` | 17% |
 | `T-UI-06` | 22% |
 | `T-UI-07` | 21% |
@@ -153,9 +153,9 @@
 - [ ] (L) Replace prototype dashboard with live resident dashboard widgets/API calls — artifact: live module + API requests.
 
 - [x] (S) Add/keep `Loaded` state on `html/schedule.html` — artifact: resident/LGU panels render schedule data.
-- [ ] (S) Add explicit `Loading` state on `html/schedule.html` — artifact: schedule skeleton while fetching.
-- [ ] (S) Add explicit `Empty` state on `html/schedule.html` — artifact: no-schedules empty panel.
-- [ ] (S) Add explicit `Error` state on `html/schedule.html` — artifact: retry-able schedule error banner.
+- [x] (S) Add explicit `Loading` state on `html/schedule.html` — artifact: schedule skeleton while fetching.
+- [x] (S) Add explicit `Empty` state on `html/schedule.html` — artifact: no-schedules empty panel.
+- [x] (S) Add explicit `Error` state on `html/schedule.html` — artifact: retry-able schedule error banner.
 - [x] (S) Keep live data fetch wiring on `html/schedule.html` (`/api/schedules`, `/api/barangays`) — artifact: `html/js/schedule-resident.js`, `html/js/schedule-lgu.js`.
 
 - [x] (S) Add/keep `Loaded` state on `html/report.html` — artifact: resident timeline + LGU report list/map render.
@@ -166,12 +166,12 @@
 
 - [x] (S) Add/keep `Loaded` state on `html/eco-points.html` — artifact: wallet/catalog/ledger renders.
 - [x] (S) Add explicit `Loading` state on `html/eco-points.html` — artifact: “Loading wallet...” default state.
-- [ ] (S) Add explicit `Empty` state on `html/eco-points.html` — artifact: no-ledger/no-rewards empty blocks.
+- [x] (S) Add explicit `Empty` state on `html/eco-points.html` — artifact: no-ledger/no-rewards empty blocks.
 - [x] (S) Add explicit `Error` state on `html/eco-points.html` — artifact: redeem failure status text path.
 - [x] (S) Keep live data fetch wiring on `html/eco-points.html` (`/api/eco-points/ledger`, `/api/rewards/*`) — artifact: `html/js/eco-wallet.js`.
 
 - [x] (S) Add/keep `Loaded` state on `html/announcements.html` — artifact: admin feed + notification cards render.
-- [ ] (S) Add explicit `Loading` state on `html/announcements.html` — artifact: loading skeleton/placeholder on feed.
+- [x] (S) Add explicit `Loading` state on `html/announcements.html` — artifact: loading skeleton/placeholder on feed.
 - [x] (S) Add explicit `Empty` state on `html/announcements.html` — artifact: “No notifications yet.” in `html/js/in-app-notifications.js`.
 - [x] (S) Add explicit `Error` state on `html/announcements.html` — artifact: publish failure status in `html/js/announcements-admin.js`.
 - [x] (S) Keep live data fetch wiring on `html/announcements.html` (`/api/announcements`, `/api/notifications`) — artifact: announcement + notification modules.
@@ -189,14 +189,14 @@
 - [ ] (L) Replace prototype collectors/admin collectors with live collector/fleet data UI — artifact: live page module + API wiring.
 
 - [x] (S) Add/keep `Loaded` state on `html/qr-audit.html` — artifact: result `pre` renders scan output.
-- [ ] (S) Add explicit `Loading` state on `html/qr-audit.html` — artifact: pending scan indicator.
-- [ ] (S) Add explicit `Empty` state on `html/qr-audit.html` — artifact: “No scan yet.” initial state.
+- [x] (S) Add explicit `Loading` state on `html/qr-audit.html` — artifact: pending scan indicator.
+- [x] (S) Add explicit `Empty` state on `html/qr-audit.html` — artifact: “No scan yet.” initial state.
 - [x] (S) Add explicit `Error` state on `html/qr-audit.html` — artifact: error JSON output on failed scan.
 - [x] (S) Keep live data fetch wiring on `html/qr-audit.html` (`/api/qr/scan`) — artifact: `html/js/collector-scan.js`.
 
 - [x] (S) Add/keep `Loaded` state on `html/dashboard-lgu.html` — artifact: metrics/charts render from analytics response.
-- [ ] (S) Add explicit `Loading` state on `html/dashboard-lgu.html` — artifact: dashboard skeleton while analytics loads.
-- [ ] (S) Add explicit `Empty` state on `html/dashboard-lgu.html` — artifact: no-analytics-data empty view.
+- [x] (S) Add explicit `Loading` state on `html/dashboard-lgu.html` — artifact: dashboard skeleton while analytics loads.
+- [x] (S) Add explicit `Empty` state on `html/dashboard-lgu.html` — artifact: no-analytics-data empty view.
 - [x] (S) Add explicit `Error` state on `html/dashboard-lgu.html` — artifact: `#dashboard-error` path in `html/js/dashboard-lgu.js`.
 - [x] (S) Keep live data fetch wiring on `html/dashboard-lgu.html` (`/api/analytics/overview`, `/api/exports/*`) — artifact: `html/js/dashboard-lgu.js` + export links.
 
@@ -219,18 +219,18 @@
 - [ ] (L) Replace prototype users page with live user-management data/actions UI — artifact: live users module + API integration.
 
 - [x] (S) Add/keep `Loaded` state on `html/xml-schedules-editor.html` — artifact: XML tables render after load.
-- [ ] (S) Add explicit `Loading` state on `html/xml-schedules-editor.html` — artifact: loading block while XML source resolves.
-- [ ] (S) Add explicit `Empty` state on `html/xml-schedules-editor.html` — artifact: empty-state row/placeholder when sections have zero rows.
-- [ ] (S) Add explicit `Error` state on `html/xml-schedules-editor.html` — artifact: visible parse/load error banner.
+- [x] (S) Add explicit `Loading` state on `html/xml-schedules-editor.html` — artifact: loading block while XML source resolves.
+- [x] (S) Add explicit `Empty` state on `html/xml-schedules-editor.html` — artifact: empty-state row/placeholder when sections have zero rows.
+- [x] (S) Add explicit `Error` state on `html/xml-schedules-editor.html` — artifact: visible parse/load error banner.
 - [x] (S) Keep live XML/XSL data wiring on `html/xml-schedules-editor.html` — artifact: `html/js/xml-schedules-app.js` + `xml/schedules.xml` + preview.
 
 - [x] (S) Add/keep `Loaded` state on `html/xml-barangays-editor.html` — artifact: XML table renders after load.
-- [ ] (S) Add explicit `Loading` state on `html/xml-barangays-editor.html` — artifact: loading block while XML source resolves.
-- [ ] (S) Add explicit `Empty` state on `html/xml-barangays-editor.html` — artifact: empty-state row/placeholder when zero barangays.
-- [ ] (S) Add explicit `Error` state on `html/xml-barangays-editor.html` — artifact: visible parse/load error banner.
+- [x] (S) Add explicit `Loading` state on `html/xml-barangays-editor.html` — artifact: loading block while XML source resolves.
+- [x] (S) Add explicit `Empty` state on `html/xml-barangays-editor.html` — artifact: empty-state row/placeholder when zero barangays.
+- [x] (S) Add explicit `Error` state on `html/xml-barangays-editor.html` — artifact: visible parse/load error banner.
 - [x] (S) Keep live XML/XSL data wiring on `html/xml-barangays-editor.html` — artifact: `html/js/xml-barangays-app.js` + `xml/barangays.xml` + preview.
 
-**Completion** — `39 / 95 subtasks (41%)`  
+**Completion** — `54 / 95 subtasks (57%)`  
 **Dependencies** — `T-UI-01`, `T-UI-02`, `T-UI-03`  
 **Done when**
 - Every inventory page has explicit Load/Empty/Error/Loaded UX.

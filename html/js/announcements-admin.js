@@ -79,6 +79,7 @@
   }
 
   async function initAnnouncementsAdmin() {
+    q("announcement-feed").innerHTML = "<li>" + esc(t("common.loading", "Loading...")) + "</li>";
     q("announcement-form").addEventListener("submit", async (e) => {
       try {
         await onSubmit(e);

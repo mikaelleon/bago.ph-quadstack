@@ -10,10 +10,37 @@
     return document.getElementById(id);
   }
 
+  function showScheduleError(message, retryFn) {
+    if (window.BAGOErrorBanner && typeof window.BAGOErrorBanner.render === "function") {
+      window.BAGOErrorBanner.render("resident-schedule-state", {
+        title: t("common.error", "Error"),
+        message: message || t("schedule.load_failed", "Failed to load schedules."),
+        retryLabel: t("common.retry", "Retry"),
+        onRetry: retryFn
+      });
+      return;
+    }
+    q("resident-schedule-state").textContent = message || t("schedule.load_failed", "Failed to load schedules.");
+  }
+
+  function clearScheduleError() {
+    if (window.BAGOErrorBanner && typeof window.BAGOErrorBanner.clear === "function") {
+      window.BAGOErrorBanner.clear("resident-schedule-state");
+      return;
+    }
+    q("resident-schedule-state").textContent = "";
+  }
+
   async function loadSchedules() {
-    var rows = await window.BAGOApi.request("GET", "/api/schedules");
     var list = q("resident-schedule-list");
+    list.innerHTML = "<li class='schedule-item'>" + esc(t("common.loading", "Loading...")) + "</li>";
+    clearScheduleError();
+    var rows = await window.BAGOApi.request("GET", "/api/schedules");
     list.innerHTML = "";
+    if (!rows.length) {
+      list.innerHTML = "<li class='schedule-item'>" + esc(t("schedule.empty", "No schedules found yet.")) + "</li>";
+      return;
+    }
     rows.forEach(function (row) {
       var li = document.createElement("li");
       li.className = "schedule-item";
@@ -49,7 +76,13 @@
   }
 
   async function initResidentSchedule() {
-    await loadSchedules();
+    try {
+      await loadSchedules();
+    } catch (err) {
+      showScheduleError(err && err.message ? err.message : t("schedule.load_failed", "Failed to load schedules."), function () {
+        initResidentSchedule();
+      });
+    }
     await loadBanners();
   }
 

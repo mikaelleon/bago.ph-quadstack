@@ -212,6 +212,10 @@
       rows.push({ i: i, node: r });
     }
     applySort(rows, "routes", routeSortVal);
+    if (!rows.length) {
+      tbody.innerHTML = "<tr><td colspan='6'>" + esc(t("common.no_data", "No data found.")) + "</td></tr>";
+      return;
+    }
     rows.forEach(function (row) {
       var i = row.i;
       var r = row.node;
@@ -274,6 +278,10 @@
       rows.push({ i: i, node: b });
     }
     applySort(rows, "barangay", barangaySortVal);
+    if (!rows.length) {
+      tbody.innerHTML = "<tr><td colspan='6'>" + esc(t("common.no_data", "No data found.")) + "</td></tr>";
+      return;
+    }
     rows.forEach(function (row) {
       var i = row.i;
       var b = row.node;
@@ -335,6 +343,10 @@
       rows.push({ i: i, node: e });
     }
     applySort(rows, "special", specialSortVal);
+    if (!rows.length) {
+      tbody.innerHTML = "<tr><td colspan='4'>" + esc(t("common.no_data", "No data found.")) + "</td></tr>";
+      return;
+    }
     rows.forEach(function (row) {
       var i = row.i;
       var e = row.node;
@@ -392,6 +404,10 @@
       rows.push({ i: i, node: s });
     }
     applySort(rows, "shifts", shiftSortVal);
+    if (!rows.length) {
+      tbody.innerHTML = "<tr><td colspan='5'>" + esc(t("common.no_data", "No data found.")) + "</td></tr>";
+      return;
+    }
     rows.forEach(function (row) {
       var i = row.i;
       var s = row.node;
@@ -776,6 +792,7 @@
     applyViewMode();
     bindSortClicks();
 
+    el("save-status").textContent = t("common.loading", "Loading...");
     C.loadXmlAsync({
       storageKey: C.STORAGE_SCHEDULES,
       fetchPath: "../xml/schedules.xml",
@@ -783,6 +800,9 @@
     }).then(function (d) {
       doc = d;
       fullRefresh();
+      el("save-status").textContent = "";
+    }).catch(function (err) {
+      el("save-status").textContent = (err && err.message) || t("xml.load_failed", "Failed to load XML.");
     });
 
     if (!viewMode) {
