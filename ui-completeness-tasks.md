@@ -2,14 +2,14 @@
 
 ## Summary
 - Total subtasks: `210`
-- Completed: `66 (31%)`
+- Completed: `77 (37%)`
 - Effort breakdown: `S×166 + M×35 + L×9`
 
 | Main task | % complete |
 |---|---:|
 | `T-UI-01` | 93% |
-| `T-UI-02` | 20% |
-| `T-UI-03` | 0% |
+| `T-UI-02` | 100% |
+| `T-UI-03` | 75% |
 | `T-UI-04` | 41% |
 | `T-UI-05` | 17% |
 | `T-UI-06` | 22% |
@@ -75,18 +75,18 @@
 **Source ref** — `ui-completeness-spec.md` §6.
 
 **Subtasks**
-- [ ] (M) Build shared `Toast` JS module with auto-dismiss (3s), dismiss button, `aria-live` region — artifact: `html/js/components/toast.js`.
+- [x] (M) Build shared `Toast` JS module with auto-dismiss (3s), dismiss button, `aria-live` region — artifact: `html/js/components/toast.js`.
 - [x] (S) Reuse existing banner mount helper as baseline alert presenter — artifact: `html/js/components/in-app-banner.js`.
-- [ ] (M) Build shared region error banner with retry button API (`renderError({message,retry})`) — artifact: `html/js/components/error-banner.js`.
-- [ ] (M) Build shared skeleton helpers for list/table placeholders — artifact: `html/js/components/skeleton.js`.
-- [ ] (S) Add upload progress pattern helper for photo/report uploads — artifact: `html/js/components/upload-progress.js`.
-- [ ] (M) Replace page-level plain text success messages with toast calls (`report`, `eco-points`, `announcements`) — artifact: updated `html/js/report-submit.js`, `html/js/eco-wallet.js`, `html/js/announcements-admin.js`.
-- [ ] (M) Replace page-level plain text error messages with alert/banner components and retry actions — artifact: updated live modules with retry callbacks.
+- [x] (M) Build shared region error banner with retry button API (`renderError({message,retry})`) — artifact: `html/js/components/error-banner.js`.
+- [x] (M) Build shared skeleton helpers for list/table placeholders — artifact: `html/js/components/skeleton.js`.
+- [x] (S) Add upload progress pattern helper for photo/report uploads — artifact: `html/js/components/upload-progress.js`.
+- [x] (M) Replace page-level plain text success messages with toast calls (`report`, `eco-points`, `announcements`) — artifact: updated `html/js/report-submit.js`, `html/js/eco-wallet.js`, `html/js/announcements-admin.js`.
+- [x] (M) Replace page-level plain text error messages with alert/banner components and retry actions — artifact: updated live modules with retry callbacks.
 - [x] (S) Keep shared modal utility as destructive-action base before migration — artifact: `html/js/components/xml-editor-modal.js`.
-- [ ] (M) Implement typed-confirm destructive modal variant for multi-record deletes — artifact: modal API + usage in schedule/xml delete flows.
-- [ ] (S) Document feedback usage contract for all page modules — artifact: `docs/ui/feedback-contract.md`.
+- [x] (M) Implement typed-confirm destructive modal variant for multi-record deletes — artifact: modal API + usage in schedule/xml delete flows.
+- [x] (S) Document feedback usage contract for all page modules — artifact: `docs/ui/feedback-contract.md`.
 
-**Completion** — `2 / 10 subtasks (20%)`  
+**Completion** — `10 / 10 subtasks (100%)`  
 **Dependencies** — `T-UI-01`  
 **Done when**
 - Toast/Banner/Skeleton/Destructive confirm components available and used.
@@ -100,11 +100,11 @@
 
 **Subtasks**
 - [ ] (M) Replace `alert()/confirm()/prompt()` in `html/js/prototype-page-loader.js` with shared modal/toast calls — artifact: no native dialog calls in file.
-- [ ] (S) Replace `confirm()/prompt()` in `html/js/schedule-lgu.js` with shared modal flows — artifact: edit/delete schedule uses modal UI.
-- [ ] (M) Replace `confirm()` in `html/js/xml-schedules-app.js` with destructive modal + optional typed confirm — artifact: XML schedules delete flows modalized.
-- [ ] (M) Replace `confirm()` in `html/js/xml-barangays-app.js` with destructive modal + optional typed confirm — artifact: XML barangays delete flows modalized.
+- [x] (S) Replace `confirm()/prompt()` in `html/js/schedule-lgu.js` with shared modal flows — artifact: edit/delete schedule uses modal UI.
+- [x] (M) Replace `confirm()` in `html/js/xml-schedules-app.js` with destructive modal + optional typed confirm — artifact: XML schedules delete flows modalized.
+- [x] (M) Replace `confirm()` in `html/js/xml-barangays-app.js` with destructive modal + optional typed confirm — artifact: XML barangays delete flows modalized.
 
-**Completion** — `0 / 4 subtasks (0%)`  
+**Completion** — `3 / 4 subtasks (75%)`  
 **Dependencies** — `T-UI-01`, `T-UI-02`  
 **Done when**
 - `rg "prompt\\(|alert\\(|confirm\\(" html/js` returns no runtime UI hits.

@@ -498,12 +498,26 @@
 
   function delRoute(index) {
     if (viewMode) return;
+    var run = function () {
+      var routes = doc.getElementsByTagName("weekly_route_calendar")[0];
+      var r = routes.getElementsByTagName("route")[index];
+      if (r) r.parentNode.removeChild(r);
+      saveBrowser();
+      renderTables();
+    };
+    if (window.BAGOXmlModal && typeof window.BAGOXmlModal.openConfirm === "function") {
+      window.BAGOXmlModal.openConfirm({
+        title: t("common.delete", "Delete"),
+        message: t("xml.schedules.delete_route_confirm", "Delete this route row?"),
+        confirmLabel: t("common.delete", "Delete")
+      }).then(function (ok) {
+        if (!ok) return;
+        run();
+      });
+      return;
+    }
     if (!confirm(t("xml.schedules.delete_route_confirm", "Delete this route row?"))) return;
-    var routes = doc.getElementsByTagName("weekly_route_calendar")[0];
-    var r = routes.getElementsByTagName("route")[index];
-    if (r) r.parentNode.removeChild(r);
-    saveBrowser();
-    renderTables();
+    run();
   }
 
   function addRoute() {
@@ -555,12 +569,26 @@
 
   function delBarangay(index) {
     if (viewMode) return;
+    var run = function () {
+      var holder = doc.getElementsByTagName("barangay_schedules")[0];
+      var b = holder.getElementsByTagName("barangay")[index];
+      if (b) b.parentNode.removeChild(b);
+      saveBrowser();
+      renderTables();
+    };
+    if (window.BAGOXmlModal && typeof window.BAGOXmlModal.openConfirm === "function") {
+      window.BAGOXmlModal.openConfirm({
+        title: t("common.delete", "Delete"),
+        message: t("xml.schedules.delete_barangay_confirm", "Delete this barangay row?"),
+        confirmLabel: t("common.delete", "Delete")
+      }).then(function (ok) {
+        if (!ok) return;
+        run();
+      });
+      return;
+    }
     if (!confirm(t("xml.schedules.delete_barangay_confirm", "Delete this barangay row?"))) return;
-    var holder = doc.getElementsByTagName("barangay_schedules")[0];
-    var b = holder.getElementsByTagName("barangay")[index];
-    if (b) b.parentNode.removeChild(b);
-    saveBrowser();
-    renderTables();
+    run();
   }
 
   function addBarangay() {
@@ -603,12 +631,26 @@
 
   function delSpecial(index) {
     if (viewMode) return;
+    var run = function () {
+      var holder = doc.getElementsByTagName("special_dates")[0];
+      var e = holder.getElementsByTagName("entry")[index];
+      if (e) e.parentNode.removeChild(e);
+      saveBrowser();
+      renderTables();
+    };
+    if (window.BAGOXmlModal && typeof window.BAGOXmlModal.openConfirm === "function") {
+      window.BAGOXmlModal.openConfirm({
+        title: t("common.delete", "Delete"),
+        message: t("xml.schedules.delete_special_confirm", "Delete this special date?"),
+        confirmLabel: t("common.delete", "Delete")
+      }).then(function (ok) {
+        if (!ok) return;
+        run();
+      });
+      return;
+    }
     if (!confirm(t("xml.schedules.delete_special_confirm", "Delete this special date?"))) return;
-    var holder = doc.getElementsByTagName("special_dates")[0];
-    var e = holder.getElementsByTagName("entry")[index];
-    if (e) e.parentNode.removeChild(e);
-    saveBrowser();
-    renderTables();
+    run();
   }
 
   function addSpecial() {
@@ -659,12 +701,26 @@
 
   function delShift(index) {
     if (viewMode) return;
+    var run = function () {
+      var holder = doc.getElementsByTagName("collector_shifts")[0];
+      var s = holder.getElementsByTagName("shift")[index];
+      if (s) s.parentNode.removeChild(s);
+      saveBrowser();
+      renderTables();
+    };
+    if (window.BAGOXmlModal && typeof window.BAGOXmlModal.openConfirm === "function") {
+      window.BAGOXmlModal.openConfirm({
+        title: t("common.delete", "Delete"),
+        message: t("xml.schedules.delete_shift_confirm", "Delete this shift?"),
+        confirmLabel: t("common.delete", "Delete")
+      }).then(function (ok) {
+        if (!ok) return;
+        run();
+      });
+      return;
+    }
     if (!confirm(t("xml.schedules.delete_shift_confirm", "Delete this shift?"))) return;
-    var holder = doc.getElementsByTagName("collector_shifts")[0];
-    var s = holder.getElementsByTagName("shift")[index];
-    if (s) s.parentNode.removeChild(s);
-    saveBrowser();
-    renderTables();
+    run();
   }
 
   function addShift() {
@@ -747,9 +803,24 @@
         reloadFromFile();
       };
       el("btn-clear-storage").onclick = function () {
+        var run = function () {
+          C.clearStorage(C.STORAGE_SCHEDULES);
+          reloadFromFile();
+        };
+        if (window.BAGOXmlModal && typeof window.BAGOXmlModal.openConfirm === "function") {
+          window.BAGOXmlModal.openConfirm({
+            title: t("common.confirm", "Confirm"),
+            message: t("xml.clear_browser_confirm", "Clear saved copy in this browser? Unsaved export only in download folder."),
+            requireText: "CLEAR",
+            confirmLabel: t("common.delete", "Clear")
+          }).then(function (ok) {
+            if (!ok) return;
+            run();
+          });
+          return;
+        }
         if (!confirm(t("xml.clear_browser_confirm", "Clear saved copy in this browser? Unsaved export only in download folder."))) return;
-        C.clearStorage(C.STORAGE_SCHEDULES);
-        reloadFromFile();
+        run();
       };
 
       ["meta-title", "meta-tagline", "meta-proponent", "meta-coverage", "stat-routes", "stat-ontime", "stat-barangays", "stat-exceptions"].forEach(function (id) {

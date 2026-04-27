@@ -10,10 +10,29 @@
     return document.getElementById(id);
   }
 
+  function showError(message, retryFn) {
+    if (window.BAGOErrorBanner && typeof window.BAGOErrorBanner.render === "function") {
+      window.BAGOErrorBanner.render("ann-status", {
+        title: t("announcements.publish_failed", "Publish failed"),
+        message: message || t("announcements.publish_failed", "Publish failed"),
+        retryLabel: t("common.retry", "Retry"),
+        onRetry: retryFn
+      });
+      return;
+    }
+    q("ann-status").textContent = message || t("announcements.publish_failed", "Publish failed");
+  }
+
   async function loadFeed() {
     const rows = await window.BAGOApi.request("GET", "/api/announcements");
     const host = q("announcement-feed");
     host.innerHTML = "";
+    if (!rows.length) {
+      var empty = document.createElement("li");
+      empty.textContent = t("announcements.empty", "No announcements yet.");
+      host.appendChild(empty);
+      return;
+    }
     rows.forEach((row) => {
       const li = document.createElement("li");
       li.innerHTML =
@@ -39,7 +58,16 @@
       urgency: q("ann-urgency").value
     };
     const out = await window.BAGOApi.request("POST", "/api/announcements", payload);
-    q("ann-status").textContent = t("announcements.published_prefix", "Published: ") + out.announcement.title;
+    if (window.BAGOErrorBanner && typeof window.BAGOErrorBanner.clear === "function") {
+      window.BAGOErrorBanner.clear("ann-status");
+    } else {
+      q("ann-status").textContent = "";
+    }
+    if (window.BAGOToast && typeof window.BAGOToast.show === "function") {
+      window.BAGOToast.show(t("announcements.published_prefix", "Published: ") + out.announcement.title, { type: "success" });
+    } else {
+      q("ann-status").textContent = t("announcements.published_prefix", "Published: ") + out.announcement.title;
+    }
     e.target.reset();
     await loadFeed();
   }
@@ -55,10 +83,18 @@
       try {
         await onSubmit(e);
       } catch (err) {
-        q("ann-status").textContent = err.message || t("announcements.publish_failed", "Publish failed");
+        showError(err.message || t("announcements.publish_failed", "Publish failed"), function () {
+          q("announcement-form").requestSubmit();
+        });
       }
     });
-    await loadFeed();
+    try {
+      await loadFeed();
+    } catch (err2) {
+      showError(err2.message || t("announcements.load_failed", "Failed to load announcement feed"), function () {
+        initAnnouncementsAdmin();
+      });
+    }
   }
 
   window.BAGOAnnouncementsAdmin = { initAnnouncementsAdmin: initAnnouncementsAdmin };

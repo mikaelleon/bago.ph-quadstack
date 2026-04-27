@@ -248,11 +248,25 @@
 
   function delRow(index) {
     if (viewMode) return;
+    var run = function () {
+      var b = doc.documentElement.getElementsByTagName("barangay")[index];
+      if (b) b.parentNode.removeChild(b);
+      saveBrowser();
+      renderTable();
+    };
+    if (window.BAGOXmlModal && typeof window.BAGOXmlModal.openConfirm === "function") {
+      window.BAGOXmlModal.openConfirm({
+        title: t("common.delete", "Delete"),
+        message: t("xml.barangays.delete_confirm", "Delete this barangay row?"),
+        confirmLabel: t("common.delete", "Delete")
+      }).then(function (ok) {
+        if (!ok) return;
+        run();
+      });
+      return;
+    }
     if (!confirm(t("xml.barangays.delete_confirm", "Delete this barangay row?"))) return;
-    var b = doc.documentElement.getElementsByTagName("barangay")[index];
-    if (b) b.parentNode.removeChild(b);
-    saveBrowser();
-    renderTable();
+    run();
   }
 
   function addRow() {
@@ -333,9 +347,24 @@
       };
       el("btn-reload-file").onclick = reloadFromFile;
       el("btn-clear-storage").onclick = function () {
+        var run = function () {
+          C.clearStorage(C.STORAGE_BARANGAYS);
+          reloadFromFile();
+        };
+        if (window.BAGOXmlModal && typeof window.BAGOXmlModal.openConfirm === "function") {
+          window.BAGOXmlModal.openConfirm({
+            title: t("common.confirm", "Confirm"),
+            message: t("xml.clear_browser_confirm_short", "Clear saved copy in this browser?"),
+            requireText: "CLEAR",
+            confirmLabel: t("common.delete", "Clear")
+          }).then(function (ok) {
+            if (!ok) return;
+            run();
+          });
+          return;
+        }
         if (!confirm(t("xml.clear_browser_confirm_short", "Clear saved copy in this browser?"))) return;
-        C.clearStorage(C.STORAGE_BARANGAYS);
-        reloadFromFile();
+        run();
       };
       el("btn-add").onclick = addRow;
 

@@ -65,7 +65,17 @@
     body.querySelectorAll(".btn-del").forEach(function (btn) {
       btn.addEventListener("click", async function () {
         var id = Number(btn.getAttribute("data-id"));
-        if (!confirm(t("schedule.delete_confirm", "Delete schedule?"))) return;
+        var ok = true;
+        if (window.BAGOXmlModal && typeof window.BAGOXmlModal.openConfirm === "function") {
+          ok = await window.BAGOXmlModal.openConfirm({
+            title: t("common.delete", "Delete"),
+            message: t("schedule.delete_confirm", "Delete schedule?"),
+            confirmLabel: t("common.delete", "Delete")
+          });
+        } else {
+          ok = confirm(t("schedule.delete_confirm", "Delete schedule?"));
+        }
+        if (!ok) return;
         await window.BAGOApi.request("DELETE", "/api/schedules/" + id);
         await loadSchedules();
       });

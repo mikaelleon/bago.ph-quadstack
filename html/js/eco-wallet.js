@@ -10,6 +10,19 @@
     return document.getElementById(id);
   }
 
+  function showError(targetId, message, retryFn) {
+    if (window.BAGOErrorBanner && typeof window.BAGOErrorBanner.render === "function") {
+      window.BAGOErrorBanner.render(targetId, {
+        title: t("common.error", "Error"),
+        message: message || t("common.retry", "Try again"),
+        retryLabel: t("common.retry", "Retry"),
+        onRetry: retryFn
+      });
+      return;
+    }
+    q(targetId).textContent = message || t("common.error", "Error");
+  }
+
   async function loadLedger() {
     const rows = await window.BAGOApi.request("GET", "/api/eco-points/ledger");
     const body = q("ledger-body");
@@ -36,6 +49,11 @@
       " | " +
       t("ecopoints.balance_delta_prefix", "Computed balance delta: ") +
       balance;
+    if (!rows.length) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = "<td colspan='4'>" + esc(t("ecopoints.empty_ledger", "No ledger entries yet.")) + "</td>";
+      body.appendChild(tr);
+    }
   }
 
   async function loadCatalog() {
@@ -58,6 +76,11 @@
         "</button></td>";
       body.appendChild(tr);
     });
+    if (!rows.length) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = "<td colspan='4'>" + esc(t("ecopoints.empty_catalog", "No rewards available.")) + "</td>";
+      body.appendChild(tr);
+    }
     body.querySelectorAll("button[data-id]").forEach((btn) => {
       btn.addEventListener("click", async () => {
         await redeem(btn.getAttribute("data-id"));
@@ -79,10 +102,16 @@
       });
       const data = await out.json();
       if (!out.ok) throw new Error(data.error || t("ecopoints.redeem_failed", "Redeem failed"));
-      q("redeem-status").textContent = t("ecopoints.redeemed_prefix", "Redeemed: ") + data.reward.name;
+      if (window.BAGOToast && typeof window.BAGOToast.show === "function") {
+        window.BAGOToast.show(t("ecopoints.redeemed_prefix", "Redeemed: ") + data.reward.name, { type: "success" });
+      } else {
+        q("redeem-status").textContent = t("ecopoints.redeemed_prefix", "Redeemed: ") + data.reward.name;
+      }
       await loadLedger();
     } catch (err) {
-      q("redeem-status").textContent = err.message || t("ecopoints.redeem_failed", "Redeem failed");
+      showError("redeem-status", err.message || t("ecopoints.redeem_failed", "Redeem failed"), function () {
+        redeem(rewardId);
+      });
     }
   }
 
@@ -93,8 +122,21 @@
   }
 
   async function initEcoWallet() {
-    await loadCatalog();
-    await loadLedger();
+    try {
+      await loadCatalog();
+    } catch (err) {
+      showError("redeem-status", err.message || t("ecopoints.load_catalog_failed", "Failed to load rewards catalog"), function () {
+        initEcoWallet();
+      });
+      return;
+    }
+    try {
+      await loadLedger();
+    } catch (err2) {
+      showError("wallet-summary", err2.message || t("ecopoints.load_ledger_failed", "Failed to load wallet ledger"), function () {
+        initEcoWallet();
+      });
+    }
   }
 
   window.BAGOEcoWallet = { initEcoWallet: initEcoWallet };
