@@ -3,6 +3,20 @@
   var C = window.BAGO_XML_CORE;
   var viewMode = new URLSearchParams(location.search).get("mode") === "view";
   var sortState = { col: null, dir: 1 };
+  function t(key, fallback) {
+    if (window.BAGO && window.BAGO.i18n && typeof window.BAGO.i18n.t === "function") {
+      var v = window.BAGO.i18n.t(key);
+      if (v && v !== key) return v;
+    }
+    return fallback || key;
+  }
+  function localeQuery() {
+    var l = "en";
+    try {
+      l = (window.BAGO && window.BAGO.i18n && window.BAGO.i18n.get ? window.BAGO.i18n.get() : localStorage.getItem("bagoLocale")) || "en";
+    } catch (_e) {}
+    return "locale=" + encodeURIComponent(l === "tl" ? "tl" : "en");
+  }
 
   function getBarangaysFallback() {
     if (window.BAGO_BARANGAYS_FALLBACK) return window.BAGO_BARANGAYS_FALLBACK;
@@ -196,7 +210,7 @@
     if (viewMode) return;
     syncHeaderFromForm();
     C.saveToStorage(C.STORAGE_BARANGAYS, doc, C.PI_BARANGAYS);
-    el("save-status").textContent = "Saved to this browser (" + new Date().toLocaleString() + ").";
+    el("save-status").textContent = t("xml.saved_browser_prefix", "Saved to this browser (") + new Date().toLocaleString() + ").";
   }
 
   function editRow(index) {
@@ -205,17 +219,17 @@
     if (!b) return;
     window.BAGOXmlModal
       .openModal({
-        title: "Edit barangay metrics",
+        title: t("xml.barangays.edit_metrics", "Edit barangay metrics"),
         fields: [
-          { name: "name", label: "Barangay name", value: b.getAttribute("name") || "" },
-          { name: "collection_rate", label: "Collection rate", value: getText(b, "collection_rate") },
-          { name: "compliance_rate", label: "Compliance rate", value: getText(b, "compliance_rate") },
-          { name: "open_reports", label: "Open reports", value: getText(b, "open_reports") },
-          { name: "eco_points", label: "Eco-points", value: getText(b, "eco_points") },
-          { name: "status", label: "Status", value: getText(b, "status") }
+          { name: "name", label: t("xml.barangays.barangay_name", "Barangay name"), value: b.getAttribute("name") || "" },
+          { name: "collection_rate", label: t("xml.barangays.collection_rate", "Collection rate"), value: getText(b, "collection_rate") },
+          { name: "compliance_rate", label: t("xml.barangays.compliance_rate", "Compliance rate"), value: getText(b, "compliance_rate") },
+          { name: "open_reports", label: t("xml.barangays.open_reports", "Open reports"), value: getText(b, "open_reports") },
+          { name: "eco_points", label: t("xml.barangays.eco_points", "Eco-points"), value: getText(b, "eco_points") },
+          { name: "status", label: t("common.status", "Status"), value: getText(b, "status") }
         ],
         validate: function (v) {
-          if (!window.BAGOXmlValidators.validBarangayName(v.name)) return "Invalid barangay name";
+          if (!window.BAGOXmlValidators.validBarangayName(v.name)) return t("xml.invalid_barangay_name", "Invalid barangay name");
           return true;
         }
       })
@@ -234,7 +248,7 @@
 
   function delRow(index) {
     if (viewMode) return;
-    if (!confirm("Delete this barangay row?")) return;
+    if (!confirm(t("xml.barangays.delete_confirm", "Delete this barangay row?"))) return;
     var b = doc.documentElement.getElementsByTagName("barangay")[index];
     if (b) b.parentNode.removeChild(b);
     saveBrowser();
@@ -266,7 +280,7 @@
       doc = d;
       syncHeaderToForm();
       renderTable();
-      el("save-status").textContent = "Reloaded from project file.";
+      el("save-status").textContent = t("xml.reloaded_project", "Reloaded from project file.");
     });
   }
 
@@ -315,11 +329,11 @@
       el("btn-export").onclick = function () {
         syncHeaderFromForm();
         C.downloadXml("barangays-edited.xml", doc, C.PI_BARANGAYS);
-        el("save-status").textContent = "Export started. Replace xml/barangays.xml manually if needed.";
+        el("save-status").textContent = t("xml.barangays.export_started", "Export started. Replace xml/barangays.xml manually if needed.");
       };
       el("btn-reload-file").onclick = reloadFromFile;
       el("btn-clear-storage").onclick = function () {
-        if (!confirm("Clear saved copy in this browser?")) return;
+        if (!confirm(t("xml.clear_browser_confirm_short", "Clear saved copy in this browser?"))) return;
         C.clearStorage(C.STORAGE_BARANGAYS);
         reloadFromFile();
       };
@@ -334,19 +348,19 @@
       var prev = el("btn-xsl-preview");
       if (prev) {
         prev.onclick = function () {
-          window.open("../xml/barangays.xml", "_blank");
+          window.open("../xml/barangays.xml?" + localeQuery(), "_blank");
         };
       }
     } else {
       el("btn-export").onclick = function () {
         syncHeaderFromForm();
         C.downloadXml("barangays-export.xml", doc, C.PI_BARANGAYS);
-        el("save-status").textContent = "Downloaded copy of current data.";
+        el("save-status").textContent = t("xml.downloaded_current_copy", "Downloaded copy of current data.");
       };
       var prevView = el("btn-xsl-preview");
       if (prevView) {
         prevView.onclick = function () {
-          window.open("../xml/barangays.xml", "_blank");
+          window.open("../xml/barangays.xml?" + localeQuery(), "_blank");
         };
       }
     }

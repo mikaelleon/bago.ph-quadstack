@@ -1,5 +1,12 @@
 (function () {
   var schedules = [];
+  function t(key, fallback) {
+    if (window.BAGO && window.BAGO.i18n && typeof window.BAGO.i18n.t === "function") {
+      var v = window.BAGO.i18n.t(key);
+      if (v && v !== key) return v;
+    }
+    return fallback || key;
+  }
 
   function q(id) {
     return document.getElementById(id);
@@ -45,9 +52,9 @@
         esc(row.status) +
         "</td><td><button data-id='" +
         row.schedule_id +
-        "' class='btn-edit'>Edit</button> <button data-id='" +
+        "' class='btn-edit'>" + esc(t("common.edit", "Edit")) + "</button> <button data-id='" +
         row.schedule_id +
-        "' class='btn-del'>Delete</button></td>";
+        "' class='btn-del'>" + esc(t("common.delete", "Delete")) + "</button></td>";
       body.appendChild(tr);
     });
     body.querySelectorAll(".btn-edit").forEach(function (btn) {
@@ -58,7 +65,7 @@
     body.querySelectorAll(".btn-del").forEach(function (btn) {
       btn.addEventListener("click", async function () {
         var id = Number(btn.getAttribute("data-id"));
-        if (!confirm("Delete schedule?")) return;
+        if (!confirm(t("schedule.delete_confirm", "Delete schedule?"))) return;
         await window.BAGOApi.request("DELETE", "/api/schedules/" + id);
         await loadSchedules();
       });
@@ -85,9 +92,9 @@
       return Number(s.schedule_id) === Number(id);
     });
     if (!row) return;
-    var status = prompt("Status", row.status);
+    var status = prompt(t("common.status", "Status"), row.status);
     if (status === null) return;
-    var date = prompt("Date (YYYY-MM-DD)", String(row.collection_date).slice(0, 10));
+    var date = prompt(t("schedule.date_prompt", "Date (YYYY-MM-DD)"), String(row.collection_date).slice(0, 10));
     if (date === null) return;
     await window.BAGOApi.request("PATCH", "/api/schedules/" + id, {
       status: status,

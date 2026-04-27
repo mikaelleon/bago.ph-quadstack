@@ -1,4 +1,11 @@
 (function () {
+  function t(key, fallback) {
+    if (window.BAGO && window.BAGO.i18n && typeof window.BAGO.i18n.t === "function") {
+      var v = window.BAGO.i18n.t(key);
+      if (v && v !== key) return v;
+    }
+    return fallback || key;
+  }
   function q(id) {
     return document.getElementById(id);
   }
@@ -9,6 +16,10 @@
     const host = q(targetId);
     if (!host) return;
     host.innerHTML = "";
+    if (!items.length) {
+      host.textContent = t("notifications.empty", "No notifications yet.");
+      return;
+    }
     items.slice(0, 8).forEach((item) => {
       const card = document.createElement("div");
       card.className = "inapp-card";

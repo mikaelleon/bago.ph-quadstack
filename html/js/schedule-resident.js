@@ -1,4 +1,11 @@
 (function () {
+  function t(key, fallback) {
+    if (window.BAGO && window.BAGO.i18n && typeof window.BAGO.i18n.t === "function") {
+      var v = window.BAGO.i18n.t(key);
+      if (v && v !== key) return v;
+    }
+    return fallback || key;
+  }
   function q(id) {
     return document.getElementById(id);
   }
@@ -21,7 +28,7 @@
         esc(String(row.time_start).slice(0, 5)) +
         "-" +
         esc(String(row.time_end).slice(0, 5)) +
-        "</div><div>Status: " +
+        "</div><div>" + t("common.status", "Status") + ": " +
         esc(row.status) +
         "</div>";
       list.appendChild(li);

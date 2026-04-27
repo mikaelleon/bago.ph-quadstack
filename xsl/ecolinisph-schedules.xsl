@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:param name="locale" select="'en'"/>
+<xsl:variable name="isTL" select="$locale='tl'"/>
 
 <xsl:output method="html" doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
             doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
@@ -67,18 +69,18 @@
         <div class="nav-inner">
           <div class="brand">EcoLinisPH</div>
           <div class="nav-links">
-            <a href="#overview">Overview</a>
-            <a href="#weekly">Weekly routes</a>
-            <a href="#barangays">By barangay</a>
-            <a href="#special">Special dates</a>
-            <a href="#shifts">Collector shifts</a>
+            <a href="#overview"><xsl:choose><xsl:when test="$isTL">Buod</xsl:when><xsl:otherwise>Overview</xsl:otherwise></xsl:choose></a>
+            <a href="#weekly"><xsl:choose><xsl:when test="$isTL">Lingguhang ruta</xsl:when><xsl:otherwise>Weekly routes</xsl:otherwise></xsl:choose></a>
+            <a href="#barangays"><xsl:choose><xsl:when test="$isTL">Ayon sa barangay</xsl:when><xsl:otherwise>By barangay</xsl:otherwise></xsl:choose></a>
+            <a href="#special"><xsl:choose><xsl:when test="$isTL">Espesyal na petsa</xsl:when><xsl:otherwise>Special dates</xsl:otherwise></xsl:choose></a>
+            <a href="#shifts"><xsl:choose><xsl:when test="$isTL">Shift ng collector</xsl:when><xsl:otherwise>Collector shifts</xsl:otherwise></xsl:choose></a>
           </div>
         </div>
       </div>
 
       <div class="hero">
         <div class="hero-inner">
-          <h1>Collection schedules</h1>
+          <h1><xsl:choose><xsl:when test="$isTL">Mga iskedyul ng koleksyon</xsl:when><xsl:otherwise>Collection schedules</xsl:otherwise></xsl:choose></h1>
           <p><xsl:value-of select="tagline"/></p>
           <p class="sub"><xsl:value-of select="coverage_area"/></p>
         </div>
@@ -87,19 +89,19 @@
       <div class="wrapper">
         <div class="stats-box" id="overview">
           <div class="stat-card">
-            <div class="stat-label">Weekly routes planned</div>
+            <div class="stat-label"><xsl:choose><xsl:when test="$isTL">Planong lingguhang ruta</xsl:when><xsl:otherwise>Weekly routes planned</xsl:otherwise></xsl:choose></div>
             <div class="stat-value"><xsl:value-of select="statistics/weekly_routes_planned"/></div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">On-time completion</div>
+            <div class="stat-label"><xsl:choose><xsl:when test="$isTL">On-time completion</xsl:when><xsl:otherwise>On-time completion</xsl:otherwise></xsl:choose></div>
             <div class="stat-value"><xsl:value-of select="statistics/on_time_completion"/></div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Barangays on schedule</div>
+            <div class="stat-label"><xsl:choose><xsl:when test="$isTL">Barangay na nasa iskedyul</xsl:when><xsl:otherwise>Barangays on schedule</xsl:otherwise></xsl:choose></div>
             <div class="stat-value"><xsl:value-of select="statistics/barangays_on_schedule"/></div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Exceptions this month</div>
+            <div class="stat-label"><xsl:choose><xsl:when test="$isTL">Exceptions ngayong buwan</xsl:when><xsl:otherwise>Exceptions this month</xsl:otherwise></xsl:choose></div>
             <div class="stat-value"><xsl:value-of select="statistics/exceptions_this_month"/></div>
           </div>
         </div>

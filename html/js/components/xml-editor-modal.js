@@ -1,4 +1,12 @@
 (function () {
+  function t(key, fallback) {
+    if (window.BAGO && window.BAGO.i18n && typeof window.BAGO.i18n.t === "function") {
+      var v = window.BAGO.i18n.t(key);
+      if (v && v !== key) return v;
+    }
+    return fallback || key;
+  }
+
   function openModal(config) {
     const fields = config.fields || [];
     return new Promise((resolve) => {
@@ -9,7 +17,7 @@
       box.style.cssText =
         "background:#fff;border-radius:10px;padding:16px;min-width:320px;max-width:540px;width:100%;font-family:Arial,sans-serif;";
       const title = document.createElement("h3");
-      title.textContent = config.title || "Edit";
+      title.textContent = config.title || t("common.edit", "Edit");
       title.style.margin = "0 0 10px";
       const form = document.createElement("form");
       form.style.display = "grid";
@@ -33,10 +41,10 @@
       row.style.cssText = "display:flex;justify-content:flex-end;gap:8px;margin-top:8px;";
       const cancel = document.createElement("button");
       cancel.type = "button";
-      cancel.textContent = "Cancel";
+      cancel.textContent = t("common.cancel", "Cancel");
       const ok = document.createElement("button");
       ok.type = "submit";
-      ok.textContent = "Save";
+      ok.textContent = t("common.save", "Save");
       cancel.style.cssText =
         "height:34px;border:1px solid #d1d5db;border-radius:6px;background:#fff;padding:0 12px;cursor:pointer;";
       ok.style.cssText =
@@ -70,7 +78,7 @@
         if (typeof config.validate === "function") {
           const validation = config.validate(out);
           if (validation !== true) {
-            err.textContent = validation || "Invalid input";
+            err.textContent = validation || t("common.invalid_input", "Invalid input");
             return;
           }
         }

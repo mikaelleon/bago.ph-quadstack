@@ -1,5 +1,12 @@
 /** Prototype-only: mobile → { role, pin } (plain PIN; no server). */
 const STORAGE_ACCOUNTS = "bago_ph_accounts_v1";
+function t(key, fallback) {
+  if (window.BAGO && window.BAGO.i18n && typeof window.BAGO.i18n.t === "function") {
+    const out = window.BAGO.i18n.t(key);
+    if (out && out !== key) return out;
+  }
+  return fallback || key;
+}
 
 const ROLE_PAGE_ACCESS = {
   user: new Set([
@@ -99,22 +106,22 @@ function getRegisteredAccount(mobileRaw) {
 function validateLoginAttempt(mobileRaw, pinRaw) {
   const m = normalizeMobile(mobileRaw);
   if (!m || m.length < 10) {
-    return { ok: false, message: "Enter a valid Philippine mobile number (e.g. 09171234567)." };
+    return { ok: false, message: t("auth.mobile_invalid_example", "Enter a valid Philippine mobile number (e.g. 09171234567).") };
   }
   const pin = String(pinRaw || "");
   if (!/^\d{4}$/.test(pin)) {
-    return { ok: false, message: "PIN must be exactly 4 digits." };
+    return { ok: false, message: t("auth.pin_exact_4", "PIN must be exactly 4 digits.") };
   }
   const acc = getRegisteredAccount(m);
   if (!acc) {
     return {
       ok: false,
       message:
-        "No account for this number on this device. Use Create an account to register first."
+        t("auth.no_account_local", "No account for this number on this device. Use Create an account to register first.")
     };
   }
   if (acc.pin !== pin) {
-    return { ok: false, message: "Incorrect PIN." };
+    return { ok: false, message: t("auth.incorrect_pin", "Incorrect PIN.") };
   }
   return { ok: true, role: acc.role };
 }
@@ -170,7 +177,7 @@ function appendLogoutNav() {
   li.id = "bago-logout-nav";
   var a = document.createElement("a");
   a.href = "#";
-  a.textContent = "Logout";
+  a.textContent = t("common.logout", "Logout");
   a.addEventListener("click", function (e) {
     e.preventDefault();
     localStorage.removeItem("bagoRole");

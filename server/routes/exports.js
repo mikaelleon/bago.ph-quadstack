@@ -73,6 +73,7 @@ router.get("/xml", requireRole("lgu_officer"), async (req, res) => {
   const start = String(req.query.start || "").trim();
   const end = String(req.query.end || "").trim();
   const role = String(req.query.role || "").trim();
+  const locale = String(req.query.locale || "en").toLowerCase() === "tl" ? "tl" : "en";
   if (barangay) {
     where.push("b.barangay_name = ?");
     params.push(barangay);
@@ -105,8 +106,8 @@ router.get("/xml", requireRole("lgu_officer"), async (req, res) => {
       rows = [];
     }
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-    xml += '<?xml-stylesheet type="text/xsl" href="/xsl/denr-report.xsl"?>\n';
-    xml += '<denr_report>\n';
+    xml += `<?xml-stylesheet type="text/xsl" href="/xsl/denr-report.xsl?locale=${locale}"?>\n`;
+    xml += `<denr_report locale="${locale}">\n`;
     rows.forEach((r) => {
       xml += "  <schedule>\n";
       xml += `    <schedule_id>${r.schedule_id}</schedule_id>\n`;
@@ -129,16 +130,18 @@ router.get("/xml", requireRole("lgu_officer"), async (req, res) => {
 
 router.get("/denr-html", requireRole("lgu_officer"), async (req, res) => {
   try {
+    const locale = String(req.query.locale || "en").toLowerCase() === "tl" ? "tl" : "en";
+    const isTL = locale === "tl";
     const overview = await getOverview({});
     const html = `<!doctype html><html><head><meta charset="utf-8"><title>DENR Report</title></head><body>
-<h1>DENR Compliance Summary</h1>
-<p>Generated: ${new Date().toISOString()}</p>
+<h1>${isTL ? "DENR Buod ng Compliance" : "DENR Compliance Summary"}</h1>
+<p>${isTL ? "Nabuo" : "Generated"}: ${new Date().toISOString()}</p>
 <ul>
-<li>Schedules: ${overview.totals.schedules_total}</li>
-<li>Reports total: ${overview.totals.reports_total}</li>
-<li>Open reports: ${overview.totals.reports_open}</li>
-<li>Resolved reports: ${overview.totals.reports_resolved}</li>
-<li>Compliance avg: ${overview.totals.compliance_avg}</li>
+<li>${isTL ? "Mga iskedyul" : "Schedules"}: ${overview.totals.schedules_total}</li>
+<li>${isTL ? "Kabuuang report" : "Reports total"}: ${overview.totals.reports_total}</li>
+<li>${isTL ? "Bukas na report" : "Open reports"}: ${overview.totals.reports_open}</li>
+<li>${isTL ? "Naresolbang report" : "Resolved reports"}: ${overview.totals.reports_resolved}</li>
+<li>${isTL ? "Average na compliance" : "Compliance avg"}: ${overview.totals.compliance_avg}</li>
 </ul>
 </body></html>`;
     res.setHeader("Content-Type", "text/html; charset=utf-8");
@@ -151,7 +154,13 @@ router.get("/denr-html", requireRole("lgu_officer"), async (req, res) => {
 
 router.get("/denr-pdf", requireRole("lgu_officer"), async (req, res) => {
   try {
-    const content = "BAGO.PH DENR Report\nGenerated: " + new Date().toISOString() + "\n";
+    const locale = String(req.query.locale || "en").toLowerCase() === "tl" ? "tl" : "en";
+    const content =
+      (locale === "tl" ? "BAGO.PH DENR Ulat" : "BAGO.PH DENR Report") +
+      "\n" +
+      (locale === "tl" ? "Nabuo: " : "Generated: ") +
+      new Date().toISOString() +
+      "\n";
     const pdf = minimalPdf(content);
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", 'attachment; filename="denr-report.pdf"');

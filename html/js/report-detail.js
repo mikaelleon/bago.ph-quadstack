@@ -1,10 +1,24 @@
 (function () {
+  function t(key, fallback) {
+    if (window.BAGO && window.BAGO.i18n && typeof window.BAGO.i18n.t === "function") {
+      var v = window.BAGO.i18n.t(key);
+      if (v && v !== key) return v;
+    }
+    return fallback || key;
+  }
+
   function q(id) {
     return document.getElementById(id);
   }
 
   function statusSteps(current) {
-    const all = ["Open", "Acknowledged", "In Progress", "Resolved", "Rejected"];
+    const all = [
+      t("report.status_open", "Open"),
+      t("report.status_acknowledged", "Acknowledged"),
+      t("report.status_in_progress", "In Progress"),
+      t("report.status_resolved", "Resolved"),
+      t("report.status_rejected", "Rejected")
+    ];
     const idx = all.indexOf(current);
     return all
       .map((s, i) => `<li class="${i <= idx ? "done" : ""}">${s}</li>`)

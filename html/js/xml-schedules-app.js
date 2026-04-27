@@ -2,6 +2,20 @@
   var doc = null;
   var C = window.BAGO_XML_CORE;
   var viewMode = new URLSearchParams(location.search).get("mode") === "view";
+  function t(key, fallback) {
+    if (window.BAGO && window.BAGO.i18n && typeof window.BAGO.i18n.t === "function") {
+      var v = window.BAGO.i18n.t(key);
+      if (v && v !== key) return v;
+    }
+    return fallback || key;
+  }
+  function localeQuery() {
+    var l = "en";
+    try {
+      l = (window.BAGO && window.BAGO.i18n && window.BAGO.i18n.get ? window.BAGO.i18n.get() : localStorage.getItem("bagoLocale")) || "en";
+    } catch (_e) {}
+    return "locale=" + encodeURIComponent(l === "tl" ? "tl" : "en");
+  }
 
   var sortState = {
     routes: { col: null, dir: 1 },
@@ -445,7 +459,7 @@
     syncMetaFromForm();
     syncStatsFromForm();
     C.saveToStorage(C.STORAGE_SCHEDULES, doc, C.PI_SCHEDULES);
-    el("save-status").textContent = "Saved to this browser (" + new Date().toLocaleString() + ").";
+    el("save-status").textContent = t("xml.saved_browser_prefix", "Saved to this browser (") + new Date().toLocaleString() + ").";
   }
 
   function editRoute(index) {
@@ -455,17 +469,17 @@
     if (!r) return;
     window.BAGOXmlModal
       .openModal({
-        title: "Edit route",
+        title: t("xml.schedules.edit_route", "Edit route"),
         fields: [
-          { name: "weekday", label: "Weekday", value: getText(r, "weekday") },
-          { name: "route_code", label: "Route code", value: getText(r, "route_code") },
-          { name: "areas", label: "Areas", value: getText(r, "areas") },
-          { name: "window_start", label: "Window start (HH:MM)", value: getText(r, "window_start") },
-          { name: "window_end", label: "Window end (HH:MM)", value: getText(r, "window_end") },
-          { name: "status", label: "Status (active/limited)", value: getText(r, "status") }
+          { name: "weekday", label: t("xml.schedules.weekday", "Weekday"), value: getText(r, "weekday") },
+          { name: "route_code", label: t("xml.schedules.route_code", "Route code"), value: getText(r, "route_code") },
+          { name: "areas", label: t("xml.schedules.areas", "Areas"), value: getText(r, "areas") },
+          { name: "window_start", label: t("xml.schedules.window_start", "Window start (HH:MM)"), value: getText(r, "window_start") },
+          { name: "window_end", label: t("xml.schedules.window_end", "Window end (HH:MM)"), value: getText(r, "window_end") },
+          { name: "status", label: t("xml.schedules.status_active_limited", "Status (active/limited)"), value: getText(r, "status") }
         ],
         validate: function (v) {
-          if (!v.weekday || !v.route_code) return "Weekday and route code required";
+          if (!v.weekday || !v.route_code) return t("xml.schedules.weekday_route_required", "Weekday and route code required");
           return true;
         }
       })
@@ -484,7 +498,7 @@
 
   function delRoute(index) {
     if (viewMode) return;
-    if (!confirm("Delete this route row?")) return;
+    if (!confirm(t("xml.schedules.delete_route_confirm", "Delete this route row?"))) return;
     var routes = doc.getElementsByTagName("weekly_route_calendar")[0];
     var r = routes.getElementsByTagName("route")[index];
     if (r) r.parentNode.removeChild(r);
@@ -514,16 +528,16 @@
     if (!b) return;
     window.BAGOXmlModal
       .openModal({
-        title: "Edit barangay schedule",
+        title: t("xml.schedules.edit_barangay_schedule", "Edit barangay schedule"),
         fields: [
-          { name: "name", label: "Barangay name", value: getText(b, "name") },
-          { name: "primary_day", label: "Primary day", value: getText(b, "primary_day") },
-          { name: "time_window", label: "Time window", value: getText(b, "time_window") },
-          { name: "frequency", label: "Frequency", value: getText(b, "frequency") },
-          { name: "notes", label: "Notes", value: getText(b, "notes") }
+          { name: "name", label: t("xml.schedules.barangay_name", "Barangay name"), value: getText(b, "name") },
+          { name: "primary_day", label: t("xml.schedules.primary_day", "Primary day"), value: getText(b, "primary_day") },
+          { name: "time_window", label: t("xml.schedules.time_window", "Time window"), value: getText(b, "time_window") },
+          { name: "frequency", label: t("xml.schedules.frequency", "Frequency"), value: getText(b, "frequency") },
+          { name: "notes", label: t("xml.schedules.notes", "Notes"), value: getText(b, "notes") }
         ],
         validate: function (v) {
-          if (!window.BAGOXmlValidators.validBarangayName(v.name)) return "Invalid barangay name";
+          if (!window.BAGOXmlValidators.validBarangayName(v.name)) return t("xml.invalid_barangay_name", "Invalid barangay name");
           return true;
         }
       })
@@ -541,7 +555,7 @@
 
   function delBarangay(index) {
     if (viewMode) return;
-    if (!confirm("Delete this barangay row?")) return;
+    if (!confirm(t("xml.schedules.delete_barangay_confirm", "Delete this barangay row?"))) return;
     var holder = doc.getElementsByTagName("barangay_schedules")[0];
     var b = holder.getElementsByTagName("barangay")[index];
     if (b) b.parentNode.removeChild(b);
@@ -570,11 +584,11 @@
     if (!e) return;
     window.BAGOXmlModal
       .openModal({
-        title: "Edit special date",
+        title: t("xml.schedules.edit_special_date", "Edit special date"),
         fields: [
-          { name: "date", label: "Date (YYYY-MM-DD)", value: getText(e, "date") },
-          { name: "description", label: "Description", value: getText(e, "description") },
-          { name: "action", label: "Action / adjustment", value: getText(e, "action") }
+          { name: "date", label: t("xml.schedules.date_label", "Date (YYYY-MM-DD)"), value: getText(e, "date") },
+          { name: "description", label: t("xml.schedules.description", "Description"), value: getText(e, "description") },
+          { name: "action", label: t("xml.schedules.action_adjustment", "Action / adjustment"), value: getText(e, "action") }
         ]
       })
       .then(function (v) {
@@ -589,7 +603,7 @@
 
   function delSpecial(index) {
     if (viewMode) return;
-    if (!confirm("Delete this special date?")) return;
+    if (!confirm(t("xml.schedules.delete_special_confirm", "Delete this special date?"))) return;
     var holder = doc.getElementsByTagName("special_dates")[0];
     var e = holder.getElementsByTagName("entry")[index];
     if (e) e.parentNode.removeChild(e);
@@ -616,17 +630,17 @@
     if (!s) return;
     window.BAGOXmlModal
       .openModal({
-        title: "Edit shift",
+        title: t("xml.schedules.edit_shift", "Edit shift"),
         fields: [
-          { name: "team", label: "Team", value: getText(s, "team") },
-          { name: "lead", label: "Lead", value: getText(s, "lead") },
-          { name: "assigned_days", label: "Assigned days", value: getText(s, "assigned_days") },
-          { name: "start_time", label: "Start (HH:MM)", value: getText(s, "start_time") },
-          { name: "end_time", label: "End (HH:MM)", value: getText(s, "end_time") }
+          { name: "team", label: t("xml.schedules.team", "Team"), value: getText(s, "team") },
+          { name: "lead", label: t("xml.schedules.lead", "Lead"), value: getText(s, "lead") },
+          { name: "assigned_days", label: t("xml.schedules.assigned_days", "Assigned days"), value: getText(s, "assigned_days") },
+          { name: "start_time", label: t("xml.schedules.start_time", "Start (HH:MM)"), value: getText(s, "start_time") },
+          { name: "end_time", label: t("xml.schedules.end_time", "End (HH:MM)"), value: getText(s, "end_time") }
         ],
         validate: function (v) {
           if (v.lead && v.lead.indexOf("@") > -1 && !window.BAGOXmlValidators.validGovEmail(v.lead)) {
-            return "Lead email must be gov domain if email used";
+            return t("xml.schedules.invalid_gov_email", "Lead email must be gov domain if email used");
           }
           return true;
         }
@@ -645,7 +659,7 @@
 
   function delShift(index) {
     if (viewMode) return;
-    if (!confirm("Delete this shift?")) return;
+    if (!confirm(t("xml.schedules.delete_shift_confirm", "Delete this shift?"))) return;
     var holder = doc.getElementsByTagName("collector_shifts")[0];
     var s = holder.getElementsByTagName("shift")[index];
     if (s) s.parentNode.removeChild(s);
@@ -677,7 +691,7 @@
     }).then(function (d) {
       doc = d;
       fullRefresh();
-      el("save-status").textContent = "Reloaded from project file.";
+      el("save-status").textContent = t("xml.reloaded_project", "Reloaded from project file.");
     });
   }
 
@@ -727,13 +741,13 @@
         syncMetaFromForm();
         syncStatsFromForm();
         C.downloadXml("schedules-edited.xml", doc, C.PI_SCHEDULES);
-        el("save-status").textContent = "Export started (downloads folder). Replace xml/schedules.xml manually if needed.";
+        el("save-status").textContent = t("xml.schedules.export_started", "Export started (downloads folder). Replace xml/schedules.xml manually if needed.");
       };
       el("btn-reload-file").onclick = function () {
         reloadFromFile();
       };
       el("btn-clear-storage").onclick = function () {
-        if (!confirm("Clear saved copy in this browser? Unsaved export only in download folder.")) return;
+        if (!confirm(t("xml.clear_browser_confirm", "Clear saved copy in this browser? Unsaved export only in download folder."))) return;
         C.clearStorage(C.STORAGE_SCHEDULES);
         reloadFromFile();
       };
@@ -753,7 +767,7 @@
       var prev = el("btn-xsl-preview");
       if (prev) {
         prev.onclick = function () {
-          window.open("../xml/schedules.xml", "_blank");
+          window.open("../xml/schedules.xml?" + localeQuery(), "_blank");
         };
       }
     } else {
@@ -761,12 +775,12 @@
         syncMetaFromForm();
         syncStatsFromForm();
         C.downloadXml("schedules-export.xml", doc, C.PI_SCHEDULES);
-        el("save-status").textContent = "Downloaded copy of current data.";
+        el("save-status").textContent = t("xml.downloaded_current_copy", "Downloaded copy of current data.");
       };
       var prevView = el("btn-xsl-preview");
       if (prevView) {
         prevView.onclick = function () {
-          window.open("../xml/schedules.xml", "_blank");
+          window.open("../xml/schedules.xml?" + localeQuery(), "_blank");
         };
       }
     }

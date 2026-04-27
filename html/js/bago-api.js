@@ -44,6 +44,16 @@
     return next;
   }
 
+  function i18nError(code, fallback) {
+    var key = code ? "errors." + String(code) : "errors.unknown";
+    if (window.BAGO && window.BAGO.i18n && typeof window.BAGO.i18n.t === "function") {
+      var out = window.BAGO.i18n.t(key);
+      if (out && out !== key) return out;
+      return window.BAGO.i18n.t("errors.unknown");
+    }
+    return fallback || "Request failed";
+  }
+
   async function request(method, path, body) {
     const url = base() + path;
     const headers = { Accept: "application/json" };
@@ -63,7 +73,8 @@
       data = { error: text || "Invalid JSON" };
     }
     if (!res.ok) {
-      const err = new Error((data && data.error) || res.statusText || "Request failed");
+      const msg = i18nError(data && data.code, (data && data.error) || res.statusText || "Request failed");
+      const err = new Error(msg);
       err.status = res.status;
       err.body = data;
       throw err;
@@ -86,7 +97,7 @@
     } catch (e) {
       return {
         ok: false,
-        message: (e.body && e.body.error) || e.message || "Login failed"
+        message: i18nError(e.body && e.body.code, (e.body && e.body.error) || e.message || "Login failed")
       };
     }
   }
@@ -108,7 +119,10 @@
     } catch (e) {
       return {
         ok: false,
-        message: (e.body && e.body.error) || e.message || "Registration failed"
+        message: i18nError(
+          e.body && e.body.code,
+          (e.body && e.body.error) || e.message || "Registration failed"
+        )
       };
     }
   }

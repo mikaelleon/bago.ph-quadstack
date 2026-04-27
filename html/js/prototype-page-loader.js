@@ -72,6 +72,14 @@ window.BAGOPrototype = (function () {
     return window.__BAGO_I18N_LOAD_PROMISE__;
   }
 
+  function tr(key, fallback) {
+    if (window.BAGO && window.BAGO.i18n && typeof window.BAGO.i18n.t === "function") {
+      var out = window.BAGO.i18n.t(key);
+      if (out && out !== key) return out;
+    }
+    return fallback || key;
+  }
+
   /** Lightweight overlay dialogs (no React dependency). */
   function modalAlert(message, title) {
     title = title || "BAGO.PH";
@@ -94,7 +102,7 @@ window.BAGOPrototype = (function () {
       foot.style.cssText = "padding:12px 18px;border-top:1px solid #eee;text-align:right;background:#fafafa;";
       var ok = document.createElement("button");
       ok.type = "button";
-      ok.textContent = "OK";
+      ok.textContent = tr("common.ok", "OK");
       ok.style.cssText =
         "height:40px;padding:0 20px;border:none;border-radius:8px;background:#2E7D32;color:#fff;font-weight:700;font-family:Poppins;cursor:pointer;";
       function cleanup() {
@@ -121,7 +129,7 @@ window.BAGOPrototype = (function () {
   }
 
   function modalConfirm(message, title) {
-    title = title || "Confirm";
+    title = title || tr("common.confirm", "Confirm");
     return new Promise(function (resolve) {
       var backdrop = document.createElement("div");
       backdrop.setAttribute("role", "dialog");
@@ -142,12 +150,12 @@ window.BAGOPrototype = (function () {
         "padding:12px 18px;border-top:1px solid #eee;text-align:right;background:#fafafa;display:flex;gap:10px;justify-content:flex-end;";
       var cancel = document.createElement("button");
       cancel.type = "button";
-      cancel.textContent = "Cancel";
+      cancel.textContent = tr("common.cancel", "Cancel");
       cancel.style.cssText =
         "height:40px;padding:0 16px;border:1px solid #bdbdbd;border-radius:8px;background:#fff;font-family:Poppins;font-weight:600;cursor:pointer;";
       var confirm = document.createElement("button");
       confirm.type = "button";
-      confirm.textContent = "Sign out";
+      confirm.textContent = tr("common.logout", "Sign out");
       confirm.style.cssText =
         "height:40px;padding:0 18px;border:none;border-radius:8px;background:#C62828;color:#fff;font-weight:700;font-family:Poppins;cursor:pointer;";
       function cleanup(val) {
@@ -219,7 +227,7 @@ window.BAGOPrototype = (function () {
       "background:#fff;border-radius:12px;max-width:560px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,0.25);overflow:hidden;";
     var head = document.createElement("div");
     head.style.cssText = "padding:14px 18px;border-bottom:1px solid #eee;font-size:16px;font-weight:700;color:#0D1B2A;";
-    head.textContent = "Demo credentials";
+    head.textContent = tr("auth.demo_credentials", "Demo credentials");
     var body = document.createElement("div");
     body.style.cssText = "padding:14px 18px;display:flex;flex-direction:column;gap:10px;";
     creds.forEach(function (entry) {
@@ -235,17 +243,17 @@ window.BAGOPrototype = (function () {
       value.textContent = entry.value;
       var copy = document.createElement("button");
       copy.type = "button";
-      copy.textContent = "Copy";
+      copy.textContent = tr("common.copy", "Copy");
       copy.style.cssText =
         "height:34px;padding:0 12px;border:1px solid #2E7D32;border-radius:7px;background:#E8F5E9;color:#1B5E20;font-weight:700;font-family:Poppins;cursor:pointer;";
       copy.onclick = function () {
         copyText(entry.copy).then(function () {
           var old = copy.textContent;
-          copy.textContent = "Copied";
+          copy.textContent = tr("common.copied", "Copied");
           setTimeout(function () { copy.textContent = old; }, 1000);
         }).catch(function () {
-          copy.textContent = "Failed";
-          setTimeout(function () { copy.textContent = "Copy"; }, 1000);
+          copy.textContent = tr("common.failed", "Failed");
+          setTimeout(function () { copy.textContent = tr("common.copy", "Copy"); }, 1000);
         });
       };
       meta.appendChild(role);
@@ -258,7 +266,7 @@ window.BAGOPrototype = (function () {
     foot.style.cssText = "padding:12px 18px;border-top:1px solid #eee;text-align:right;background:#fafafa;";
     var close = document.createElement("button");
     close.type = "button";
-    close.textContent = "Close";
+    close.textContent = tr("common.close", "Close");
     close.style.cssText =
       "height:38px;padding:0 16px;border:none;border-radius:8px;background:#2E7D32;color:#fff;font-weight:700;font-family:Poppins;cursor:pointer;";
     function cleanup() {
@@ -288,17 +296,17 @@ window.BAGOPrototype = (function () {
     var mobile = normalizeMobile(opts.mobile || "");
     var pin = String(opts.pin || "").replace(/\D/g, "").slice(0, 4);
     if (!mobile || mobile.length < 10) {
-      alert("Enter a valid Philippine mobile number (10 digits after +63).");
+      alert(tr("auth.mobile_invalid_10", "Enter a valid Philippine mobile number (10 digits after +63)."));
       return;
     }
     if (!/^\d{4}$/.test(pin)) {
-      alert("PIN must be exactly 4 digits.");
+      alert(tr("auth.pin_exact_4", "PIN must be exactly 4 digits."));
       return;
     }
     if (role === "collector") {
       var inv = String(opts.inviteCode || "").replace(/\D/g, "");
       if (inv !== "207142") {
-        alert("Invalid or expired supervisor invite code. Prototype accepts code 207142.");
+        alert(tr("auth.invite_invalid", "Invalid or expired supervisor invite code. Prototype accepts code 207142."));
         return;
       }
     }
@@ -726,7 +734,7 @@ window.BAGOPrototype = (function () {
       var passList = document.querySelectorAll("input[type=\"password\"]");
       var password = passList.length ? String(passList[0].value || "") : "";
       if (!email || password.length < 10) {
-        alert("Enter government email and password (min 10 characters).");
+        alert(tr("auth.email_password_min_10", "Enter government email and password (min 10 characters)."));
         return;
       }
       if (apiHasBase()) {
@@ -745,14 +753,14 @@ window.BAGOPrototype = (function () {
             go(dashboardFor(outLgu.role));
             return;
           }
-          alert(outLgu.message || "Login failed");
+          alert(outLgu.message || tr("auth.login_failed", "Login failed"));
           var fbLgu = tryLocalLguLogin(email, password);
           if (fbLgu.ok) {
             setRole(fbLgu.role);
             go(dashboardFor(fbLgu.role));
             return;
           }
-          alert("API failed. Local fallback: " + (fbLgu.message || "login failed"));
+          alert(tr("auth.api_failed_fallback", "API failed. Local fallback: ") + (fbLgu.message || tr("auth.login_failed", "login failed")));
           return;
         } catch (eLgu) {
           var fbLgu2 = tryLocalLguLogin(email, password);
@@ -761,7 +769,7 @@ window.BAGOPrototype = (function () {
             go(dashboardFor(fbLgu2.role));
             return;
           }
-          alert("API failed. Local fallback: " + (fbLgu2.message || eLgu.message || "Login failed"));
+          alert(tr("auth.api_failed_fallback", "API failed. Local fallback: ") + (fbLgu2.message || eLgu.message || tr("auth.login_failed", "Login failed")));
           return;
         }
       }
@@ -771,7 +779,7 @@ window.BAGOPrototype = (function () {
         go(dashboardFor(fbLgu3.role));
         return;
       }
-      alert("API unavailable. " + (fbLgu3.message || "Login failed"));
+      alert(tr("auth.api_unavailable", "API unavailable. ") + (fbLgu3.message || tr("auth.login_failed", "Login failed")));
       return;
     }
 
@@ -780,7 +788,7 @@ window.BAGOPrototype = (function () {
     var mobile = normalizeMobile(mobileInput ? mobileInput.value : "");
     var pin = String(pinInput ? pinInput.value : "").replace(/\D/g, "").slice(0, 4);
     if (!mobile || mobile.length < 10 || !/^\d{4}$/.test(pin)) {
-      alert("Enter valid mobile number and 4-digit PIN.");
+      alert(tr("auth.mobile_pin_required", "Enter valid mobile number and 4-digit PIN."));
       return;
     }
 
@@ -801,7 +809,7 @@ window.BAGOPrototype = (function () {
           go("otp");
           return;
         }
-        alert(out.message || "Login failed");
+        alert(out.message || tr("auth.login_failed", "Login failed"));
         var fallback = tryLocalLogin(mobile, pin);
         if (fallback.ok) {
           setRole(fallback.role);
@@ -809,7 +817,7 @@ window.BAGOPrototype = (function () {
           go(dashboardFor(fallback.role));
           return;
         }
-        alert("API failed. Local fallback failed: " + (fallback.message || "login failed"));
+        alert(tr("auth.api_failed_fallback_failed", "API failed. Local fallback failed: ") + (fallback.message || tr("auth.login_failed", "login failed")));
         return;
       } catch (e) {
         var fallback2 = tryLocalLogin(mobile, pin);
@@ -819,7 +827,7 @@ window.BAGOPrototype = (function () {
           go(dashboardFor(fallback2.role));
           return;
         }
-        alert("API failed. Local fallback failed: " + (fallback2.message || e.message || "Login failed"));
+        alert(tr("auth.api_failed_fallback_failed", "API failed. Local fallback failed: ") + (fallback2.message || e.message || tr("auth.login_failed", "Login failed")));
         return;
       }
     }
@@ -830,7 +838,7 @@ window.BAGOPrototype = (function () {
       go(dashboardFor(fallback3.role));
       return;
     }
-    alert("API unavailable. Local fallback failed: " + (fallback3.message || "login failed"));
+    alert(tr("auth.api_unavailable_fallback_failed", "API unavailable. Local fallback failed: ") + (fallback3.message || tr("auth.login_failed", "login failed")));
   }
 
   async function onRegister() {
@@ -847,27 +855,27 @@ window.BAGOPrototype = (function () {
     var confirmPin = String(passInputs.length > 1 ? passInputs[1].value : "").replace(/\D/g, "").slice(0, 4);
     var role = "user";
     if (!fullName || fullName.length < 3) {
-      alert("Enter full name.");
+      alert(tr("auth.full_name_required", "Enter full name."));
       return;
     }
     if (!mobile || mobile.length < 10) {
-      alert("Enter valid mobile number.");
+      alert(tr("auth.mobile_required", "Enter valid mobile number."));
       return;
     }
     if (!city) {
-      alert("Select a city.");
+      alert(tr("auth.city_required", "Select a city."));
       return;
     }
     if (!barangay) {
-      alert("Select a barangay.");
+      alert(tr("auth.barangay_required", "Select a barangay."));
       return;
     }
     if (!/^\d{4}$/.test(pin)) {
-      alert("PIN must be exactly 4 digits.");
+      alert(tr("auth.pin_exact_4", "PIN must be exactly 4 digits."));
       return;
     }
     if (confirmPin && pin !== confirmPin) {
-      alert("PIN and confirm PIN do not match.");
+      alert(tr("auth.pin_mismatch", "PIN and confirm PIN do not match."));
       return;
     }
 
@@ -917,7 +925,7 @@ window.BAGOPrototype = (function () {
 
   async function onSubmitReport() {
     if (!token()) {
-      alert("Login first before submitting report.");
+      alert(tr("report.login_first", "Login first before submitting report."));
       go("index");
       return;
     }
@@ -934,7 +942,7 @@ window.BAGOPrototype = (function () {
         return String(row.barangay_name || "").toLowerCase() === String(brgyRaw || "").replace(/^Brgy\.\s*/i, "").toLowerCase();
       }) || barangays[0];
       if (!b) {
-        alert("No barangays found in API.");
+        alert(tr("report.no_barangays_api", "No barangays found in API."));
         return;
       }
       var created = await apiRequest("POST", "/api/reports", {
@@ -943,10 +951,10 @@ window.BAGOPrototype = (function () {
         street_address: street || "Not specified",
         barangay_id: b.barangay_id
       });
-      alert("Report submitted: " + created.reference_number);
+      alert(tr("report.submitted_prefix", "Report submitted: ") + created.reference_number);
       go("dashboard-resident");
     } catch (e) {
-      alert(e.message || "Failed to submit report");
+      alert(e.message || tr("report.submit_failed", "Failed to submit report"));
     }
   }
 
@@ -963,18 +971,18 @@ window.BAGOPrototype = (function () {
       });
       var ref = refEl ? refEl.textContent.trim() : "";
       if (!ref) {
-        alert("Report reference not found on screen.");
+        alert(tr("report.reference_not_found_screen", "Report reference not found on screen."));
         return;
       }
       var id = await resolveRefToReportId(ref);
       if (!id) {
-        alert("Report not found in API: " + ref);
+        alert(tr("report.reference_not_found_api", "Report not found in API: ") + ref);
         return;
       }
       await apiRequest("PATCH", "/api/reports/" + id, { status: "In Progress" });
-      alert("Report updated to In Progress.");
+      alert(tr("report.updated_in_progress", "Report updated to In Progress."));
     } catch (e) {
-      alert(e.message || "Failed to update report");
+      alert(e.message || tr("report.update_failed", "Failed to update report"));
     }
   }
 
@@ -984,20 +992,20 @@ window.BAGOPrototype = (function () {
         return /^RPT-\d{4}-\d+$/i.test(String(el.textContent || "").trim());
       });
       var ref = mono ? mono.textContent.trim() : "";
-      if (!ref) return alert("No report reference found.");
+      if (!ref) return alert(tr("report.no_reference", "No report reference found."));
       var id = await resolveRefToReportId(ref);
-      if (!id) return alert("Report not found: " + ref);
+      if (!id) return alert(tr("report.not_found_prefix", "Report not found: ") + ref);
       await apiRequest("PATCH", "/api/reports/" + id, { status: "Acknowledged" });
-      alert("Report saved.");
+      alert(tr("report.saved", "Report saved."));
     } catch (e) {
-      alert(e.message || "Failed to save report");
+      alert(e.message || tr("report.save_failed", "Failed to save report"));
     }
   }
 
   async function onAddSchedule() {
     try {
       var barangays = await apiRequest("GET", "/api/barangays");
-      if (!barangays.length) return alert("No barangays found.");
+      if (!barangays.length) return alert(tr("schedule.no_barangays", "No barangays found."));
       var b = barangays[0];
       var d = new Date();
       d.setDate(d.getDate() + 1);
@@ -1010,9 +1018,9 @@ window.BAGOPrototype = (function () {
         time_end: "09:00",
         status: "Scheduled"
       });
-      alert("Schedule created for " + b.barangay_name + " (" + day + ").");
+      alert(tr("schedule.created_for_prefix", "Schedule created for ") + b.barangay_name + " (" + day + ").");
     } catch (e) {
-      alert(e.message || "Failed to create schedule");
+      alert(e.message || tr("schedule.create_failed", "Failed to create schedule"));
     }
   }
 
@@ -1038,7 +1046,7 @@ window.BAGOPrototype = (function () {
           .map(function (el) { return String(el.value || "").replace(/\D/g, "").slice(0, 1); })
           .join("");
         if (expected1 && got1 !== expected1) {
-          alert("Invalid OTP. Check browser console for local test OTP.");
+          alert(tr("auth.invalid_otp", "Invalid OTP. Check browser console for local test OTP."));
           return;
         }
         localStorage.removeItem("bagoPendingOtp");
@@ -1051,7 +1059,7 @@ window.BAGOPrototype = (function () {
           .map(function (el) { return String(el.value || "").replace(/\D/g, "").slice(0, 1); })
           .join("");
         if (expected2 && got2 !== expected2) {
-          alert("Invalid OTP. Check browser console for local test OTP.");
+          alert(tr("auth.invalid_otp", "Invalid OTP. Check browser console for local test OTP."));
           return;
         }
         localStorage.removeItem("bagoPendingOtp");
@@ -1064,7 +1072,7 @@ window.BAGOPrototype = (function () {
           .map(function (el) { return String(el.value || "").replace(/\D/g, "").slice(0, 1); })
           .join("");
         if (expected3 && got3 !== expected3) {
-          alert("Invalid OTP. Check browser console for local test OTP.");
+          alert(tr("auth.invalid_otp", "Invalid OTP. Check browser console for local test OTP."));
           return;
         }
         localStorage.removeItem("bagoPendingOtp");
@@ -1098,7 +1106,10 @@ window.BAGOPrototype = (function () {
       }
       if (txt.indexOf("logout") !== -1) {
         event.preventDefault();
-        modalConfirm("You will return to the login screen. Session and token on this device will be cleared.", "Sign out?").then(function (ok) {
+        modalConfirm(
+          tr("auth.logout_confirm_body", "You will return to the login screen. Session and token on this device will be cleared."),
+          tr("auth.logout_confirm_title", "Sign out?")
+        ).then(function (ok) {
           if (!ok) return;
           localStorage.removeItem("bagoRole");
           localStorage.removeItem("bagoToken");

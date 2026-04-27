@@ -2,7 +2,7 @@
 
 ## Summary
 - Total subtasks: **82**
-- Completed: **55 (67%)**
+- Completed: **70 (85%)**
 - Effort breakdown: **S×16 + M×53 + L×13**
 
 | Main task ID | % complete |
@@ -13,8 +13,8 @@
 | `T-I18N-04` | 6 / 6 (100%) |
 | `T-I18N-05` | 5 / 5 (100%) |
 | `T-I18N-06` | 22 / 22 (100%) |
-| `T-I18N-07` | 0 / 8 (0%) |
-| `T-I18N-08` | 0 / 7 (0%) |
+| `T-I18N-07` | 8 / 8 (100%) |
+| `T-I18N-08` | 7 / 7 (100%) |
 | `T-I18N-09` | 1 / 5 (20%) |
 | `T-I18N-10` | 0 / 5 (0%) |
 | `T-I18N-11` | 1 / 4 (25%) |
@@ -142,15 +142,15 @@
 **Goal** — Localize JS-rendered content, validations, modals, and error surfaces.  
 **Source ref** — §5, §6, §7.  
 **Subtasks**
-- [ ] (L) Replace hardcoded modal copy in `html/js/prototype-page-loader.js` (`modalAlert`, `modalConfirm`, demo credentials).
-- [ ] (L) Replace hardcoded `alert(...)` validation/login/register/report copy in `html/js/prototype-page-loader.js`.
-- [ ] (M) Localize logout link text + auth validation messages in `html/role-access.js`.
-- [ ] (M) Localize banner/toast text paths in `html/js/components/in-app-banner.js` and feed renderers.
-- [ ] (M) Localize dynamic card/list rendering in `html/js/announcements-admin.js`, `html/js/in-app-notifications.js`, `html/js/eco-wallet.js`.
-- [ ] (M) Localize dynamic schedule/report renderers in `html/js/schedule-resident.js`, `html/js/schedule-lgu.js`, `html/js/report-detail.js`, `html/js/report-submit.js`.
-- [ ] (M) Localize XML modal/button/validation dynamic strings in `html/js/components/xml-editor-modal.js`, `html/js/xml-schedules-app.js`, `html/js/xml-barangays-app.js`.
-- [ ] (M) Implement error code -> localized message mapping layer in `html/js/bago-api.js` + `errors.*` catalog.
-**Completion** — **0 / 8 subtasks (0%)**.  
+- [x] (L) Replace hardcoded modal copy in `html/js/prototype-page-loader.js` (`modalAlert`, `modalConfirm`, demo credentials).
+- [x] (L) Replace hardcoded `alert(...)` validation/login/register/report copy in `html/js/prototype-page-loader.js`.
+- [x] (M) Localize logout link text + auth validation messages in `html/role-access.js`.
+- [x] (M) Localize banner/toast text paths in `html/js/components/in-app-banner.js` and feed renderers.
+- [x] (M) Localize dynamic card/list rendering in `html/js/announcements-admin.js`, `html/js/in-app-notifications.js`, `html/js/eco-wallet.js`.
+- [x] (M) Localize dynamic schedule/report renderers in `html/js/schedule-resident.js`, `html/js/schedule-lgu.js`, `html/js/report-detail.js`, `html/js/report-submit.js`.
+- [x] (M) Localize XML modal/button/validation dynamic strings in `html/js/components/xml-editor-modal.js`, `html/js/xml-schedules-app.js`, `html/js/xml-barangays-app.js`.
+- [x] (M) Implement error code -> localized message mapping layer in `html/js/bago-api.js` + `errors.*` catalog.
+**Completion** — **8 / 8 subtasks (100%)**.  
 **Dependencies** — `T-I18N-03`, `T-I18N-06`.  
 **Done when**
 - Runtime-generated text respects active locale.
@@ -161,14 +161,14 @@
 **Goal** — Add locale-aware XSLT chrome translation and pass locale from editor/export flows.  
 **Source ref** — §8.  
 **Subtasks**
-- [ ] (M) Add `$locale` param + label maps in `xsl/ecolinisph-schedules.xsl`.
-- [ ] (M) Add `$locale` param + label maps in `xsl/barangays.xsl`.
-- [ ] (M) Add `$locale` param + label maps in `xsl/denr-report.xsl`.
-- [ ] (M) Update XML schedules editor preview trigger to pass locale query/param — `html/js/xml-schedules-app.js`.
-- [ ] (M) Update XML barangays editor preview trigger to pass locale query/param — `html/js/xml-barangays-app.js`.
-- [ ] (M) Add `locale` query handling to export endpoints (`/api/exports/xml`, `/api/exports/denr-html`, `/api/exports/denr-pdf`) — `server/routes/exports.js`.
-- [ ] (S) Keep XML data values untranslated while only XSL chrome labels switch language — XSL template logic + tests.
-**Completion** — **0 / 7 subtasks (0%)**.  
+- [x] (M) Add `$locale` param + label maps in `xsl/ecolinisph-schedules.xsl`.
+- [x] (M) Add `$locale` param + label maps in `xsl/barangays.xsl`.
+- [x] (M) Add `$locale` param + label maps in `xsl/denr-report.xsl`.
+- [x] (M) Update XML schedules editor preview trigger to pass locale query/param — `html/js/xml-schedules-app.js`.
+- [x] (M) Update XML barangays editor preview trigger to pass locale query/param — `html/js/xml-barangays-app.js`.
+- [x] (M) Add `locale` query handling to export endpoints (`/api/exports/xml`, `/api/exports/denr-html`, `/api/exports/denr-pdf`) — `server/routes/exports.js`.
+- [x] (S) Keep XML data values untranslated while only XSL chrome labels switch language — XSL template logic + tests.
+**Completion** — **7 / 7 subtasks (100%)**.  
 **Dependencies** — `T-I18N-06`, `T-I18N-07`.  
 **Done when**
 - XSL output labels switch EN/TL by locale parameter.

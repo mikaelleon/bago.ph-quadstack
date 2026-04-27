@@ -1,4 +1,12 @@
 (function () {
+  function t(key, fallback) {
+    if (window.BAGO && window.BAGO.i18n && typeof window.BAGO.i18n.t === "function") {
+      var v = window.BAGO.i18n.t(key);
+      if (v && v !== key) return v;
+    }
+    return fallback || key;
+  }
+
   function mountScheduleBanner(targetId, items) {
     var host = document.getElementById(targetId);
     if (!host) return;
@@ -11,7 +19,7 @@
       card.className = "bago-banner-card";
       card.innerHTML =
         "<strong>" +
-        escapeHtml(item.title || "Update") +
+        escapeHtml(item.title || t("common.update", "Update")) +
         "</strong><span>" +
         escapeHtml(item.message || "") +
         "</span>";

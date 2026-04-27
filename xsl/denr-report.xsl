@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:param name="locale" select="'en'"/>
+  <xsl:variable name="isTL" select="$locale='tl'"/>
   <xsl:output method="html" indent="yes" />
   <xsl:template match="/">
     <html>
       <head>
-        <title>DENR Report Export</title>
+        <title><xsl:choose><xsl:when test="$isTL">DENR Ulat Export</xsl:when><xsl:otherwise>DENR Report Export</xsl:otherwise></xsl:choose></title>
         <style>
           body { font-family: Arial, sans-serif; margin: 24px; }
           h1 { margin-bottom: 8px; }
@@ -14,18 +16,18 @@
         </style>
       </head>
       <body>
-        <h1>DENR Report Export</h1>
-        <p>Generated from filtered schedule XML.</p>
+        <h1><xsl:choose><xsl:when test="$isTL">DENR Ulat Export</xsl:when><xsl:otherwise>DENR Report Export</xsl:otherwise></xsl:choose></h1>
+        <p><xsl:choose><xsl:when test="$isTL">Nabuo mula sa na-filter na schedule XML.</xsl:when><xsl:otherwise>Generated from filtered schedule XML.</xsl:otherwise></xsl:choose></p>
         <table>
           <thead>
             <tr>
               <th>ID</th>
-              <th>Barangay</th>
-              <th>Waste Type</th>
-              <th>Date</th>
-              <th>Time Start</th>
-              <th>Time End</th>
-              <th>Status</th>
+              <th><xsl:choose><xsl:when test="$isTL">Barangay</xsl:when><xsl:otherwise>Barangay</xsl:otherwise></xsl:choose></th>
+              <th><xsl:choose><xsl:when test="$isTL">Uri ng Basura</xsl:when><xsl:otherwise>Waste Type</xsl:otherwise></xsl:choose></th>
+              <th><xsl:choose><xsl:when test="$isTL">Petsa</xsl:when><xsl:otherwise>Date</xsl:otherwise></xsl:choose></th>
+              <th><xsl:choose><xsl:when test="$isTL">Simula</xsl:when><xsl:otherwise>Time Start</xsl:otherwise></xsl:choose></th>
+              <th><xsl:choose><xsl:when test="$isTL">Wakas</xsl:when><xsl:otherwise>Time End</xsl:otherwise></xsl:choose></th>
+              <th><xsl:choose><xsl:when test="$isTL">Katayuan</xsl:when><xsl:otherwise>Status</xsl:otherwise></xsl:choose></th>
             </tr>
           </thead>
           <tbody>

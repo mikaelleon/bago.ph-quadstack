@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:param name="locale" select="'en'"/>
+<xsl:variable name="isTL" select="$locale='tl'"/>
 
 <xsl:output method="html" doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
             doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
@@ -10,7 +12,7 @@
     <head>
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
       <meta name="viewport" content="width=device-width,initial-scale=1"/>
-      <title>BAGO.PH — Barangay performance (XML)</title>
+      <title><xsl:choose><xsl:when test="$isTL">BAGO.PH — Pagganap ng Barangay (XML)</xsl:when><xsl:otherwise>BAGO.PH — Barangay performance (XML)</xsl:otherwise></xsl:choose></title>
       <style type="text/css">
         body{font-family: Inter, "Segoe UI", Tahoma, Arial; background:#f5f5f5; color:#212121; margin:0}
         .topnav{background:#fff;border-bottom:1px solid #E0E0E0;position:sticky;top:0;z-index:50}
@@ -47,14 +49,14 @@
         <div class="nav-inner">
           <div class="brand">🌿 BAGO.PH</div>
           <div class="meta-line">
-            Last updated: <xsl:value-of select="@last_updated"/>
+            <xsl:choose><xsl:when test="$isTL">Huling update:</xsl:when><xsl:otherwise>Last updated:</xsl:otherwise></xsl:choose> <xsl:value-of select="@last_updated"/>
           </div>
         </div>
       </div>
 
       <div class="hero">
         <div class="hero-inner">
-          <h1>Barangay performance snapshot</h1>
+          <h1><xsl:choose><xsl:when test="$isTL">Snapshot ng pagganap ng barangay</xsl:when><xsl:otherwise>Barangay performance snapshot</xsl:otherwise></xsl:choose></h1>
           <p>
             <xsl:value-of select="@city"/>, <xsl:value-of select="@province"/>
           </p>
@@ -63,11 +65,11 @@
 
       <div class="wrapper">
         <div class="meta-box">
-          <strong>Source:</strong>
+          <strong><xsl:choose><xsl:when test="$isTL">Pinagmulan:</xsl:when><xsl:otherwise>Source:</xsl:otherwise></xsl:choose></strong>
           <xsl:text> </xsl:text>
           <xsl:value-of select="meta/source"/>
           <br/>
-          <strong>Note:</strong>
+          <strong><xsl:choose><xsl:when test="$isTL">Tala:</xsl:when><xsl:otherwise>Note:</xsl:otherwise></xsl:choose></strong>
           <xsl:text> </xsl:text>
           <xsl:value-of select="meta/note"/>
         </div>
@@ -76,12 +78,12 @@
           <table role="table" summary="Barangay collection and compliance metrics">
             <thead>
               <tr>
-                <th>Barangay</th>
-                <th>Collection rate</th>
-                <th>Compliance rate</th>
-                <th>Open reports</th>
-                <th>Eco-points (total)</th>
-                <th>Status</th>
+                <th><xsl:choose><xsl:when test="$isTL">Barangay</xsl:when><xsl:otherwise>Barangay</xsl:otherwise></xsl:choose></th>
+                <th><xsl:choose><xsl:when test="$isTL">Collection rate</xsl:when><xsl:otherwise>Collection rate</xsl:otherwise></xsl:choose></th>
+                <th><xsl:choose><xsl:when test="$isTL">Compliance rate</xsl:when><xsl:otherwise>Compliance rate</xsl:otherwise></xsl:choose></th>
+                <th><xsl:choose><xsl:when test="$isTL">Bukas na report</xsl:when><xsl:otherwise>Open reports</xsl:otherwise></xsl:choose></th>
+                <th><xsl:choose><xsl:when test="$isTL">Eco-points (kabuuan)</xsl:when><xsl:otherwise>Eco-points (total)</xsl:otherwise></xsl:choose></th>
+                <th><xsl:choose><xsl:when test="$isTL">Katayuan</xsl:when><xsl:otherwise>Status</xsl:otherwise></xsl:choose></th>
               </tr>
             </thead>
             <tbody>
@@ -113,7 +115,7 @@
       </div>
 
       <footer>
-        BAGO.PH prototype data for CENRO / LGU reporting — RA 9003 alignment
+        <xsl:choose><xsl:when test="$isTL">BAGO.PH prototype data para sa CENRO / LGU reporting — RA 9003 alignment</xsl:when><xsl:otherwise>BAGO.PH prototype data for CENRO / LGU reporting — RA 9003 alignment</xsl:otherwise></xsl:choose>
       </footer>
     </body>
   </html>

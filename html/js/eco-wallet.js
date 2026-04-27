@@ -1,4 +1,11 @@
 (function () {
+  function t(key, fallback) {
+    if (window.BAGO && window.BAGO.i18n && typeof window.BAGO.i18n.t === "function") {
+      var v = window.BAGO.i18n.t(key);
+      if (v && v !== key) return v;
+    }
+    return fallback || key;
+  }
   function q(id) {
     return document.getElementById(id);
   }
@@ -23,7 +30,12 @@
         "</td>";
       body.appendChild(tr);
     });
-    q("wallet-summary").textContent = `Entries: ${rows.length} | Computed balance delta: ${balance}`;
+    q("wallet-summary").textContent =
+      t("ecopoints.entries_prefix", "Entries: ") +
+      rows.length +
+      " | " +
+      t("ecopoints.balance_delta_prefix", "Computed balance delta: ") +
+      balance;
   }
 
   async function loadCatalog() {
@@ -41,7 +53,9 @@
         esc(row.points_cost) +
         "</td><td><button data-id='" +
         esc(row.reward_id) +
-        "'>Redeem</button></td>";
+        "'>" +
+        esc(t("ecopoints.redeem_btn", "Redeem")) +
+        "</button></td>";
       body.appendChild(tr);
     });
     body.querySelectorAll("button[data-id]").forEach((btn) => {
@@ -64,11 +78,11 @@
         body: JSON.stringify({ reward_id: rewardId })
       });
       const data = await out.json();
-      if (!out.ok) throw new Error(data.error || "Redeem failed");
-      q("redeem-status").textContent = `Redeemed: ${data.reward.name}`;
+      if (!out.ok) throw new Error(data.error || t("ecopoints.redeem_failed", "Redeem failed"));
+      q("redeem-status").textContent = t("ecopoints.redeemed_prefix", "Redeemed: ") + data.reward.name;
       await loadLedger();
     } catch (err) {
-      q("redeem-status").textContent = err.message || "Redeem failed";
+      q("redeem-status").textContent = err.message || t("ecopoints.redeem_failed", "Redeem failed");
     }
   }
 

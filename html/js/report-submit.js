@@ -1,4 +1,11 @@
 (function () {
+  function t(key, fallback) {
+    if (window.BAGO && window.BAGO.i18n && typeof window.BAGO.i18n.t === "function") {
+      var v = window.BAGO.i18n.t(key);
+      if (v && v !== key) return v;
+    }
+    return fallback || key;
+  }
   function q(id) {
     return document.getElementById(id);
   }
@@ -38,8 +45,9 @@
       body: form
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Report submit failed");
-    q("report-submit-status").textContent = `Submitted: ${data.reference_number}`;
+    if (!res.ok) throw new Error(data.error || t("report.submit_failed", "Report submit failed"));
+    q("report-submit-status").textContent =
+      t("report.submitted_prefix", "Submitted: ") + data.reference_number;
     e.target.reset();
   }
 
@@ -61,7 +69,7 @@
       try {
         await onSubmitResidentReport(e);
       } catch (err) {
-        q("report-submit-status").textContent = err.message || "Failed to submit";
+        q("report-submit-status").textContent = err.message || t("report.submit_failed", "Failed to submit");
       }
     });
   }
