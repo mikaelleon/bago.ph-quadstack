@@ -452,11 +452,18 @@
   function set(locale, opts) {
     var options = opts || {};
     var next = normalizeLocale(locale);
+    var activeToggle = document.activeElement && document.activeElement.getAttribute
+      ? document.activeElement.getAttribute("data-locale-value")
+      : null;
     currentLocale = next;
     writeStoredLocale(next);
     document.documentElement.lang = next;
     apply(options.root || document);
     updateToggleState();
+    if (activeToggle) {
+      var focusTarget = document.querySelector('[data-locale-value="' + normalizeLocale(activeToggle) + '"]');
+      if (focusTarget) focusTarget.focus();
+    }
     if (!options.silent) announceLocale(next);
 
     if (!options.silent) {

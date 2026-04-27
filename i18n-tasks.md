@@ -2,7 +2,7 @@
 
 ## Summary
 - Total subtasks: **82**
-- Completed: **70 (85%)**
+- Completed: **79 (96%)**
 - Effort breakdown: **S×16 + M×53 + L×13**
 
 | Main task ID | % complete |
@@ -15,8 +15,8 @@
 | `T-I18N-06` | 22 / 22 (100%) |
 | `T-I18N-07` | 8 / 8 (100%) |
 | `T-I18N-08` | 7 / 7 (100%) |
-| `T-I18N-09` | 1 / 5 (20%) |
-| `T-I18N-10` | 0 / 5 (0%) |
+| `T-I18N-09` | 5 / 5 (100%) |
+| `T-I18N-10` | 5 / 5 (100%) |
 | `T-I18N-11` | 1 / 4 (25%) |
 
 ## T-I18N-01
@@ -180,11 +180,11 @@
 **Source ref** — §10.  
 **Subtasks**
 - [x] (S) Keep baseline document language declared in markup (`<html lang="en">`) across current HTML pages — `html/*.html`.
-- [ ] (M) Update `document.documentElement.lang` on locale change at runtime — `html/js/i18n/i18n.js`.
-- [ ] (M) Implement selector `role="group"` and `aria-pressed` state on EN/TL buttons — selector markup in auth/in-app pages.
-- [ ] (S) Add `aria-live="polite"` locale-change announcement region and localized message text — shared i18n runtime.
-- [ ] (S) Preserve keyboard focus on selector after DOM re-apply cycle — `html/js/i18n/i18n.js`.
-**Completion** — **1 / 5 subtasks (20%)**.  
+- [x] (M) Update `document.documentElement.lang` on locale change at runtime — `html/js/i18n/i18n.js`.
+- [x] (M) Implement selector `role="group"` and `aria-pressed` state on EN/TL buttons — selector markup in auth/in-app pages.
+- [x] (S) Add `aria-live="polite"` locale-change announcement region and localized message text — shared i18n runtime.
+- [x] (S) Preserve keyboard focus on selector after DOM re-apply cycle — `html/js/i18n/i18n.js`.
+**Completion** — **5 / 5 subtasks (100%)**.  
 **Dependencies** — `T-I18N-04`, `T-I18N-05`.  
 **Done when**
 - Screen readers receive locale-change announcement.
@@ -195,12 +195,12 @@
 **Goal** — Execute QA pass for bilingual behavior across pages/browsers/accessibility checks.  
 **Source ref** — §11.  
 **Subtasks**
-- [ ] (M) Run acceptance checklist on all pages from `i18n-spec.md` §6 and record results — `docs/qa/i18n-acceptance-checklist.md`.
-- [ ] (S) Run screen-reader spot check (EN/TL toggle announcements) and document findings — `docs/qa/i18n-screen-reader-check.md`.
-- [ ] (S) Run cross-browser pass (Chrome, Edge, Firefox) including XML/XSLT preview behavior — `docs/qa/i18n-cross-browser.md`.
-- [ ] (M) Add regression check for hardcoded English scan (`rg` report) and fail list — `docs/qa/i18n-hardcoded-scan.md`.
-- [ ] (S) Verify API error-code localization map with sample failures — `docs/qa/i18n-api-error-map-check.md`.
-**Completion** — **0 / 5 subtasks (0%)**.  
+- [x] (M) Run acceptance checklist on all pages from `i18n-spec.md` §6 and record results — `docs/qa/i18n-acceptance-checklist.md`.
+- [x] (S) Run screen-reader spot check (EN/TL toggle announcements) and document findings — `docs/qa/i18n-screen-reader-check.md`.
+- [x] (S) Run cross-browser pass (Chrome, Edge, Firefox) including XML/XSLT preview behavior — `docs/qa/i18n-cross-browser.md`.
+- [x] (M) Add regression check for hardcoded English scan (`rg` report) and fail list — `docs/qa/i18n-hardcoded-scan.md`.
+- [x] (S) Verify API error-code localization map with sample failures — `docs/qa/i18n-api-error-map-check.md`.
+**Completion** — **5 / 5 subtasks (100%)**.  
 **Dependencies** — `T-I18N-06`, `T-I18N-07`, `T-I18N-08`, `T-I18N-09`.  
 **Done when**
 - Checklist covers every inventoried page.
