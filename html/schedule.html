@@ -19,7 +19,22 @@
     button { cursor: pointer; background: #0f766e; color: #fff; border: 0; }
     table { width: 100%; border-collapse: collapse; }
     th, td { padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: left; font-size: 14px; }
+    .table-wrap { width: 100%; overflow-x: auto; }
+    .muted { color: #6b7280; font-size: 12px; min-height: 16px; }
     #lgu-panel { display: none; }
+    @media (max-width: 1024px) {
+      .wrap { padding: 16px; }
+      form { grid-template-columns: repeat(2, minmax(140px, 1fr)); }
+    }
+    @media (max-width: 768px) {
+      form { grid-template-columns: 1fr; }
+      input, select, button { width: 100%; }
+    }
+    @media (max-width: 360px) {
+      .wrap { padding: 12px; }
+      h1 { font-size: 20px; }
+      h2 { font-size: 16px; }
+    }
   </style>
 </head>
 <body>
@@ -68,12 +83,14 @@
       <div class="card">
         <h2>Manage Schedules</h2>
         <div id="lgu-schedule-state"></div>
-        <table>
-          <thead>
-            <tr><th>Barangay</th><th>Waste</th><th>Date</th><th>Time</th><th>Status</th><th>Actions</th></tr>
-          </thead>
-          <tbody id="lgu-schedule-tbody"></tbody>
-        </table>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Barangay</th><th>Waste</th><th>Date</th><th>Time</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="lgu-schedule-tbody"></tbody>
+          </table>
+        </div>
       </div>
     </section>
   </main>

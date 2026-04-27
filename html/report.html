@@ -12,7 +12,7 @@
     h1 { margin: 0 0 12px; }
     h2 { margin: 0 0 10px; font-size: 18px; }
     form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    form textarea, form button { grid-column: span 2; }
+    form textarea, form button, .muted { grid-column: span 2; }
     input, select, textarea, button { border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 10px; font: inherit; }
     button { background: #0f766e; color: #fff; border: 0; cursor: pointer; }
     #lgu-report-map { width: 100%; height: 420px; border-radius: 8px; }
@@ -26,6 +26,23 @@
     .report-row button { padding: 6px 10px; font-size: 13px; }
     .status-controls { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 8px; }
     .muted { color: #6b7280; font-size: 13px; }
+    @media (max-width: 1024px) {
+      .wrap { padding: 16px; }
+      #lgu-report-map { height: 360px; }
+    }
+    @media (max-width: 768px) {
+      form { grid-template-columns: 1fr; }
+      form textarea, form button, .muted { grid-column: span 1; }
+      .report-row { grid-template-columns: 1fr; }
+      .report-row button { width: 100%; }
+      #lgu-report-map { height: 300px; }
+    }
+    @media (max-width: 360px) {
+      .wrap { padding: 12px; }
+      h1 { font-size: 20px; }
+      h2 { font-size: 16px; }
+      #lgu-report-map { height: 240px; }
+    }
   </style>
 </head>
 <body>

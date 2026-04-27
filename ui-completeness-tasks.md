@@ -2,7 +2,7 @@
 
 ## Summary
 - Total subtasks: `210`
-- Completed: `101 (48%)`
+- Completed: `106 (50%)`
 - Effort breakdown: `S×166 + M×35 + L×9`
 
 | Main task | % complete |
@@ -13,7 +13,7 @@
 | `T-UI-04` | 57% |
 | `T-UI-05` | 58% |
 | `T-UI-06` | 56% |
-| `T-UI-07` | 21% |
+| `T-UI-07` | 47% |
 | `T-UI-08` | 0% |
 | `T-UI-09` | 13% |
 | `T-UI-10` | 0% |
@@ -298,13 +298,13 @@
 - [ ] (M) Validate/fix responsive behavior on `html/auth-web-register-collector.html` at 360/768/1024/1440 — artifact: responsive collector register layout.
 - [ ] (M) Validate/fix responsive behavior on `html/auth-web-register-lgu.html` at 360/768/1024/1440 — artifact: responsive LGU register layout.
 - [ ] (M) Validate/fix responsive behavior on `html/dashboard-resident.html` at 360/768/1024/1440 — artifact: responsive resident dashboard.
-- [ ] (M) Validate/fix responsive behavior on `html/schedule.html` at 360/768/1024/1440 — artifact: schedule forms/table fit without clipping.
-- [ ] (M) Validate/fix responsive behavior on `html/report.html` at 360/768/1024/1440 — artifact: report form/map/list responsive modes.
-- [ ] (M) Validate/fix responsive behavior on `html/eco-points.html` at 360/768/1024/1440 — artifact: wallet/catalog/ledger responsive view.
-- [ ] (M) Validate/fix responsive behavior on `html/announcements.html` at 360/768/1024/1440 — artifact: publish/feed responsive layout.
+- [x] (M) Validate/fix responsive behavior on `html/schedule.html` at 360/768/1024/1440 — artifact: schedule forms/table fit without clipping.
+- [x] (M) Validate/fix responsive behavior on `html/report.html` at 360/768/1024/1440 — artifact: report form/map/list responsive modes.
+- [x] (M) Validate/fix responsive behavior on `html/eco-points.html` at 360/768/1024/1440 — artifact: wallet/catalog/ledger responsive view.
+- [x] (M) Validate/fix responsive behavior on `html/announcements.html` at 360/768/1024/1440 — artifact: publish/feed responsive layout.
 - [ ] (M) Validate/fix responsive behavior on `html/dashboard-collector.html` at 360/768/1024/1440 — artifact: responsive collector dashboard shell.
 - [ ] (M) Validate/fix responsive behavior on `html/collectors.html` at 360/768/1024/1440 — artifact: responsive collectors/admin collectors shell.
-- [ ] (M) Validate/fix responsive behavior on `html/qr-audit.html` at 360/768/1024/1440 — artifact: scan form/result responsive layout.
+- [x] (M) Validate/fix responsive behavior on `html/qr-audit.html` at 360/768/1024/1440 — artifact: scan form/result responsive layout.
 - [x] (S) Validate/fix responsive behavior on `html/dashboard-lgu.html` at 360/768/1024/1440 — artifact: sidebar collapse + chart grid media rules.
 - [x] (S) Validate/fix responsive behavior on `html/compliance.html` at 360/768/1024/1440 — artifact: metric grid media rule in page CSS.
 - [ ] (M) Validate/fix responsive behavior on `html/denr-reports.html` at 360/768/1024/1440 — artifact: responsive DENR page.
@@ -312,7 +312,7 @@
 - [x] (S) Validate/fix responsive behavior on `html/xml-schedules-editor.html` at 360/768/1024/1440 — artifact: table wrappers and wrapping controls.
 - [x] (S) Validate/fix responsive behavior on `html/xml-barangays-editor.html` at 360/768/1024/1440 — artifact: table wrappers and wrapping controls.
 
-**Completion** — `4 / 19 subtasks (21%)`  
+**Completion** — `9 / 19 subtasks (47%)`  
 **Dependencies** — `T-UI-01`, `T-UI-04`, `T-UI-06`  
 **Done when**
 - All inventory pages pass four-breakpoint checks.
