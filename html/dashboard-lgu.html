@@ -5,42 +5,168 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BAGO.PH - LGU Dashboard</title>
   <style>
-    body { margin: 0; font-family: Arial, sans-serif; background: #eceff1; color: #1f2937; }
-    .wrap { max-width: 1180px; margin: 0 auto; padding: 24px; }
-    .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
-    .card { background: #fff; border-radius: 10px; padding: 14px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
-    .metric { font-size: 28px; font-weight: 700; margin-top: 6px; }
-    .charts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+    :root {
+      --navy: #0d1b2a;
+      --green: #2e7d32;
+      --green-soft: #e8f5e9;
+      --bg: #f5f5f5;
+      --text: #212121;
+      --muted: #757575;
+      --border: #e0e0e0;
+      --danger: #c62828;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Poppins", Arial, sans-serif; background: var(--bg); color: var(--text); }
+    .shell { width: 100vw; min-height: 100vh; display: flex; overflow: hidden; }
+    .sidebar {
+      width: 240px; background: var(--navy); color: #fff; display: flex; flex-direction: column; flex-shrink: 0;
+    }
+    .brand { padding: 20px; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .brand h2 { margin: 0; font-size: 22px; letter-spacing: -.3px; }
+    .brand p { margin: 6px 0 0; font-size: 10px; letter-spacing: .8px; text-transform: uppercase; color: rgba(255,255,255,.6); }
+    .profile { padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,.08); display: flex; gap: 10px; align-items: center; }
+    .avatar {
+      width: 36px; height: 36px; border-radius: 999px; background: #a5d6a7; color: var(--navy); display: grid; place-items: center; font-size: 12px; font-weight: 700;
+    }
+    .profile strong { display: block; font-size: 12px; }
+    .profile span { font-size: 10px; color: rgba(255,255,255,.55); }
+    .navlist { list-style: none; margin: 0; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; flex: 1; }
+    .navlist a {
+      display: flex; align-items: center; gap: 10px; text-decoration: none; color: rgba(255,255,255,.75); font-size: 13px; font-weight: 600;
+      border-radius: 6px; padding: 10px 12px; border-left: 3px solid transparent;
+    }
+    .navlist a.active { color: #fff; background: rgba(255,255,255,.1); border-left-color: #a5d6a7; }
+    .sidebar-footer { padding: 12px 16px; border-top: 1px solid rgba(255,255,255,.08); }
+    .sidebar-footer small { display: block; font-size: 10px; color: rgba(255,255,255,.45); margin-bottom: 8px; }
+    .btn-signout {
+      width: 100%; height: 36px; border-radius: 6px; border: 1px solid rgba(255,205,210,.45); background: rgba(198,40,40,.15);
+      color: #ffcdd2; font-size: 12px; font-weight: 700; cursor: pointer;
+    }
+    .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .topbar {
+      height: 64px; background: #fff; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 28px; gap: 16px;
+    }
+    .topbar h1 { margin: 0; font-size: 18px; }
+    .topbar p { margin: 2px 0 0; font-size: 12px; color: var(--muted); }
+    .top-right { display: flex; align-items: center; gap: 12px; }
+    .live { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
+    .live-dot { width: 8px; height: 8px; border-radius: 999px; background: var(--green); box-shadow: 0 0 0 3px rgba(46,125,50,.2); }
+    .btn-outline {
+      height: 36px; padding: 0 14px; border-radius: 6px; border: 1px solid var(--border); background: #fff; color: var(--danger); font-size: 12px; font-weight: 700; cursor: pointer;
+    }
+    .content { flex: 1; overflow-y: auto; padding: 24px 28px; background: var(--bg); }
+    .error { color: var(--danger); margin-bottom: 10px; font-size: 13px; }
+    .metrics { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; }
+    .card {
+      background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.08); padding: 16px; border-top: 4px solid transparent;
+    }
+    .card.metric-card:nth-child(1) { border-top-color: #2e7d32; }
+    .card.metric-card:nth-child(2) { border-top-color: #1565c0; }
+    .card.metric-card:nth-child(3) { border-top-color: #f9a825; }
+    .card.metric-card:nth-child(4) { border-top-color: #2e7d32; }
+    .card.metric-card:nth-child(5) { border-top-color: #1565c0; }
+    .card.metric-card:nth-child(6) { border-top-color: #2e7d32; }
+    .card.metric-card:nth-child(7) { border-top-color: #f9a825; }
+    .card.metric-card:nth-child(8) { border-top-color: #2e7d32; }
+    .metric-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; font-weight: 700; }
+    .metric { font-size: 34px; font-weight: 800; line-height: 1; margin-top: 8px; }
+    .charts { margin-top: 18px; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
     canvas { width: 100%; height: 260px; }
-    .actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
-    .actions a { display: inline-block; padding: 8px 10px; background: #0f766e; color: #fff; border-radius: 6px; text-decoration: none; }
+    .actions { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .actions a {
+      display: inline-block; text-decoration: none; font-size: 12px; font-weight: 600; color: #fff; background: var(--green);
+      padding: 8px 12px; border-radius: 6px;
+    }
+    .activity { margin-top: 18px; }
+    .activity h3 { margin: 0 0 8px; font-size: 15px; }
+    .activity-item {
+      display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f5f5f5; font-size: 13px;
+    }
+    .activity-item:last-child { border-bottom: 0; }
+    .activity-dot { width: 8px; height: 8px; border-radius: 999px; flex-shrink: 0; }
+    .activity-time { margin-left: auto; font-size: 11px; color: #9e9e9e; }
+    @media (max-width: 1200px) {
+      .metrics { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .charts { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 860px) {
+      .sidebar { display: none; }
+      .content { padding: 16px; }
+      .topbar { padding: 0 16px; }
+    }
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <h1>LGU Analytics Dashboard</h1>
-    <div id="dashboard-error" style="color:#b91c1c;"></div>
-    <section class="grid">
-      <div class="card"><div>Schedules</div><div id="metric-schedules" class="metric">0</div></div>
-      <div class="card"><div>Reports Total</div><div id="metric-reports-total" class="metric">0</div></div>
-      <div class="card"><div>Open Reports</div><div id="metric-reports-open" class="metric">0</div></div>
-      <div class="card"><div>Resolved Reports</div><div id="metric-reports-resolved" class="metric">0</div></div>
-      <div class="card"><div>Residents</div><div id="metric-residents" class="metric">0</div></div>
-      <div class="card"><div>Collectors</div><div id="metric-collectors" class="metric">0</div></div>
-      <div class="card"><div>Eco Points Total</div><div id="metric-eco" class="metric">0</div></div>
-      <div class="card"><div>Compliance Avg</div><div id="metric-compliance" class="metric">0</div></div>
-    </section>
-    <section class="charts">
-      <div class="card"><h3>Reports by Status</h3><canvas id="chart-reports"></canvas></div>
-      <div class="card"><h3>Schedules by Status</h3><canvas id="chart-schedules"></canvas></div>
-      <div class="card"><h3>Eco Points Trend</h3><canvas id="chart-eco"></canvas></div>
-    </section>
-    <section class="actions">
-      <a href="#" id="btn-export-overview">Export CSV (Overview)</a>
-      <a href="#" id="btn-export-schedules">Export CSV (Schedules)</a>
-      <a href="#" id="btn-export-xml">Export XML</a>
-      <a href="#" id="btn-export-denr-html">DENR HTML</a>
-      <a href="#" id="btn-export-denr-pdf">DENR PDF</a>
+  <main class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <h2>BAGO.PH</h2>
+        <p>LGU Admin</p>
+      </div>
+      <div class="profile">
+        <div class="avatar">EM</div>
+        <div>
+          <strong>Elena Mercado</strong>
+          <span>LGU Officer · Lipa City</span>
+        </div>
+      </div>
+      <ul class="navlist">
+        <li><a href="dashboard-lgu.html" class="active">📊 Dashboard</a></li>
+        <li><a href="schedule.html">📅 Schedule</a></li>
+        <li><a href="report.html">📸 Reports</a></li>
+        <li><a href="admin-collectors-fleet.html">🚛 Collectors</a></li>
+        <li><a href="admin-announcements.html">📢 Announcements</a></li>
+        <li><a href="denr-reports.html">📋 DENR Report</a></li>
+        <li><a href="admin-residents.html">👥 Users</a></li>
+        <li><a href="compliance.html">✅ Compliance</a></li>
+      </ul>
+      <div class="sidebar-footer">
+        <small>v2.4.1 · RA 9003 compliant</small>
+        <button id="btn-signout-side" class="btn-signout" type="button">Sign out</button>
+      </div>
+    </aside>
+    <section class="main">
+      <header class="topbar">
+        <div>
+          <h1>Lipa City · Operations overview</h1>
+          <p>Live analytics dashboard</p>
+        </div>
+        <div class="top-right">
+          <div class="live"><span class="live-dot"></span> LIVE · synced now</div>
+          <button id="btn-signout-top" class="btn-outline" type="button">Sign out</button>
+        </div>
+      </header>
+      <div class="content">
+        <div id="dashboard-error" class="error"></div>
+        <section class="metrics">
+          <div class="card metric-card"><div class="metric-label">Schedules</div><div id="metric-schedules" class="metric">0</div></div>
+          <div class="card metric-card"><div class="metric-label">Reports Total</div><div id="metric-reports-total" class="metric">0</div></div>
+          <div class="card metric-card"><div class="metric-label">Open Reports</div><div id="metric-reports-open" class="metric">0</div></div>
+          <div class="card metric-card"><div class="metric-label">Resolved Reports</div><div id="metric-reports-resolved" class="metric">0</div></div>
+          <div class="card metric-card"><div class="metric-label">Residents</div><div id="metric-residents" class="metric">0</div></div>
+          <div class="card metric-card"><div class="metric-label">Collectors</div><div id="metric-collectors" class="metric">0</div></div>
+          <div class="card metric-card"><div class="metric-label">Eco Points Total</div><div id="metric-eco" class="metric">0</div></div>
+          <div class="card metric-card"><div class="metric-label">Compliance Avg</div><div id="metric-compliance" class="metric">0</div></div>
+        </section>
+        <section class="charts">
+          <div class="card"><h3>Reports by Status</h3><canvas id="chart-reports"></canvas></div>
+          <div class="card"><h3>Schedules by Status</h3><canvas id="chart-schedules"></canvas></div>
+          <div class="card"><h3>Eco Points Trend</h3><canvas id="chart-eco"></canvas></div>
+        </section>
+        <section class="actions">
+          <a href="#" id="btn-export-overview">Export CSV (Overview)</a>
+          <a href="#" id="btn-export-schedules">Export CSV (Schedules)</a>
+          <a href="#" id="btn-export-xml">Export XML</a>
+          <a href="#" id="btn-export-denr-html">DENR HTML</a>
+          <a href="#" id="btn-export-denr-pdf">DENR PDF</a>
+        </section>
+        <section class="card activity">
+          <h3>Recent activity</h3>
+          <div class="activity-item"><span class="activity-dot" style="background:#d32f2f;"></span><span>Urgent report submitted in high-risk area.</span><span class="activity-time">Now</span></div>
+          <div class="activity-item"><span class="activity-dot" style="background:#2e7d32;"></span><span>Schedule updates published to residents.</span><span class="activity-time">Today</span></div>
+          <div class="activity-item"><span class="activity-dot" style="background:#1565c0;"></span><span>Collector status updates synced.</span><span class="activity-time">Today</span></div>
+        </section>
+      </div>
     </section>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
@@ -51,6 +177,17 @@
   <script>
     (function () {
       window.BAGODashboardLGU.initDashboardLGU();
+      function signOut() {
+        try {
+          localStorage.removeItem("bagoToken");
+          localStorage.removeItem("bagoRole");
+        } catch (_e) {}
+        window.location.href = "index.html";
+      }
+      var side = document.getElementById("btn-signout-side");
+      var top = document.getElementById("btn-signout-top");
+      if (side) side.addEventListener("click", signOut);
+      if (top) top.addEventListener("click", signOut);
       const base = (window.BAGOApi.base() || "") + "/api/exports";
       document.getElementById("btn-export-overview").href = base + "/csv?type=overview";
       document.getElementById("btn-export-schedules").href = base + "/csv?type=schedules";

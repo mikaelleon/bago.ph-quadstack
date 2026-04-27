@@ -8,6 +8,17 @@
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
 <script type="text/babel" src="hf-prototype/components/shared.jsx"></script>
 <script type="text/babel" src="hf-prototype/components/collector-screens.jsx"></script>
+<script type="text/babel" src="hf-prototype/components/admin-screens.jsx"></script>
+<script type="text/babel" src="hf-prototype/components/admin-screens-2.jsx"></script>
 <script src="js/prototype-page-loader.js"></script>
-<script>window.BAGOPrototype.render("CollectorReports");</script>
+<script>
+  (function () {
+    var role = (localStorage.getItem("bagoRole") || "").toLowerCase();
+    if (role === "lgu_officer" || role === "lgu_admin") {
+      window.BAGOPrototype.render("AdminCollectors");
+      return;
+    }
+    window.BAGOPrototype.render("CollectorReports");
+  })();
+</script>
 </body></html>
