@@ -13,6 +13,9 @@ const {
 const router = express.Router();
 
 router.use(authMiddleware(true));
+function err(res, status, code, error) {
+  return res.status(status).json({ code, error });
+}
 
 router.get("/", async (req, res) => {
   try {
@@ -20,14 +23,14 @@ router.get("/", async (req, res) => {
     return res.json(rows);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Failed to load schedules" });
+    return err(res, 500, "SCHEDULE_LIST_FAILED", "Failed to load schedules");
   }
 });
 
 router.post("/", requireApiAccess("schedules", "write"), async (req, res) => {
   const lgu_admin_id = req.user.lgu_admin_id;
   if (!lgu_admin_id) {
-    return res.status(403).json({ error: "LGU admin record required" });
+    return err(res, 403, "SCHEDULE_LGU_REQUIRED", "LGU admin record required");
   }
 
   const barangay_id = Number(req.body.barangay_id);
@@ -39,10 +42,10 @@ router.post("/", requireApiAccess("schedules", "write"), async (req, res) => {
 
   const allowedWaste = ["Biodegradable", "Non-Biodegradable", "Recyclable", "Residual"];
   if (!barangay_id || !allowedWaste.includes(waste_type)) {
-    return res.status(400).json({ error: "barangay_id and valid waste_type required" });
+    return err(res, 400, "SCHEDULE_INVALID_WASTE", "barangay_id and valid waste_type required");
   }
   if (!/^\d{4}-\d{2}-\d{2}$/.test(collection_date)) {
-    return res.status(400).json({ error: "collection_date must be YYYY-MM-DD" });
+    return err(res, 400, "SCHEDULE_INVALID_DATE", "collection_date must be YYYY-MM-DD");
   }
 
   if (/^\d{2}:\d{2}$/.test(time_start)) time_start += ":00";
@@ -61,14 +64,14 @@ router.post("/", requireApiAccess("schedules", "write"), async (req, res) => {
     return res.status(201).json(row);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Failed to create schedule" });
+    return err(res, 500, "SCHEDULE_CREATE_FAILED", "Failed to create schedule");
   }
 });
 
 router.patch("/:id", requireApiAccess("schedules", "write"), async (req, res) => {
   const id = Number(req.params.id);
   const lgu_admin_id = req.user.lgu_admin_id;
-  if (!id || !lgu_admin_id) return res.status(400).json({ error: "Invalid request" });
+  if (!id || !lgu_admin_id) return err(res, 400, "SCHEDULE_INVALID_REQUEST", "Invalid request");
 
   const updates = [];
   const values = [];
@@ -101,30 +104,30 @@ router.patch("/:id", requireApiAccess("schedules", "write"), async (req, res) =>
     values.push(Number(req.body.barangay_id));
   }
   if (!updates.length) {
-    return res.status(400).json({ error: "No fields to update" });
+    return err(res, 400, "SCHEDULE_NO_UPDATES", "No fields to update");
   }
 
   try {
     const row = await updateSchedule(id, updates, values);
-    if (!row) return res.status(404).json({ error: "Schedule not found" });
+    if (!row) return err(res, 404, "SCHEDULE_NOT_FOUND", "Schedule not found");
     return res.json(row);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Failed to update schedule" });
+    return err(res, 500, "SCHEDULE_UPDATE_FAILED", "Failed to update schedule");
   }
 });
 
 router.delete("/:id", requireApiAccess("schedules", "write"), async (req, res) => {
   const id = Number(req.params.id);
   const lgu_admin_id = req.user.lgu_admin_id;
-  if (!id || !lgu_admin_id) return res.status(400).json({ error: "Invalid request" });
+  if (!id || !lgu_admin_id) return err(res, 400, "SCHEDULE_INVALID_REQUEST", "Invalid request");
   try {
     const ok = await deleteSchedule(id);
-    if (!ok) return res.status(404).json({ error: "Schedule not found" });
+    if (!ok) return err(res, 404, "SCHEDULE_NOT_FOUND", "Schedule not found");
     return res.status(204).send();
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Failed to delete schedule" });
+    return err(res, 500, "SCHEDULE_DELETE_FAILED", "Failed to delete schedule");
   }
 });
 

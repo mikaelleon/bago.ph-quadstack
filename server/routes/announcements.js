@@ -7,6 +7,9 @@ const { createAnnouncement, listAnnouncements } = require("../services/announcem
 const { sendAnnouncementHooks } = require("../integrations/messaging-hooks");
 
 const router = express.Router();
+function err(res, status, code, error) {
+  return res.status(status).json({ code, error });
+}
 router.use(authMiddleware(true));
 
 router.get("/", async (req, res) => {
@@ -16,7 +19,7 @@ router.get("/", async (req, res) => {
     return res.json(rows);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Failed to load announcements" });
+    return err(res, 500, "ANNOUNCEMENTS_LIST_FAILED", "Failed to load announcements");
   }
 });
 
@@ -25,7 +28,7 @@ router.post("/", requireApiAccess("announcements", "create"), async (req, res) =
   const message = String(req.body.message || "").trim();
   const target_scope = String(req.body.target_scope || "all").trim();
   const urgency = String(req.body.urgency || "General").trim();
-  if (!title || !message) return res.status(400).json({ error: "title and message required" });
+  if (!title || !message) return err(res, 400, "ANNOUNCEMENTS_REQUIRED_FIELDS", "title and message required");
   try {
     const row = await createAnnouncement({
       title,
@@ -38,7 +41,7 @@ router.post("/", requireApiAccess("announcements", "create"), async (req, res) =
     return res.status(201).json({ announcement: row, hooks });
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Failed to publish announcement" });
+    return err(res, 500, "ANNOUNCEMENTS_CREATE_FAILED", "Failed to publish announcement");
   }
 });
 

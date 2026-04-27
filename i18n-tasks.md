@@ -2,15 +2,15 @@
 
 ## Summary
 - Total subtasks: **82**
-- Completed: **16 (20%)**
+- Completed: **28 (34%)**
 - Effort breakdown: **S×16 + M×53 + L×13**
 
 | Main task ID | % complete |
 |---|---:|
 | `T-I18N-01` | 8 / 8 (100%) |
 | `T-I18N-02` | 6 / 6 (100%) |
-| `T-I18N-03` | 0 / 6 (0%) |
-| `T-I18N-04` | 0 / 6 (0%) |
+| `T-I18N-03` | 6 / 6 (100%) |
+| `T-I18N-04` | 6 / 6 (100%) |
 | `T-I18N-05` | 0 / 5 (0%) |
 | `T-I18N-06` | 0 / 22 (0%) |
 | `T-I18N-07` | 0 / 8 (0%) |
@@ -59,13 +59,13 @@
 **Goal** — Add DB/API support for persisted user locale and code-based localized errors.  
 **Source ref** — §3, §7.  
 **Subtasks**
-- [ ] (M) Add locale column migration (`users.locale` logical field) — `sql/migrations/00X_user_locale.sql`.
-- [ ] (M) Update schema baseline to include locale field for fresh installs — `sql/bago_ph_database.sql`.
-- [ ] (M) Add authenticated locale update endpoint — `PATCH /api/auth/me/locale` in `server/routes/auth.js`.
-- [ ] (M) Return locale in auth/login profile payloads for client sync — `server/routes/auth.js`.
-- [ ] (M) Refactor API error responses to stable `code` values (not locale prose) — `server/routes/*.js`.
-- [ ] (M) Keep locale queries parameterized in update/read operations — `server/routes/auth.js` SQL calls.
-**Completion** — **0 / 6 subtasks (0%)**.  
+- [x] (M) Add locale column migration (`users.locale` logical field) — `sql/migrations/00X_user_locale.sql`.
+- [x] (M) Update schema baseline to include locale field for fresh installs — `sql/bago_ph_database.sql`.
+- [x] (M) Add authenticated locale update endpoint — `PATCH /api/auth/me/locale` in `server/routes/auth.js`.
+- [x] (M) Return locale in auth/login profile payloads for client sync — `server/routes/auth.js`.
+- [x] (M) Refactor API error responses to stable `code` values (not locale prose) — `server/routes/*.js`.
+- [x] (M) Keep locale queries parameterized in update/read operations — `server/routes/auth.js` SQL calls.
+**Completion** — **6 / 6 subtasks (100%)**.  
 **Dependencies** — `T-I18N-02`.  
 **Done when**
 - Locale value persists per user record.
@@ -76,13 +76,13 @@
 **Goal** — Ship pre-auth locale selector UI with keyboard/accessibility behavior.  
 **Source ref** — §2, §10.  
 **Subtasks**
-- [ ] (M) Add EN/TL selector on `html/index.html` auth shell and fallback state.
-- [ ] (M) Add EN/TL selector on `html/auth-web-login.html` auth card area.
-- [ ] (M) Add EN/TL selector on `html/register.html` auth shell.
-- [ ] (S) Add EN/TL selector on `html/auth-web-register-collector.html`.
-- [ ] (S) Add EN/TL selector on `html/auth-web-register-lgu.html`.
-- [ ] (M) Add active-state styling + `aria-pressed` + keyboard focus handling for pre-auth selectors — auth page markup + CSS class hooks.
-**Completion** — **0 / 6 subtasks (0%)**.  
+- [x] (M) Add EN/TL selector on `html/index.html` auth shell and fallback state.
+- [x] (M) Add EN/TL selector on `html/auth-web-login.html` auth card area.
+- [x] (M) Add EN/TL selector on `html/register.html` auth shell.
+- [x] (S) Add EN/TL selector on `html/auth-web-register-collector.html`.
+- [x] (S) Add EN/TL selector on `html/auth-web-register-lgu.html`.
+- [x] (M) Add active-state styling + `aria-pressed` + keyboard focus handling for pre-auth selectors — auth page markup + CSS class hooks.
+**Completion** — **6 / 6 subtasks (100%)**.  
 **Dependencies** — `T-I18N-01`, `T-I18N-02`.  
 **Done when**
 - All pre-auth pages expose working selector.

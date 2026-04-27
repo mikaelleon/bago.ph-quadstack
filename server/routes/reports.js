@@ -18,6 +18,9 @@ const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 1024 * 1024 * 2 }
 });
+function err(res, status, code, error) {
+  return res.status(status).json({ code, error });
+}
 
 router.use(authMiddleware(true));
 
@@ -70,14 +73,14 @@ router.get("/", async (req, res) => {
     return res.json(rows);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Failed to load reports" });
+    return err(res, 500, "REPORT_LIST_FAILED", "Failed to load reports");
   }
 });
 
 router.post("/", requireApiAccess("reports", "create"), upload.single("photo"), async (req, res) => {
   const resident_id = req.user.resident_id;
   if (!resident_id) {
-    return res.status(403).json({ error: "Resident profile required to submit reports" });
+    return err(res, 403, "REPORT_RESIDENT_REQUIRED", "Resident profile required to submit reports");
   }
 
   const issue_type = String(req.body.issue_type || "");
@@ -86,10 +89,10 @@ router.post("/", requireApiAccess("reports", "create"), upload.single("photo"), 
   const barangay_id = Number(req.body.barangay_id);
 
   if (!ISSUE_TYPES.has(issue_type)) {
-    return res.status(400).json({ error: "Invalid issue_type" });
+    return err(res, 400, "REPORT_INVALID_ISSUE_TYPE", "Invalid issue_type");
   }
   if (!street_address || !barangay_id) {
-    return res.status(400).json({ error: "street_address and barangay_id required" });
+    return err(res, 400, "REPORT_MISSING_FIELDS", "street_address and barangay_id required");
   }
 
   const pool = getPool();
@@ -148,7 +151,7 @@ router.post("/", requireApiAccess("reports", "create"), upload.single("photo"), 
   } catch (e) {
     await conn.rollback();
     console.error(e);
-    return res.status(500).json({ error: "Failed to create report" });
+    return err(res, 500, "REPORT_CREATE_FAILED", "Failed to create report");
   } finally {
     conn.release();
   }
@@ -156,7 +159,7 @@ router.post("/", requireApiAccess("reports", "create"), upload.single("photo"), 
 
 async function patchReport(req, res) {
   const id = Number(req.params.id);
-  if (!id) return res.status(400).json({ error: "Invalid id" });
+  if (!id) return err(res, 400, "REPORT_INVALID_ID", "Invalid id");
 
   const status = req.body.status != null ? String(req.body.status) : null;
   const assigned_to = req.body.assigned_to != null ? Number(req.body.assigned_to) : null;
@@ -167,7 +170,7 @@ async function patchReport(req, res) {
 
   if (status) {
     if (!allowed.includes(status)) {
-      return res.status(400).json({ error: "Invalid status" });
+      return err(res, 400, "REPORT_INVALID_STATUS", "Invalid status");
     }
     updates.push("status = ?");
     vals.push(status);
@@ -180,7 +183,7 @@ async function patchReport(req, res) {
     vals.push(assigned_to);
   }
 
-  if (!updates.length) return res.status(400).json({ error: "No fields to update" });
+  if (!updates.length) return err(res, 400, "REPORT_NO_UPDATES", "No fields to update");
 
   vals.push(id);
   const pool = getPool();
@@ -189,7 +192,7 @@ async function patchReport(req, res) {
       `UPDATE waste_reports SET ${updates.join(", ")} WHERE report_id = ?`,
       vals
     );
-    if (result.affectedRows === 0) return res.status(404).json({ error: "Report not found" });
+    if (result.affectedRows === 0) return err(res, 404, "REPORT_NOT_FOUND", "Report not found");
     const [[row]] = await pool.query(
       `SELECT r.report_id, r.reference_number, r.resident_id, r.barangay_id, b.barangay_name,
               r.issue_type, r.description, r.street_address, r.gps_latitude, r.gps_longitude,
@@ -203,7 +206,7 @@ async function patchReport(req, res) {
     return res.json(row);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Failed to update report" });
+    return err(res, 500, "REPORT_UPDATE_FAILED", "Failed to update report");
   }
 }
 
@@ -215,7 +218,7 @@ router.patch("/:id/status", requireApiAccess("reports", "update"), async (req, r
 
 router.get("/:id/image-url", authMiddleware(true), async (req, res) => {
   const id = Number(req.params.id);
-  if (!id) return res.status(400).json({ error: "Invalid id" });
+  if (!id) return err(res, 400, "REPORT_INVALID_ID", "Invalid id");
   return res.json({ image_url: buildSignedImageUrl(`${req.protocol}://${req.get("host")}`, id) });
 });
 
@@ -223,10 +226,10 @@ router.get("/image/:id", async (req, res) => {
   const id = Number(req.params.id);
   const token = String(req.query.token || "");
   if (!id || !verifyImageToken(token, id)) {
-    return res.status(403).json({ error: "Invalid or expired media token" });
+    return err(res, 403, "REPORT_MEDIA_TOKEN_INVALID", "Invalid or expired media token");
   }
   const file = readReportImage(id);
-  if (!file) return res.status(404).json({ error: "Image not found" });
+  if (!file) return err(res, 404, "REPORT_IMAGE_NOT_FOUND", "Image not found");
   const ext = path.extname(file.filename).toLowerCase();
   const mime =
     ext === ".jpg" || ext === ".jpeg"

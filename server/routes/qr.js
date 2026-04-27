@@ -10,6 +10,9 @@ const { writeAudit } = require("../services/audit-log");
 const { generateQrToken } = require("../services/qr-token");
 
 const router = express.Router();
+function err(res, status, code, error) {
+  return res.status(status).json({ code, error });
+}
 router.use(authMiddleware(true));
 
 function buildShortToken() {
@@ -18,7 +21,7 @@ function buildShortToken() {
 
 router.get("/my-card", requireApiAccess("qr", "card_read"), async (req, res) => {
   const residentId = Number(req.user.resident_id);
-  if (!residentId) return res.status(400).json({ error: "Resident session required" });
+  if (!residentId) return err(res, 400, "QR_RESIDENT_REQUIRED", "Resident session required");
 
   const pool = getPool();
   try {
@@ -30,7 +33,7 @@ router.get("/my-card", requireApiAccess("qr", "card_read"), async (req, res) => 
        LIMIT 1`,
       [residentId]
     );
-    if (!resident) return res.status(404).json({ error: "Resident record not found" });
+    if (!resident) return err(res, 404, "QR_RESIDENT_NOT_FOUND", "Resident record not found");
 
     const [[row]] = await pool.query(
       `SELECT qr_id, secure_token, status, issued_date, expiry_date
@@ -50,13 +53,13 @@ router.get("/my-card", requireApiAccess("qr", "card_read"), async (req, res) => 
     });
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Failed to load household QR card" });
+    return err(res, 500, "QR_CARD_LOAD_FAILED", "Failed to load household QR card");
   }
 });
 
 router.post("/issue", requireApiAccess("qr", "card_issue"), async (req, res) => {
   const residentId = Number(req.body.resident_id);
-  if (!residentId) return res.status(400).json({ error: "resident_id required" });
+  if (!residentId) return err(res, 400, "QR_RESIDENT_ID_REQUIRED", "resident_id required");
 
   const pool = getPool();
   try {
@@ -67,7 +70,7 @@ router.post("/issue", requireApiAccess("qr", "card_issue"), async (req, res) => 
        LIMIT 1`,
       [residentId]
     );
-    if (!resident) return res.status(404).json({ error: "Resident not found" });
+    if (!resident) return err(res, 404, "QR_RESIDENT_NOT_FOUND", "Resident not found");
 
     let created = null;
     for (let i = 0; i < 5; i += 1) {
@@ -85,7 +88,7 @@ router.post("/issue", requireApiAccess("qr", "card_issue"), async (req, res) => 
         throw err;
       }
     }
-    if (!created) return res.status(500).json({ error: "Failed to generate unique QR token" });
+    if (!created) return err(res, 500, "QR_TOKEN_GENERATION_FAILED", "Failed to generate unique QR token");
 
     const [[row]] = await pool.query(
       `SELECT qr_id, household_id, secure_token, qr_type, status, issued_date, expiry_date
@@ -97,13 +100,13 @@ router.post("/issue", requireApiAccess("qr", "card_issue"), async (req, res) => 
     return res.status(201).json(row);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Failed to issue household QR card" });
+    return err(res, 500, "QR_CARD_ISSUE_FAILED", "Failed to issue household QR card");
   }
 });
 
 router.post("/scan", requireApiAccess("qr", "scan"), async (req, res) => {
   const secureToken = String(req.body.secure_token || "").trim();
-  if (!secureToken) return res.status(400).json({ error: "secure_token required" });
+  if (!secureToken) return err(res, 400, "QR_TOKEN_REQUIRED", "secure_token required");
   const pool = getPool();
   try {
     const [[qr]] = await pool.query(
@@ -113,13 +116,13 @@ router.post("/scan", requireApiAccess("qr", "scan"), async (req, res) => {
       [secureToken]
     );
     if (!qr || qr.qr_type !== "Household" || qr.status !== "Active") {
-      return res.status(404).json({ error: "QR token invalid or inactive" });
+      return err(res, 404, "QR_TOKEN_INVALID", "QR token invalid or inactive");
     }
     const [[resident]] = await pool.query(
       "SELECT resident_id, full_name FROM residents WHERE household_id = ? LIMIT 1",
       [qr.household_id]
     );
-    if (!resident) return res.status(404).json({ error: "Household not linked to resident" });
+    if (!resident) return err(res, 404, "QR_HOUSEHOLD_NOT_LINKED", "Household not linked to resident");
     const idempotency_key = `qr-scan:${qr.qr_id}:${new Date().toISOString().slice(0, 10)}`;
     const result = await creditLedger({
       resident_id: resident.resident_id,
@@ -145,7 +148,7 @@ router.post("/scan", requireApiAccess("qr", "scan"), async (req, res) => {
     });
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Failed to process QR scan" });
+    return err(res, 500, "QR_SCAN_FAILED", "Failed to process QR scan");
   }
 });
 

@@ -7,6 +7,9 @@ const { creditLedger, listLedgerByRole } = require("../services/eco-points-servi
 const { writeAudit } = require("../services/audit-log");
 
 const router = express.Router();
+function err(res, status, code, error) {
+  return res.status(status).json({ code, error });
+}
 router.use(authMiddleware(true));
 
 router.get("/ledger", requireApiAccess("eco_points", "ledger"), async (req, res) => {
@@ -15,7 +18,7 @@ router.get("/ledger", requireApiAccess("eco_points", "ledger"), async (req, res)
     return res.json(rows);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Failed to load eco-points ledger" });
+    return err(res, 500, "ECO_LEDGER_FAILED", "Failed to load eco-points ledger");
   }
 });
 
@@ -24,9 +27,9 @@ router.post("/credit", requireApiAccess("eco_points", "credit"), async (req, res
   const resident_id = Number(req.body.resident_id);
   const points_delta = Number(req.body.points_delta);
   const source_type = String(req.body.source_type || "QR_SCAN");
-  if (!idempotencyKey) return res.status(400).json({ error: "Idempotency-Key header required" });
+  if (!idempotencyKey) return err(res, 400, "ECO_IDEMPOTENCY_REQUIRED", "Idempotency-Key header required");
   if (!resident_id || !Number.isFinite(points_delta) || points_delta <= 0) {
-    return res.status(400).json({ error: "resident_id and positive points_delta required" });
+    return err(res, 400, "ECO_INVALID_CREDIT_INPUT", "resident_id and positive points_delta required");
   }
   try {
     const result = await creditLedger({
@@ -48,7 +51,7 @@ router.post("/credit", requireApiAccess("eco_points", "credit"), async (req, res
     return res.status(result.duplicate ? 200 : 201).json(result);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Failed to credit eco-points" });
+    return err(res, 500, "ECO_CREDIT_FAILED", "Failed to credit eco-points");
   }
 });
 
@@ -56,9 +59,9 @@ router.post("/reconcile", requireApiAccess("eco_points", "reconcile"), async (re
   const idempotencyKey = String(req.header("Idempotency-Key") || "").trim();
   const resident_id = Number(req.body.resident_id);
   const points_delta = Number(req.body.points_delta);
-  if (!idempotencyKey) return res.status(400).json({ error: "Idempotency-Key header required" });
+  if (!idempotencyKey) return err(res, 400, "ECO_IDEMPOTENCY_REQUIRED", "Idempotency-Key header required");
   if (!resident_id || !Number.isFinite(points_delta) || points_delta === 0) {
-    return res.status(400).json({ error: "resident_id and non-zero points_delta required" });
+    return err(res, 400, "ECO_INVALID_RECON_INPUT", "resident_id and non-zero points_delta required");
   }
   try {
     const result = await creditLedger({
@@ -77,7 +80,7 @@ router.post("/reconcile", requireApiAccess("eco_points", "reconcile"), async (re
     return res.status(result.duplicate ? 200 : 201).json(result);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Failed to reconcile eco-points" });
+    return err(res, 500, "ECO_RECONCILE_FAILED", "Failed to reconcile eco-points");
   }
 });
 

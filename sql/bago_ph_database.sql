@@ -187,6 +187,7 @@ CREATE TABLE app_identity (
     resident_id       INT NULL,
     collector_id      INT NULL,
     lgu_admin_id      INT NULL,
+    locale            ENUM('en','tl') NOT NULL DEFAULT 'en',
     created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (resident_id)
         REFERENCES residents(resident_id)

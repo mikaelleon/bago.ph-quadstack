@@ -2,6 +2,8 @@
   var STORAGE_KEY = "bagoLocale";
   var allowed = { en: true, tl: true };
   var currentLocale = "en";
+  var toggleNodes = [];
+  var liveRegion = null;
 
   window.BAGO = window.BAGO || {};
 
@@ -92,6 +94,124 @@
     });
   }
 
+  function isPreAuthPage() {
+    var page = String(window.location.pathname || "")
+      .split("/")
+      .pop()
+      .toLowerCase();
+    return [
+      "index.html",
+      "auth-web-login.html",
+      "register.html",
+      "auth-web-register.html",
+      "auth-web-register-collector.html",
+      "auth-web-register-lgu.html"
+    ].indexOf(page) !== -1;
+  }
+
+  function ensureLiveRegion() {
+    if (liveRegion && document.body.contains(liveRegion)) return liveRegion;
+    var node = document.getElementById("bago-locale-live");
+    if (!node) {
+      node = document.createElement("div");
+      node.id = "bago-locale-live";
+      node.setAttribute("aria-live", "polite");
+      node.style.position = "fixed";
+      node.style.width = "1px";
+      node.style.height = "1px";
+      node.style.overflow = "hidden";
+      node.style.clip = "rect(1px, 1px, 1px, 1px)";
+      node.style.clipPath = "inset(50%)";
+      node.style.whiteSpace = "nowrap";
+      document.body.appendChild(node);
+    }
+    liveRegion = node;
+    return liveRegion;
+  }
+
+  function announceLocale(locale) {
+    var region = ensureLiveRegion();
+    var msg = locale === "tl" ? t("common.language_changed_tl") : t("common.language_changed_en");
+    region.textContent = "";
+    setTimeout(function () {
+      region.textContent = msg;
+    }, 10);
+  }
+
+  function updateToggleState() {
+    var locale = get();
+    toggleNodes.forEach(function (node) {
+      var enBtn = node.querySelector('[data-locale-value="en"]');
+      var tlBtn = node.querySelector('[data-locale-value="tl"]');
+      if (!enBtn || !tlBtn) return;
+      var enActive = locale === "en";
+      enBtn.setAttribute("aria-pressed", enActive ? "true" : "false");
+      tlBtn.setAttribute("aria-pressed", enActive ? "false" : "true");
+      enBtn.style.background = enActive ? "#111827" : "#ffffff";
+      enBtn.style.color = enActive ? "#ffffff" : "#111827";
+      tlBtn.style.background = enActive ? "#ffffff" : "#111827";
+      tlBtn.style.color = enActive ? "#111827" : "#ffffff";
+      enBtn.setAttribute("aria-label", t("common.switch_to_english"));
+      tlBtn.setAttribute("aria-label", t("common.switch_to_tagalog"));
+      enBtn.title = t("common.switch_to_english");
+      tlBtn.title = t("common.switch_to_tagalog");
+    });
+  }
+
+  function onToggleKeydown(event) {
+    var key = String(event.key || "");
+    if (key !== "ArrowLeft" && key !== "ArrowRight") return;
+    event.preventDefault();
+    var current = normalizeLocale(event.currentTarget.getAttribute("data-locale-value"));
+    var next = current === "en" ? "tl" : "en";
+    set(next);
+    var node = event.currentTarget.parentNode.querySelector('[data-locale-value="' + next + '"]');
+    if (node) node.focus();
+  }
+
+  function mountPreAuthToggle() {
+    if (!isPreAuthPage()) return;
+    if (document.getElementById("bago-preauth-locale-toggle")) return;
+
+    var wrap = document.createElement("div");
+    wrap.id = "bago-preauth-locale-toggle";
+    wrap.setAttribute("role", "group");
+    wrap.setAttribute("aria-label", t("common.language"));
+    wrap.style.position = "fixed";
+    wrap.style.top = "12px";
+    wrap.style.right = "12px";
+    wrap.style.zIndex = "99999";
+    wrap.style.display = "inline-flex";
+    wrap.style.gap = "6px";
+    wrap.style.padding = "6px";
+    wrap.style.border = "1px solid #d1d5db";
+    wrap.style.borderRadius = "999px";
+    wrap.style.background = "#ffffff";
+    wrap.style.boxShadow = "0 4px 14px rgba(0,0,0,0.08)";
+
+    ["en", "tl"].forEach(function (locale) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.setAttribute("data-locale-value", locale);
+      btn.textContent = locale.toUpperCase();
+      btn.style.border = "1px solid #d1d5db";
+      btn.style.borderRadius = "999px";
+      btn.style.padding = "4px 10px";
+      btn.style.font = "600 12px Poppins, Arial, sans-serif";
+      btn.style.cursor = "pointer";
+      btn.addEventListener("click", function () {
+        set(locale);
+        btn.focus();
+      });
+      btn.addEventListener("keydown", onToggleKeydown);
+      wrap.appendChild(btn);
+    });
+
+    document.body.appendChild(wrap);
+    toggleNodes.push(wrap);
+    updateToggleState();
+  }
+
   function set(locale, opts) {
     var options = opts || {};
     var next = normalizeLocale(locale);
@@ -99,6 +219,8 @@
     writeStoredLocale(next);
     document.documentElement.lang = next;
     apply(options.root || document);
+    updateToggleState();
+    if (!options.silent) announceLocale(next);
 
     if (!options.silent) {
       window.dispatchEvent(
@@ -114,6 +236,8 @@
 
   function bootstrap() {
     var initial = detectInitialLocale();
+    mountPreAuthToggle();
+    ensureLiveRegion();
     set(initial, { silent: true });
   }
 

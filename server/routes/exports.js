@@ -7,6 +7,9 @@ const { listSchedules } = require("../services/schedules-service");
 const { getPool } = require("../db");
 
 const router = express.Router();
+function err(res, status, code, error) {
+  return res.status(status).json({ code, error });
+}
 router.use(authMiddleware(true));
 
 function csvEscape(v) {
@@ -58,7 +61,7 @@ router.get("/csv", requireRole("lgu_officer"), async (req, res) => {
     return res.send(csv);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Failed to export CSV" });
+    return err(res, 500, "EXPORT_CSV_FAILED", "Failed to export CSV");
   }
 });
 
@@ -120,7 +123,7 @@ router.get("/xml", requireRole("lgu_officer"), async (req, res) => {
     return res.send(xml);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Failed to export XML" });
+    return err(res, 500, "EXPORT_XML_FAILED", "Failed to export XML");
   }
 });
 
@@ -142,7 +145,7 @@ router.get("/denr-html", requireRole("lgu_officer"), async (req, res) => {
     return res.send(html);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Failed to export DENR HTML" });
+    return err(res, 500, "EXPORT_DENR_HTML_FAILED", "Failed to export DENR HTML");
   }
 });
 
@@ -155,7 +158,7 @@ router.get("/denr-pdf", requireRole("lgu_officer"), async (req, res) => {
     return res.send(pdf);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Failed to export DENR PDF" });
+    return err(res, 500, "EXPORT_DENR_PDF_FAILED", "Failed to export DENR PDF");
   }
 });
 

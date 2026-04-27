@@ -5,6 +5,9 @@ const { authMiddleware, requireRole } = require("../middleware/auth");
 const { getOverview } = require("../services/analytics-service");
 
 const router = express.Router();
+function err(res, status, code, error) {
+  return res.status(status).json({ code, error });
+}
 router.use(authMiddleware(true));
 
 router.get("/overview", requireRole("lgu_officer"), async (req, res) => {
@@ -17,7 +20,7 @@ router.get("/overview", requireRole("lgu_officer"), async (req, res) => {
     return res.json(out);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Failed to load analytics overview" });
+    return err(res, 500, "ANALYTICS_OVERVIEW_FAILED", "Failed to load analytics overview");
   }
 });
 

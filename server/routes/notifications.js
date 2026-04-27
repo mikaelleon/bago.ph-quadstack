@@ -7,6 +7,9 @@ const { listRecentScheduleEvents } = require("../services/schedules-service");
 const { listAnnouncements } = require("../services/announcements-service");
 
 const router = express.Router();
+function err(res, status, code, error) {
+  return res.status(status).json({ code, error });
+}
 
 router.use(authMiddleware(true));
 
@@ -62,7 +65,7 @@ router.get("/schedule", async (_req, res) => {
     return res.json(items);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Failed to load schedule notifications" });
+    return err(res, 500, "NOTIFICATIONS_SCHEDULE_FAILED", "Failed to load schedule notifications");
   }
 });
 
@@ -72,7 +75,7 @@ router.get("/reports", async (req, res) => {
     return res.json(items);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Failed to load report notifications" });
+    return err(res, 500, "NOTIFICATIONS_REPORT_FAILED", "Failed to load report notifications");
   }
 });
 
@@ -94,7 +97,7 @@ router.get("/", async (req, res) => {
     return res.json(items.slice(0, 50));
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Failed to load notifications feed" });
+    return err(res, 500, "NOTIFICATIONS_FEED_FAILED", "Failed to load notifications feed");
   }
 });
 
