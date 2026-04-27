@@ -2,7 +2,7 @@
 
 ## Summary
 - Total subtasks: **82**
-- Completed: **28 (34%)**
+- Completed: **55 (67%)**
 - Effort breakdown: **S×16 + M×53 + L×13**
 
 | Main task ID | % complete |
@@ -11,8 +11,8 @@
 | `T-I18N-02` | 6 / 6 (100%) |
 | `T-I18N-03` | 6 / 6 (100%) |
 | `T-I18N-04` | 6 / 6 (100%) |
-| `T-I18N-05` | 0 / 5 (0%) |
-| `T-I18N-06` | 0 / 22 (0%) |
+| `T-I18N-05` | 5 / 5 (100%) |
+| `T-I18N-06` | 22 / 22 (100%) |
 | `T-I18N-07` | 0 / 8 (0%) |
 | `T-I18N-08` | 0 / 7 (0%) |
 | `T-I18N-09` | 1 / 5 (20%) |
@@ -93,12 +93,12 @@
 **Goal** — Add persistent in-app selector for authenticated navigation contexts.  
 **Source ref** — §2, §5, §10.  
 **Subtasks**
-- [ ] (M) Add compact `EN | TL` control in authenticated navbar pattern — pages using `nav ul` + `css/style.css`.
-- [ ] (M) Add floating fallback selector for live pages without `<nav>` (`schedule`, `report`, `eco-points`, `announcements`, `dashboard-lgu`, `qr-audit`, XML editors).
-- [ ] (M) Wire selector reapply-on-navigation across role-based pages — `html/role-access.js` + page init scripts.
-- [ ] (S) Apply locale change without full reload in all in-app pages — page script integrations.
-- [ ] (S) Keep selector state synced with `bagoLocale` on page entry — i18n runtime + page bootstrap.
-**Completion** — **0 / 5 subtasks (0%)**.  
+- [x] (M) Add compact `EN | TL` control in authenticated navbar pattern — pages using `nav ul` + `css/style.css`.
+- [x] (M) Add floating fallback selector for live pages without `<nav>` (`schedule`, `report`, `eco-points`, `announcements`, `dashboard-lgu`, `qr-audit`, XML editors).
+- [x] (M) Wire selector reapply-on-navigation across role-based pages — `html/role-access.js` + page init scripts.
+- [x] (S) Apply locale change without full reload in all in-app pages — page script integrations.
+- [x] (S) Keep selector state synced with `bagoLocale` on page entry — i18n runtime + page bootstrap.
+**Completion** — **5 / 5 subtasks (100%)**.  
 **Dependencies** — `T-I18N-04`.  
 **Done when**
 - Authenticated users can switch language anywhere in app.
@@ -109,29 +109,29 @@
 **Goal** — Extract and bind translatable strings per page inventory from `i18n-spec.md` §6.  
 **Source ref** — §4, §5, §6.  
 **Subtasks**
-- [ ] (M) Bind auth shell strings on `html/index.html` to `auth.*` keys.
-- [ ] (S) Bind auth shell strings on `html/auth-web-login.html` to `auth.*` keys.
-- [ ] (M) Bind auth shell strings on `html/register.html` to `auth.*` keys.
-- [ ] (S) Bind auth shell strings on `html/auth-web-register-collector.html` to `auth.*` keys.
-- [ ] (S) Bind auth shell strings on `html/auth-web-register-lgu.html` to `auth.*` keys.
-- [ ] (M) Bind resident dashboard shell strings on `html/dashboard-resident.html` to `resident.*` keys.
-- [ ] (M) Bind collector dashboard shell strings on `html/dashboard-collector.html` to `collectors.*` keys.
-- [ ] (M) Bind LGU dashboard labels/charts/export links on `html/dashboard-lgu.html` to `lgu.*` keys.
-- [ ] (M) Bind schedule page headings/forms/table labels on `html/schedule.html` to `schedule.*` keys.
-- [ ] (M) Bind report page headings/forms/placeholders/status labels on `html/report.html` to `report.*` keys.
-- [ ] (M) Bind eco-points wallet/catalog/ledger labels on `html/eco-points.html` to `ecopoints.*` keys.
-- [ ] (M) Bind announcements page compose/feed labels on `html/announcements.html` to `announcements.*` keys.
-- [ ] (M) Bind collector shell strings on `html/collectors.html` to `collectors.*` keys.
-- [ ] (S) Bind QR audit labels/placeholders/results baseline on `html/qr-audit.html` to `qr.*` keys.
-- [ ] (M) Bind compliance shell strings on `html/compliance.html` to `lgu.compliance.*` keys.
-- [ ] (M) Bind DENR shell strings on `html/denr-reports.html` to `lgu.denr.*` keys.
-- [ ] (M) Bind users shell strings on `html/users.html` to `lgu.users.*` keys.
-- [ ] (M) Bind XML schedules editor controls/table headers on `html/xml-schedules-editor.html` to `xml.schedules.*` keys.
-- [ ] (M) Bind XML barangays editor controls/table headers on `html/xml-barangays-editor.html` to `xml.barangays.*` keys.
-- [ ] (M) Define EN keyset for all pages above in `html/js/i18n/strings.js`.
-- [ ] (L) Define TL keyset parity for all pages above in `html/js/i18n/strings.js`.
-- [ ] (M) Add shared `common.*` keys for repeated labels (`save`, `cancel`, `search`, `status`, `actions`) and replace duplicates.
-**Completion** — **0 / 22 subtasks (0%)**.  
+- [x] (M) Bind auth shell strings on `html/index.html` to `auth.*` keys.
+- [x] (S) Bind auth shell strings on `html/auth-web-login.html` to `auth.*` keys.
+- [x] (M) Bind auth shell strings on `html/register.html` to `auth.*` keys.
+- [x] (S) Bind auth shell strings on `html/auth-web-register-collector.html` to `auth.*` keys.
+- [x] (S) Bind auth shell strings on `html/auth-web-register-lgu.html` to `auth.*` keys.
+- [x] (M) Bind resident dashboard shell strings on `html/dashboard-resident.html` to `resident.*` keys.
+- [x] (M) Bind collector dashboard shell strings on `html/dashboard-collector.html` to `collectors.*` keys.
+- [x] (M) Bind LGU dashboard labels/charts/export links on `html/dashboard-lgu.html` to `lgu.*` keys.
+- [x] (M) Bind schedule page headings/forms/table labels on `html/schedule.html` to `schedule.*` keys.
+- [x] (M) Bind report page headings/forms/placeholders/status labels on `html/report.html` to `report.*` keys.
+- [x] (M) Bind eco-points wallet/catalog/ledger labels on `html/eco-points.html` to `ecopoints.*` keys.
+- [x] (M) Bind announcements page compose/feed labels on `html/announcements.html` to `announcements.*` keys.
+- [x] (M) Bind collector shell strings on `html/collectors.html` to `collectors.*` keys.
+- [x] (S) Bind QR audit labels/placeholders/results baseline on `html/qr-audit.html` to `qr.*` keys.
+- [x] (M) Bind compliance shell strings on `html/compliance.html` to `lgu.compliance.*` keys.
+- [x] (M) Bind DENR shell strings on `html/denr-reports.html` to `lgu.denr.*` keys.
+- [x] (M) Bind users shell strings on `html/users.html` to `lgu.users.*` keys.
+- [x] (M) Bind XML schedules editor controls/table headers on `html/xml-schedules-editor.html` to `xml.schedules.*` keys.
+- [x] (M) Bind XML barangays editor controls/table headers on `html/xml-barangays-editor.html` to `xml.barangays.*` keys.
+- [x] (M) Define EN keyset for all pages above in `html/js/i18n/strings.js`.
+- [x] (L) Define TL keyset parity for all pages above in `html/js/i18n/strings.js`.
+- [x] (M) Add shared `common.*` keys for repeated labels (`save`, `cancel`, `search`, `status`, `actions`) and replace duplicates.
+**Completion** — **22 / 22 subtasks (100%)**.  
 **Dependencies** — `T-I18N-01`, `T-I18N-05`.  
 **Done when**
 - Every inventoried page renders from catalog keys.
