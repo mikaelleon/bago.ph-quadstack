@@ -2,7 +2,7 @@
 
 ## Summary
 - Total subtasks: `210`
-- Completed: `98 (47%)`
+- Completed: `101 (48%)`
 - Effort breakdown: `S×166 + M×35 + L×9`
 
 | Main task | % complete |
@@ -12,7 +12,7 @@
 | `T-UI-03` | 100% |
 | `T-UI-04` | 57% |
 | `T-UI-05` | 58% |
-| `T-UI-06` | 22% |
+| `T-UI-06` | 56% |
 | `T-UI-07` | 21% |
 | `T-UI-08` | 0% |
 | `T-UI-09` | 13% |
@@ -273,13 +273,13 @@
 - [ ] (M) Apply mobile navbar collapse behavior to every authenticated page shell — artifact: consistent nav toggle script + markup across pages.
 - [x] (S) Keep active-route indicator on LGU dashboard shell as baseline pattern — artifact: `.navlist a.active` in `html/dashboard-lgu.html`.
 - [ ] (M) Add active-route indicator on all authenticated pages (resident/collector/LGU/tool pages) — artifact: shared route-highlighting helper.
-- [ ] (M) Add breadcrumb component to nested LGU pages (`denr-reports`, `users`, `xml-*`) — artifact: breadcrumb markup + style + route data.
+- [x] (M) Add breadcrumb component to nested LGU pages (`denr-reports`, `users`, `xml-*`) — artifact: breadcrumb markup + style + route data.
 - [ ] (M) Implement querystring-preserving back navigation for detail flows — artifact: filter state preserved in URL and restored on return.
-- [ ] (S) Add styled `html/403.html` page and hook forbidden redirects there — artifact: new page + guard redirect path.
-- [ ] (S) Add styled `html/404.html` page and hook unknown routes there — artifact: new page + route fallback.
+- [x] (S) Add styled `html/403.html` page and hook forbidden redirects there — artifact: new page + guard redirect path.
+- [x] (S) Add styled `html/404.html` page and hook unknown routes there — artifact: new page + route fallback.
 - [ ] (M) Unify client role guard matrix between `html/role-access.js` and `html/js/prototype-page-loader.js` — artifact: single source mapping + tests/doc.
 
-**Completion** — `2 / 9 subtasks (22%)`  
+**Completion** — `5 / 9 subtasks (56%)`  
 **Dependencies** — `T-UI-01`, `T-UI-04`  
 **Done when**
 - All authenticated pages share consistent responsive navigation.

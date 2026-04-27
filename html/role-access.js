@@ -55,6 +55,13 @@ const ROLE_PAGE_ACCESS = {
   ])
 };
 
+const KNOWN_PAGES = new Set(
+  ["403.html", "404.html", "otp.html", "auth-web-register.html", "auth-web-otp.html"]
+    .concat(Array.from(ROLE_PAGE_ACCESS.user))
+    .concat(Array.from(ROLE_PAGE_ACCESS.collector))
+    .concat(Array.from(ROLE_PAGE_ACCESS.lgu_officer))
+);
+
 function normalizeRole(role) {
   if (!role) return "user";
   const cleaned = String(role).trim().toLowerCase().replace(/\s+/g, "_");
@@ -194,6 +201,11 @@ function enforceAccessControl() {
   const currentPage = getCurrentPageName();
   const roleStored = localStorage.getItem("bagoRole");
 
+  if (!KNOWN_PAGES.has(currentPage)) {
+    window.location.href = "404.html";
+    return;
+  }
+
   if (isAuthPage()) {
     if (roleStored) {
       window.location.href = getDashboardHomeForRole(getStoredRole());
@@ -209,7 +221,7 @@ function enforceAccessControl() {
 
   const role = getStoredRole();
   if (!canAccessPage(role, currentPage)) {
-    window.location.href = getDashboardHomeForRole(role);
+    window.location.href = "403.html";
     return;
   }
 
@@ -257,7 +269,8 @@ window.BAGOAccess = {
   normalizeMobile,
   saveRegisteredAccount,
   getRegisteredAccount,
-  validateLoginAttempt
+  validateLoginAttempt,
+  canAccessPage
 };
 
 document.addEventListener("DOMContentLoaded", enforceAccessControl);

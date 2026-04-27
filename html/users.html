@@ -1,12 +1,31 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>BAGO.PH - Users</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#eceff1;}</style></head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BAGO.PH - Users</title>
+  <style>
+    body { margin: 0; min-height: 100vh; background: #eceff1; font-family: Poppins, Arial, sans-serif; }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 16px; }
+    #app { min-height: calc(100vh - 80px); }
+  </style>
+</head>
 <body>
-<main id="app"></main>
+<main class="wrap">
+  <nav class="ui-breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="dashboard-lgu.html">Dashboard</a></li>
+      <li><a href="denr-reports.html">LGU Tools</a></li>
+      <li><span>Users</span></li>
+    </ol>
+  </nav>
+  <section id="app"></section>
+</main>
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
 <script src="js/bago-env.js"></script><script src="js/bago-api.js"></script>
+<script src="js/navigation-runtime.js"></script>
 <script src="js/i18n/strings.js"></script><script src="js/i18n/i18n.js"></script>
 <script type="text/babel" src="hf-prototype/components/shared.jsx"></script>
 <script type="text/babel" src="hf-prototype/components/admin-screens.jsx"></script>

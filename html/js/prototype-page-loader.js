@@ -625,6 +625,29 @@ window.BAGOPrototype = (function () {
       "auth-web-otp.html": true
     };
     if (authPages[page]) return;
+    var known = {
+      "403.html": true,
+      "404.html": true,
+      "dashboard-resident.html": true, "schedule.html": true, "report.html": true, "eco-points.html": true, "announcements.html": true,
+      "resident-reports.html": true, "resident-report-detail.html": true, "resident-report-submitted.html": true,
+      "resident-missions.html": true, "resident-rewards.html": true, "resident-leaderboard.html": true,
+      "resident-web-home.html": true, "resident-web-schedule.html": true, "resident-web-report.html": true,
+      "resident-web-myreports.html": true, "resident-web-wallet.html": true, "resident-web-missions.html": true,
+      "resident-web-rewards.html": true, "resident-web-leaderboard.html": true, "resident-web-profile.html": true,
+      "resident-web-qrcard.html": true,
+      "dashboard-collector.html": true, "collectors.html": true, "qr-audit.html": true, "collector-route.html": true,
+      "collector-reports.html": true, "collector-report-update.html": true, "collector-scan.html": true,
+      "collector-web-route.html": true, "collector-web-scan.html": true, "collector-web-reports.html": true,
+      "collector-web-schedule.html": true, "collector-web-analytics.html": true, "collector-web-profile.html": true,
+      "dashboard-lgu.html": true, "dashboard.html": true, "compliance.html": true, "users.html": true, "denr-reports.html": true,
+      "xml-schedules-editor.html": true, "xml-barangays-editor.html": true, "admin-login.html": true, "admin-schedule.html": true,
+      "admin-reports.html": true, "admin-residents.html": true, "admin-collectors-fleet.html": true, "admin-announcements.html": true,
+      "admin-settings.html": true
+    };
+    if (!known[page]) {
+      go("404");
+      return;
+    }
     var role = normalizeRole(localStorage.getItem("bagoRole"));
     if (!localStorage.getItem("bagoRole")) {
       go("index");
@@ -654,7 +677,7 @@ window.BAGOPrototype = (function () {
       ]
     };
     if ((allow[role] || []).indexOf(page) === -1) {
-      go(dashboardFor(role));
+      go("403");
     }
   }
 

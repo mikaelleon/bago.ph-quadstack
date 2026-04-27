@@ -19,6 +19,13 @@
 </head>
 <body>
   <main class="wrap">
+    <nav class="ui-breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="dashboard-lgu.html">Dashboard</a></li>
+        <li><a href="denr-reports.html">LGU Tools</a></li>
+        <li><span>XML Schedules Editor</span></li>
+      </ol>
+    </nav>
     <div id="view-mode-banner">View mode active (`?mode=view`). Edit controls disabled.</div>
     <div class="card row">
       <input id="meta-title" placeholder="Title" />
@@ -83,6 +90,7 @@
   <script type="application/xml" id="schedules-xml-fallback"><ecolinisph_schedules><title>BAGO.PH</title><tagline/><proponent/><coverage_area/><statistics><weekly_routes_planned>0</weekly_routes_planned><on_time_completion>0%</on_time_completion><barangays_on_schedule>0</barangays_on_schedule><exceptions_this_month>0</exceptions_this_month></statistics><weekly_route_calendar/><barangay_schedules/><special_dates/><collector_shifts/></ecolinisph_schedules></script>
   <script src="js/bago-env.js"></script>
   <script src="js/bago-api.js"></script>
+  <script src="js/navigation-runtime.js"></script>
   <script src="js/i18n/strings.js"></script>
   <script src="js/i18n/i18n.js"></script>
   <script src="js/xml-data-core.js"></script>
