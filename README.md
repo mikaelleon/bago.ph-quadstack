@@ -10,6 +10,7 @@
 - [Implementation Milestones (Progress Tracker)](#implementation-milestones-progress-tracker)
 - [Who This Is For](#who-this-is-for)
 - [Feature Overview](#feature-overview)
+- [Language Support (i18n)](#language-support-i18n)
 - [Auth, Registration & Navigation](#auth-registration--navigation)
 - [Role-Based Pages](#role-based-pages)
 - [Lipa City Barangays (Data)](#lipa-city-barangays-data)
@@ -121,6 +122,30 @@ The platform currently combines **deployed-ready backend services** and **role-f
 - **User Management**: resident, collector, and officer account management (mock).
 - **QR Audit**: QR-related validation and audit page.
 - **XML tools**: schedule & barangay data editors / viewers (see below).
+
+---
+
+## Language Support (i18n)
+
+- Supported locales: `en` and `tl` (Tagalog).
+- Storage key: `bagoLocale` in `localStorage`.
+- First visit locale detection:
+  - if `bagoLocale` exists, use it
+  - else detect from `navigator.language` (`tl|fil -> tl`, else `en`)
+- Locale switch behavior:
+  - no page reload; runtime re-applies translated keys
+  - updates `document.documentElement.lang`
+  - emits `bago:locale-changed` event
+  - keeps selection on logout (only auth session keys removed)
+- Fallback chain for missing keys:
+  1. requested locale key
+  2. `en` key
+  3. key literal
+- Pre-auth pages and in-app pages both expose EN/TL selector (nav attach or floating fallback).
+
+For contributor and translator workflow, see:
+- `docs/i18n/contributor-guide.md`
+- `docs/i18n/translator-handoff.md`
 
 ---
 

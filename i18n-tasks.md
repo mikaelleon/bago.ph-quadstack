@@ -2,7 +2,7 @@
 
 ## Summary
 - Total subtasks: **82**
-- Completed: **79 (96%)**
+- Completed: **82 (100%)**
 - Effort breakdown: **S×16 + M×53 + L×13**
 
 | Main task ID | % complete |
@@ -17,7 +17,7 @@
 | `T-I18N-08` | 7 / 7 (100%) |
 | `T-I18N-09` | 5 / 5 (100%) |
 | `T-I18N-10` | 5 / 5 (100%) |
-| `T-I18N-11` | 1 / 4 (25%) |
+| `T-I18N-11` | 4 / 4 (100%) |
 
 ## T-I18N-01
 **Goal** — Build core client i18n runtime and attribute-binding foundation for static HTML/JS pages.  
@@ -211,11 +211,11 @@
 **Goal** — Document i18n operation, contributor workflow, and translator handoff process.  
 **Source ref** — §9, §11.  
 **Subtasks**
-- [ ] (S) Add README section for language selector usage and fallback behavior — `README.md`.
-- [ ] (S) Add contributor guide for adding new keys and binding attributes — `docs/i18n/contributor-guide.md`.
-- [ ] (S) Add translator handoff document (tone/style/key context) — `docs/i18n/translator-handoff.md`.
+- [x] (S) Add README section for language selector usage and fallback behavior — `README.md`.
+- [x] (S) Add contributor guide for adding new keys and binding attributes — `docs/i18n/contributor-guide.md`.
+- [x] (S) Add translator handoff document (tone/style/key context) — `docs/i18n/translator-handoff.md`.
 - [x] (S) Keep core implementation spec documented for build handoff — `i18n-spec.md`.
-**Completion** — **1 / 4 subtasks (25%)**.  
+**Completion** — **4 / 4 subtasks (100%)**.  
 **Dependencies** — `T-I18N-10`.  
 **Done when**
 - Engineers have clear key/binding workflow docs.
