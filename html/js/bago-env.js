@@ -36,7 +36,10 @@
 
   function ensureUiDesignSystemStyles() {
     var path = String(window.location.pathname || "/");
-    var base = path.indexOf("/html/") === 0 || path === "/html" ? "/css/" : "../css/";
+    // When static web serves from /html as document root (dev mode),
+    // sibling ../css is unreachable and causes repeated 404 noise.
+    if (!(path.indexOf("/html/") === 0 || path === "/html")) return;
+    var base = "/css/";
     var styles = [
       { key: "tokens", href: base + "tokens.css" },
       { key: "ui-button", href: base + "components/button.css" },

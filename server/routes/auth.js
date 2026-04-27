@@ -37,7 +37,24 @@ function dbErrorResponse(res, err, fallbackMessage) {
       "Database server unreachable. Start MySQL and verify DB_HOST/DB_PORT."
     );
   }
+  if (code === "ENOTFOUND") {
+    return errorJson(
+      res,
+      503,
+      "DB_DNS_UNRESOLVED",
+      "Database host not reachable. Check DB_HOST / DATABASE_URL DNS settings."
+    );
+  }
   return errorJson(res, 500, "INTERNAL_ERROR", fallbackMessage);
+}
+
+function logDbError(err, scope) {
+  const known = ["ER_ACCESS_DENIED_ERROR", "ER_BAD_DB_ERROR", "ECONNREFUSED", "ENOTFOUND"];
+  if (err && known.includes(err.code)) {
+    console.warn(`[auth:${scope}] ${err.code}: ${err.message}`);
+    return;
+  }
+  console.error(err);
 }
 
 function normalizeMobile(raw) {
@@ -191,7 +208,7 @@ router.post("/register", async (req, res) => {
     });
   } catch (e) {
     if (conn) await conn.rollback();
-    console.error(e);
+    logDbError(e, "register");
     return dbErrorResponse(res, e, "Registration failed");
   } finally {
     if (conn) conn.release();
@@ -292,7 +309,7 @@ router.post("/login", async (req, res) => {
       lgu_admin_id: row.lgu_admin_id
     });
   } catch (e) {
-    console.error(e);
+    logDbError(e, "login");
     return dbErrorResponse(res, e, "Login failed");
   }
 });
@@ -309,7 +326,7 @@ router.get("/me", authMiddleware(true), async (req, res) => {
     row.locale = row.locale || "en";
     return res.json(row);
   } catch (e) {
-    console.error(e);
+    logDbError(e, "me");
     return dbErrorResponse(res, e, "Failed to load profile");
   }
 });
@@ -327,7 +344,7 @@ router.patch("/me/locale", authMiddleware(true), async (req, res) => {
     }
     return res.json({ locale });
   } catch (e) {
-    console.error(e);
+    logDbError(e, "me-locale");
     return dbErrorResponse(res, e, "Failed to update locale");
   }
 });
