@@ -2,7 +2,7 @@
 
 ## Summary
 - Total subtasks: `210`
-- Completed: `106 (50%)`
+- Completed: `111 (53%)`
 - Effort breakdown: `S×166 + M×35 + L×9`
 
 | Main task | % complete |
@@ -14,7 +14,7 @@
 | `T-UI-05` | 58% |
 | `T-UI-06` | 56% |
 | `T-UI-07` | 47% |
-| `T-UI-08` | 0% |
+| `T-UI-08` | 26% |
 | `T-UI-09` | 13% |
 | `T-UI-10` | 0% |
 
@@ -331,13 +331,13 @@
 - [ ] (M) Accessibility pass on `html/auth-web-register-collector.html` (labels/focus/landmarks/keyboard) — artifact: corrected markup + a11y checklist entry.
 - [ ] (M) Accessibility pass on `html/auth-web-register-lgu.html` (labels/focus/landmarks/keyboard) — artifact: corrected markup + a11y checklist entry.
 - [ ] (M) Accessibility pass on `html/dashboard-resident.html` (labels/focus/landmarks/keyboard) — artifact: corrected markup + a11y checklist entry.
-- [ ] (M) Accessibility pass on `html/schedule.html` (labels/focus/landmarks/keyboard) — artifact: corrected markup + a11y checklist entry.
-- [ ] (M) Accessibility pass on `html/report.html` (labels/focus/landmarks/keyboard/map summary) — artifact: corrected markup + textual map alternatives.
-- [ ] (M) Accessibility pass on `html/eco-points.html` (labels/focus/landmarks/keyboard) — artifact: corrected markup + a11y checklist entry.
-- [ ] (M) Accessibility pass on `html/announcements.html` (labels/focus/landmarks/keyboard) — artifact: corrected markup + a11y checklist entry.
+- [x] (M) Accessibility pass on `html/schedule.html` (labels/focus/landmarks/keyboard) — artifact: corrected markup + a11y checklist entry.
+- [x] (M) Accessibility pass on `html/report.html` (labels/focus/landmarks/keyboard/map summary) — artifact: corrected markup + textual map alternatives.
+- [x] (M) Accessibility pass on `html/eco-points.html` (labels/focus/landmarks/keyboard) — artifact: corrected markup + a11y checklist entry.
+- [x] (M) Accessibility pass on `html/announcements.html` (labels/focus/landmarks/keyboard) — artifact: corrected markup + a11y checklist entry.
 - [ ] (M) Accessibility pass on `html/dashboard-collector.html` (labels/focus/landmarks/keyboard) — artifact: corrected markup + a11y checklist entry.
 - [ ] (M) Accessibility pass on `html/collectors.html` (labels/focus/landmarks/keyboard) — artifact: corrected markup + a11y checklist entry.
-- [ ] (M) Accessibility pass on `html/qr-audit.html` (labels/focus/landmarks/keyboard) — artifact: corrected markup + a11y checklist entry.
+- [x] (M) Accessibility pass on `html/qr-audit.html` (labels/focus/landmarks/keyboard) — artifact: corrected markup + a11y checklist entry.
 - [ ] (M) Accessibility pass on `html/dashboard-lgu.html` (labels/focus/landmarks/keyboard/chart summary) — artifact: corrected markup + chart text summaries.
 - [ ] (M) Accessibility pass on `html/compliance.html` (labels/focus/landmarks/keyboard) — artifact: corrected markup + a11y checklist entry.
 - [ ] (M) Accessibility pass on `html/denr-reports.html` (labels/focus/landmarks/keyboard) — artifact: corrected markup + a11y checklist entry.
@@ -345,7 +345,7 @@
 - [ ] (M) Accessibility pass on `html/xml-schedules-editor.html` (labels/focus/landmarks/modal ARIA) — artifact: corrected markup + modal keyboard behavior.
 - [ ] (M) Accessibility pass on `html/xml-barangays-editor.html` (labels/focus/landmarks/modal ARIA) — artifact: corrected markup + modal keyboard behavior.
 
-**Completion** — `0 / 19 subtasks (0%)`  
+**Completion** — `5 / 19 subtasks (26%)`  
 **Dependencies** — `T-UI-01`, `T-UI-02`, `T-UI-03`, `T-UI-04`, `T-UI-06`, `T-UI-07`  
 **Done when**
 - Every page passes keyboard traversal and label coverage checks.

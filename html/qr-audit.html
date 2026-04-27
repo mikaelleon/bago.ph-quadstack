@@ -10,7 +10,9 @@
     .card { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
     input, button { width: 100%; height: 38px; margin-top: 8px; border-radius: 6px; border: 1px solid #d1d5db; padding: 0 10px; }
     button { background: #0f766e; color: #fff; border: none; cursor: pointer; }
+    input:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid #0f766e; outline-offset: 2px; }
     pre { background: #111827; color: #e5e7eb; padding: 12px; border-radius: 8px; overflow: auto; }
+    .muted { color: #6b7280; font-size: 12px; min-height: 16px; margin-top: 4px; }
     @media (max-width: 1024px) {
       .wrap { padding: 16px; }
     }
@@ -31,11 +33,11 @@
       <h1>Collector QR Verification</h1>
       <form id="qr-scan-form">
         <label for="qr-token">QR Secure Token</label>
-        <input id="qr-token" placeholder="BAGO-XXXXXX token" required />
-        <div id="qr-token-error"></div>
+        <input id="qr-token" placeholder="BAGO-XXXXXX token" required aria-describedby="qr-token-error" />
+        <div id="qr-token-error" class="muted" aria-live="polite"></div>
         <button id="qr-submit-btn" type="submit">Validate and Credit</button>
       </form>
-      <pre id="qr-scan-result">No scan yet.</pre>
+      <pre id="qr-scan-result" role="status" aria-live="polite">No scan yet.</pre>
     </div>
   </main>
   <script src="js/bago-env.js"></script>

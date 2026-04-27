@@ -11,10 +11,12 @@
     form { display: grid; gap: 8px; }
     input, textarea, select, button { border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 10px; font: inherit; }
     button { background: #0f766e; color: #fff; border: 0; cursor: pointer; }
+    input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid #0f766e; outline-offset: 2px; }
     ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
     li { border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px; background: #fafafa; }
     #admin-view { display: none; }
     #resident-view { display: none; }
+    .muted { color: #6b7280; font-size: 12px; min-height: 16px; }
     .inapp-card { border: 1px solid #e5e7eb; border-left: 4px solid #0f766e; border-radius: 8px; padding: 10px; background: #f9fffb; margin-bottom: 8px; }
     @media (max-width: 1024px) {
       .wrap { padding: 16px; }
@@ -34,38 +36,42 @@
 </head>
 <body>
   <main class="wrap">
-    <section id="admin-view">
+    <section id="admin-view" aria-labelledby="ann-admin-heading">
       <div class="card">
-        <h1>Publish Announcement</h1>
+        <h1 id="ann-admin-heading">Publish Announcement</h1>
         <form id="announcement-form">
-          <input id="ann-title" placeholder="Title" required maxlength="120" />
-          <div id="ann-title-error"></div>
-          <textarea id="ann-message" rows="4" placeholder="Message" required></textarea>
-          <div id="ann-message-error"></div>
+          <label for="ann-title">Title</label>
+          <input id="ann-title" placeholder="Title" required maxlength="120" aria-describedby="ann-title-error" />
+          <div id="ann-title-error" class="muted" aria-live="polite"></div>
+          <label for="ann-message">Message</label>
+          <textarea id="ann-message" rows="4" placeholder="Message" required aria-describedby="ann-message-error"></textarea>
+          <div id="ann-message-error" class="muted" aria-live="polite"></div>
+          <label for="ann-scope">Audience scope</label>
           <select id="ann-scope">
             <option value="all">All Barangays</option>
             <option value="resident">Residents</option>
             <option value="collector">Collectors</option>
             <option value="lgu_officer">LGU Officers</option>
           </select>
+          <label for="ann-urgency">Urgency</label>
           <select id="ann-urgency">
             <option>General</option>
             <option>Urgent</option>
           </select>
           <button id="ann-submit-btn" type="submit">Publish</button>
         </form>
-        <div id="ann-status"></div>
+        <div id="ann-status" role="status" aria-live="polite"></div>
       </div>
       <div class="card">
         <h2>Announcement History</h2>
-        <ul id="announcement-feed"></ul>
+        <ul id="announcement-feed" aria-live="polite"></ul>
       </div>
     </section>
 
-    <section id="resident-view">
+    <section id="resident-view" aria-labelledby="ann-resident-heading">
       <div class="card">
-        <h1>In-App Notifications</h1>
-        <div id="inapp-feed"></div>
+        <h1 id="ann-resident-heading">In-App Notifications</h1>
+        <div id="inapp-feed" aria-live="polite"></div>
       </div>
     </section>
   </main>

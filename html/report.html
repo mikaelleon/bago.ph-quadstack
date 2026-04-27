@@ -15,6 +15,7 @@
     form textarea, form button, .muted { grid-column: span 2; }
     input, select, textarea, button { border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 10px; font: inherit; }
     button { background: #0f766e; color: #fff; border: 0; cursor: pointer; }
+    input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid #0f766e; outline-offset: 2px; }
     #lgu-report-map { width: 100%; height: 420px; border-radius: 8px; }
     .status-steps { display: flex; gap: 8px; padding-left: 18px; flex-wrap: wrap; }
     .status-steps li { color: #6b7280; }
@@ -49,33 +50,38 @@
   <main class="wrap">
     <h1>Waste Reports</h1>
 
-    <section id="resident-view">
+    <section id="resident-view" aria-labelledby="resident-report-heading">
       <div class="card">
-        <h2>Submit Report</h2>
+        <h2 id="resident-report-heading">Submit Report</h2>
         <form id="resident-report-form">
-          <select id="report-issue" required>
+          <label for="report-issue">Issue type</label>
+          <select id="report-issue" required aria-describedby="report-issue-error">
             <option>Missed Pickup</option>
             <option>Overflowing Bin</option>
             <option>Illegal Dumping</option>
             <option>Blocked Road</option>
             <option>Other</option>
           </select>
-          <div id="report-issue-error" class="muted"></div>
-          <select id="report-barangay" required></select>
-          <div id="report-barangay-error" class="muted"></div>
-          <input id="report-street" placeholder="Street address" required />
-          <div id="report-street-error" class="muted"></div>
-          <input id="report-photo" type="file" accept="image/*" capture="environment" />
-          <div id="report-photo-error" class="muted"></div>
-          <textarea id="report-description" rows="4" placeholder="Describe issue (optional)"></textarea>
-          <div id="report-geo-error" class="muted"></div>
+          <div id="report-issue-error" class="muted" aria-live="polite"></div>
+          <label for="report-barangay">Barangay</label>
+          <select id="report-barangay" required aria-describedby="report-barangay-error"></select>
+          <div id="report-barangay-error" class="muted" aria-live="polite"></div>
+          <label for="report-street">Street address</label>
+          <input id="report-street" placeholder="Street address" required aria-describedby="report-street-error" />
+          <div id="report-street-error" class="muted" aria-live="polite"></div>
+          <label for="report-photo">Photo (optional)</label>
+          <input id="report-photo" type="file" accept="image/*" capture="environment" aria-describedby="report-photo-error" />
+          <div id="report-photo-error" class="muted" aria-live="polite"></div>
+          <label for="report-description">Description (optional)</label>
+          <textarea id="report-description" rows="4" placeholder="Describe issue (optional)" aria-describedby="report-geo-error"></textarea>
+          <div id="report-geo-error" class="muted" aria-live="polite"></div>
           <button id="report-submit-btn" type="submit">Submit Report</button>
         </form>
-        <div id="report-submit-status"></div>
+        <div id="report-submit-status" role="status" aria-live="polite"></div>
       </div>
       <div class="card">
         <h2>Status Updates</h2>
-        <div id="report-banner"></div>
+        <div id="report-banner" role="region" aria-live="polite" aria-label="Report status updates"></div>
       </div>
       <div class="card">
         <h2>My Report Timeline</h2>
@@ -83,28 +89,31 @@
       </div>
     </section>
 
-    <section id="lgu-view">
+    <section id="lgu-view" aria-labelledby="lgu-report-heading">
       <div class="card">
-        <h2>LGU Report Map Overlay</h2>
-        <div id="lgu-report-map"></div>
+        <h2 id="lgu-report-heading">LGU Report Map Overlay</h2>
+        <p class="muted">Map shows report pin locations and status. Use report list below for full text details.</p>
+        <div id="lgu-report-map" role="img" aria-label="Map of report locations"></div>
       </div>
       <div class="card">
         <h2>Update Report Status</h2>
-        <div id="lgu-report-list"></div>
+        <div id="lgu-report-list" aria-live="polite"></div>
         <form id="lgu-report-status-form" style="margin-top:10px;">
-          <input id="lgu-report-id" placeholder="Report ID" required />
-          <div id="lgu-report-id-error" class="muted"></div>
-          <select id="lgu-report-status" required>
+          <label for="lgu-report-id">Report ID</label>
+          <input id="lgu-report-id" placeholder="Report ID" required aria-describedby="lgu-report-id-error" />
+          <div id="lgu-report-id-error" class="muted" aria-live="polite"></div>
+          <label for="lgu-report-status">Status</label>
+          <select id="lgu-report-status" required aria-describedby="lgu-report-status-error">
             <option value="Open">Open</option>
             <option value="Acknowledged">Acknowledged</option>
             <option value="In Progress">In Progress</option>
             <option value="Resolved">Resolved</option>
             <option value="Rejected">Rejected</option>
           </select>
-          <div id="lgu-report-status-error" class="muted"></div>
+          <div id="lgu-report-status-error" class="muted" aria-live="polite"></div>
           <button id="lgu-report-status-btn" type="submit">Apply Status</button>
         </form>
-        <div id="lgu-report-status-message" class="muted"></div>
+        <div id="lgu-report-status-message" class="muted" role="status" aria-live="polite"></div>
       </div>
     </section>
   </main>

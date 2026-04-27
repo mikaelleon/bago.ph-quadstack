@@ -11,6 +11,7 @@
     table { width: 100%; border-collapse: collapse; }
     th, td { border-bottom: 1px solid #e5e7eb; padding: 8px; text-align: left; font-size: 14px; }
     button { height: 34px; border-radius: 6px; border: none; background: #0f766e; color: #fff; cursor: pointer; padding: 0 10px; }
+    button:focus-visible, a:focus-visible { outline: 3px solid #0f766e; outline-offset: 2px; }
     .table-wrap { width: 100%; overflow-x: auto; }
     @media (max-width: 1024px) {
       .wrap { padding: 16px; }
@@ -27,29 +28,29 @@
 </head>
 <body>
   <main class="wrap">
-    <div class="card">
-      <h1>Eco-Points Wallet</h1>
-      <div id="wallet-summary">Loading wallet...</div>
-    </div>
-    <div class="card">
-      <h2>Redemption Catalog</h2>
+    <section class="card" aria-labelledby="wallet-heading">
+      <h1 id="wallet-heading">Eco-Points Wallet</h1>
+      <div id="wallet-summary" role="status" aria-live="polite">Loading wallet...</div>
+    </section>
+    <section class="card" aria-labelledby="catalog-heading">
+      <h2 id="catalog-heading">Redemption Catalog</h2>
       <div class="table-wrap">
-        <table>
+        <table aria-label="Rewards catalog">
           <thead><tr><th>Reward</th><th>Partner</th><th>Cost</th><th>Action</th></tr></thead>
           <tbody id="reward-catalog-body"></tbody>
         </table>
       </div>
-      <div id="redeem-status"></div>
-    </div>
-    <div class="card">
-      <h2>Ledger</h2>
+      <div id="redeem-status" role="status" aria-live="polite"></div>
+    </section>
+    <section class="card" aria-labelledby="ledger-heading">
+      <h2 id="ledger-heading">Ledger</h2>
       <div class="table-wrap">
-        <table>
+        <table aria-label="Eco-points ledger">
           <thead><tr><th>Date</th><th>Source</th><th>Delta</th><th>Notes</th></tr></thead>
           <tbody id="ledger-body"></tbody>
         </table>
       </div>
-    </div>
+    </section>
   </main>
   <script src="js/bago-env.js"></script>
   <script src="js/bago-api.js"></script>
