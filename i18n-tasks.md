@@ -181,7 +181,7 @@
 **Subtasks**
 - [x] (S) Keep baseline document language declared in markup (`<html lang="en">`) across current HTML pages — `html/*.html`.
 - [x] (M) Update `document.documentElement.lang` on locale change at runtime — `html/js/i18n/i18n.js`.
-- [x] (M) Implement selector `role="group"` and `aria-pressed` state on EN/TL buttons — selector markup in auth/in-app pages.
+- [x] (M) Implement selector `role="group"` and localized `aria-label` semantics on locale control — selector markup in auth/in-app pages.
 - [x] (S) Add `aria-live="polite"` locale-change announcement region and localized message text — shared i18n runtime.
 - [x] (S) Preserve keyboard focus on selector after DOM re-apply cycle — `html/js/i18n/i18n.js`.
 **Completion** — **5 / 5 subtasks (100%)**.  

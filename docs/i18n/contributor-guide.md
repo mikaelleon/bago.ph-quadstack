@@ -64,7 +64,7 @@ function t(key, fallback) {
 Locale controls must keep:
 
 - wrapper `role="group"`
-- button `aria-pressed`
+- selector `aria-label`
 - live region announcement (`aria-live="polite"`)
 - focus retention after language switch
 

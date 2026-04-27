@@ -133,7 +133,6 @@
         </div>
         <div class="top-right">
           <div class="live"><span class="live-dot"></span> LIVE · synced now</div>
-          <button id="btn-signout-top" class="btn-outline" type="button">Sign out</button>
         </div>
       </header>
       <div class="content">
@@ -185,9 +184,7 @@
         window.location.href = "index.html";
       }
       var side = document.getElementById("btn-signout-side");
-      var top = document.getElementById("btn-signout-top");
       if (side) side.addEventListener("click", signOut);
-      if (top) top.addEventListener("click", signOut);
       const base = (window.BAGOApi.base() || "") + "/api/exports";
       document.getElementById("btn-export-overview").href = base + "/csv?type=overview";
       document.getElementById("btn-export-schedules").href = base + "/csv?type=schedules";

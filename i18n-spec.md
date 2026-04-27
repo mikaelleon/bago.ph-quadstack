@@ -13,7 +13,7 @@ BAGO.PH must support bilingual UI (`en`, `tl`) across resident, collector, and L
   - `html/auth-web-register-collector.html`
   - `html/auth-web-register-lgu.html`
 - Toggle appears top-right of auth card and also visible on landing/marketing area (for pages with split layout).
-- In-app pages must expose compact nav toggle in navbar area: `EN | TL`.
+- In-app pages must expose compact nav language dropdown in navbar area.
 - Locale switch applies instantly without full page reload.
 - First visit default logic:
   - Read `localStorage.getItem("bagoLocale")`.
@@ -286,23 +286,23 @@ window.BAGO_I18N = {
 
 - On locale switch:
   - set `document.documentElement.lang = "en" | "tl"`.
-- Toggle semantics:
+- Selector semantics:
   - wrapper `role="group"`
-  - buttons with `aria-pressed="true|false"`
-  - clear `aria-label` like “Switch language to Tagalog”.
+  - `<select>` control with clear `aria-label` (for example: “Language”)
+  - option labels localized (`English`, `Tagalog`).
 - Add live announcement region:
   - hidden element with `aria-live="polite"`.
   - update text on switch (localized):
     - EN: “Language changed to English.”
     - TL: “Napalitan ang wika sa Tagalog.”
 - Ensure focus retention:
-  - keep focus on toggle button after `apply()`.
+  - keep focus on language selector after `apply()`.
 - Re-apply translated `title`, `aria-label`, and `placeholder` attributes for assistive tech parity.
 
 ## 11. Acceptance Criteria
 
-- [ ] Pre-auth pages show EN/TL toggle on `index`, `auth-web-login`, all `register*` pages.
-- [ ] In-app pages show compact EN/TL switch in navbar or fallback floating slot.
+- [ ] Pre-auth pages show locale selector on `index`, `auth-web-login`, all `register*` pages.
+- [ ] In-app pages show compact locale selector in navbar or fallback floating slot.
 - [ ] Locale change applies immediately without full reload.
 - [ ] `bagoLocale` persists across reload and survives logout.
 - [ ] First visit defaults by `navigator.language` (`tl|fil` -> `tl`, else `en`).

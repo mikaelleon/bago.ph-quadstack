@@ -129,6 +129,7 @@ The platform currently combines **deployed-ready backend services** and **role-f
 
 - Supported locales: `en` and `tl` (Tagalog).
 - Storage key: `bagoLocale` in `localStorage`.
+- Selector UI: language **dropdown** (`English`, `Tagalog`) on pre-auth and in-app contexts.
 - First visit locale detection:
   - if `bagoLocale` exists, use it
   - else detect from `navigator.language` (`tl|fil -> tl`, else `en`)
@@ -141,7 +142,16 @@ The platform currently combines **deployed-ready backend services** and **role-f
   1. requested locale key
   2. `en` key
   3. key literal
-- Pre-auth pages and in-app pages both expose EN/TL selector (nav attach or floating fallback).
+- Pre-auth pages and in-app pages both expose locale selector (nav attach or floating fallback).
+- Accessibility behavior:
+  - updates `<html lang>` on switch
+  - announces locale switch via `aria-live="polite"` region
+  - keeps keyboard focus on selector after apply cycle
+
+## UI Standards
+
+- Global font: `Poppins` enforced app-wide via `html/js/bago-env.js`.
+- Role-based sign out placement: sidebar only; duplicated top-header sign out removed from role dashboards.
 
 For contributor and translator workflow, see:
 - `docs/i18n/contributor-guide.md`

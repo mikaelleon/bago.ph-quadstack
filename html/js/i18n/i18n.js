@@ -248,7 +248,6 @@
       ensureDataI18n(".navlist li:nth-child(7) a", "lgu.nav.users");
       ensureDataI18n(".navlist li:nth-child(8) a", "lgu.nav.compliance");
       ensureDataI18n("#btn-signout-side", "common.logout");
-      ensureDataI18n("#btn-signout-top", "common.logout");
       ensureDataI18n(".topbar h1", "lgu.header_title");
       ensureDataI18n(".topbar p", "lgu.header_subtitle");
       ensureDataI18n(".metric-card:nth-child(1) .metric-label", "lgu.metrics.schedules");
@@ -318,6 +317,15 @@
   function updateToggleState() {
     var locale = get();
     toggleNodes.forEach(function (node) {
+      var select = node.querySelector('[data-locale-control="select"]');
+      if (select) {
+        select.value = locale;
+        select.setAttribute("aria-label", t("common.language"));
+        var enOption = select.querySelector('option[value="en"]');
+        var tlOption = select.querySelector('option[value="tl"]');
+        if (enOption) enOption.textContent = t("common.english");
+        if (tlOption) tlOption.textContent = t("common.tagalog");
+      }
       var enBtn = node.querySelector('[data-locale-value="en"]');
       var tlBtn = node.querySelector('[data-locale-value="tl"]');
       if (!enBtn || !tlBtn) return;
@@ -346,6 +354,38 @@
     if (node) node.focus();
   }
 
+  function makeLocaleSelect(id) {
+    var select = document.createElement("select");
+    select.id = id;
+    select.setAttribute("data-locale-control", "select");
+    select.setAttribute("aria-label", t("common.language"));
+    select.style.border = "1px solid #d1d5db";
+    select.style.borderRadius = "8px";
+    select.style.padding = "6px 10px";
+    select.style.font = "600 12px Poppins, Arial, sans-serif";
+    select.style.background = "#ffffff";
+    select.style.color = "#111827";
+    select.style.cursor = "pointer";
+    select.style.minWidth = "120px";
+
+    var enOption = document.createElement("option");
+    enOption.value = "en";
+    enOption.textContent = t("common.english");
+
+    var tlOption = document.createElement("option");
+    tlOption.value = "tl";
+    tlOption.textContent = t("common.tagalog");
+
+    select.appendChild(enOption);
+    select.appendChild(tlOption);
+
+    select.addEventListener("change", function () {
+      set(select.value);
+      select.focus();
+    });
+    return select;
+  }
+
   function mountPreAuthToggle() {
     if (!isPreAuthPage()) return;
     if (document.getElementById("bago-preauth-locale-toggle")) return;
@@ -365,24 +405,7 @@
     wrap.style.borderRadius = "999px";
     wrap.style.background = "#ffffff";
     wrap.style.boxShadow = "0 4px 14px rgba(0,0,0,0.08)";
-
-    ["en", "tl"].forEach(function (locale) {
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.setAttribute("data-locale-value", locale);
-      btn.textContent = locale.toUpperCase();
-      btn.style.border = "1px solid #d1d5db";
-      btn.style.borderRadius = "999px";
-      btn.style.padding = "4px 10px";
-      btn.style.font = "600 12px Poppins, Arial, sans-serif";
-      btn.style.cursor = "pointer";
-      btn.addEventListener("click", function () {
-        set(locale);
-        btn.focus();
-      });
-      btn.addEventListener("keydown", onToggleKeydown);
-      wrap.appendChild(btn);
-    });
+    wrap.appendChild(makeLocaleSelect("bago-preauth-locale-select"));
 
     document.body.appendChild(wrap);
     toggleNodes.push(wrap);
@@ -412,24 +435,7 @@
     wrap.style.borderRadius = "999px";
     wrap.style.background = "#ffffff";
     wrap.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)";
-
-    ["en", "tl"].forEach(function (locale) {
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.setAttribute("data-locale-value", locale);
-      btn.textContent = locale.toUpperCase();
-      btn.style.border = "1px solid #d1d5db";
-      btn.style.borderRadius = "999px";
-      btn.style.padding = "4px 10px";
-      btn.style.font = "600 12px Arial, sans-serif";
-      btn.style.cursor = "pointer";
-      btn.addEventListener("click", function () {
-        set(locale);
-        btn.focus();
-      });
-      btn.addEventListener("keydown", onToggleKeydown);
-      wrap.appendChild(btn);
-    });
+    wrap.appendChild(makeLocaleSelect("bago-inapp-locale-select"));
 
     var host = document.querySelector("nav ul");
     if (host) {
@@ -452,15 +458,24 @@
   function set(locale, opts) {
     var options = opts || {};
     var next = normalizeLocale(locale);
-    var activeToggle = document.activeElement && document.activeElement.getAttribute
-      ? document.activeElement.getAttribute("data-locale-value")
-      : null;
+    var activeEl = document.activeElement;
+    var activeToggle = activeEl && activeEl.getAttribute ? activeEl.getAttribute("data-locale-value") : null;
+    var activeSelectId =
+      activeEl &&
+      activeEl.getAttribute &&
+      activeEl.getAttribute("data-locale-control") === "select" &&
+      activeEl.id
+        ? activeEl.id
+        : null;
     currentLocale = next;
     writeStoredLocale(next);
     document.documentElement.lang = next;
     apply(options.root || document);
     updateToggleState();
-    if (activeToggle) {
+    if (activeSelectId) {
+      var selectTarget = document.getElementById(activeSelectId);
+      if (selectTarget) selectTarget.focus();
+    } else if (activeToggle) {
       var focusTarget = document.querySelector('[data-locale-value="' + normalizeLocale(activeToggle) + '"]');
       if (focusTarget) focusTarget.focus();
     }

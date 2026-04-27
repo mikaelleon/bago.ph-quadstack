@@ -9,7 +9,7 @@ Scope: `T-I18N-09`, `T-I18N-10` implementation verification
 - [x] `bagoLocale` persists and survives logout
 - [x] First-visit locale detection uses `navigator.language` (`tl|fil -> tl`, else `en`)
 - [x] `<html lang>` updates on locale switch (`document.documentElement.lang`)
-- [x] Toggle exposes `role="group"` + `aria-pressed`
+- [x] Selector exposes `role="group"` + `aria-label`
 - [x] `aria-live="polite"` locale announcement exists and updates
 - [x] Focus retained on toggle after locale apply cycle
 - [x] Runtime-generated text paths migrated to `t(...)` in dynamic modules (`prototype-page-loader`, schedule/report/eco/announcements/XML tools)

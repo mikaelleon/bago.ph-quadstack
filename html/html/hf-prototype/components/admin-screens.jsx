@@ -92,14 +92,6 @@ function AdminShell({ children, active = 'dashboard', title, subtitle, topRight,
                 <button type="button" style={{ background: NAVY, color: 'white', border: 'none', padding: '9px 18px', borderRadius: 6, fontFamily: 'Poppins', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>📢 Announce</button>
               </div>
             )}
-            <button
-              type="button"
-              onClick={() => window.bagoConfirmSignOut && window.bagoConfirmSignOut()}
-              style={{
-                height: 36, padding: '0 14px', border: '1px solid #E0E0E0', background: 'white',
-                borderRadius: 6, fontFamily: 'Poppins', fontSize: 12, fontWeight: 700, color: '#C62828', cursor: 'pointer', whiteSpace: 'nowrap',
-              }}
-            >Sign out</button>
           </div>
         </div>
         {/* Content */}
