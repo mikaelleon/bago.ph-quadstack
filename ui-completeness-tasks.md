@@ -2,14 +2,14 @@
 
 ## Summary
 - Total subtasks: `210`
-- Completed: `77 (37%)`
+- Completed: `78 (37%)`
 - Effort breakdown: `S×166 + M×35 + L×9`
 
 | Main task | % complete |
 |---|---:|
 | `T-UI-01` | 93% |
 | `T-UI-02` | 100% |
-| `T-UI-03` | 75% |
+| `T-UI-03` | 100% |
 | `T-UI-04` | 41% |
 | `T-UI-05` | 17% |
 | `T-UI-06` | 22% |
@@ -99,12 +99,12 @@
 **Source ref** — `ui-completeness-spec.md` §6.5, §6.7.
 
 **Subtasks**
-- [ ] (M) Replace `alert()/confirm()/prompt()` in `html/js/prototype-page-loader.js` with shared modal/toast calls — artifact: no native dialog calls in file.
+- [x] (M) Replace `alert()/confirm()/prompt()` in `html/js/prototype-page-loader.js` with shared modal/toast calls — artifact: no native dialog calls in file.
 - [x] (S) Replace `confirm()/prompt()` in `html/js/schedule-lgu.js` with shared modal flows — artifact: edit/delete schedule uses modal UI.
 - [x] (M) Replace `confirm()` in `html/js/xml-schedules-app.js` with destructive modal + optional typed confirm — artifact: XML schedules delete flows modalized.
 - [x] (M) Replace `confirm()` in `html/js/xml-barangays-app.js` with destructive modal + optional typed confirm — artifact: XML barangays delete flows modalized.
 
-**Completion** — `3 / 4 subtasks (75%)`  
+**Completion** — `4 / 4 subtasks (100%)`  
 **Dependencies** — `T-UI-01`, `T-UI-02`  
 **Done when**
 - `rg "prompt\\(|alert\\(|confirm\\(" html/js` returns no runtime UI hits.

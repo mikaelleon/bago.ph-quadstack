@@ -516,8 +516,7 @@
       });
       return;
     }
-    if (!confirm(t("xml.schedules.delete_route_confirm", "Delete this route row?"))) return;
-    run();
+    return;
   }
 
   function addRoute() {
@@ -587,8 +586,7 @@
       });
       return;
     }
-    if (!confirm(t("xml.schedules.delete_barangay_confirm", "Delete this barangay row?"))) return;
-    run();
+    return;
   }
 
   function addBarangay() {
@@ -649,8 +647,7 @@
       });
       return;
     }
-    if (!confirm(t("xml.schedules.delete_special_confirm", "Delete this special date?"))) return;
-    run();
+    return;
   }
 
   function addSpecial() {
@@ -719,8 +716,7 @@
       });
       return;
     }
-    if (!confirm(t("xml.schedules.delete_shift_confirm", "Delete this shift?"))) return;
-    run();
+    return;
   }
 
   function addShift() {
@@ -819,8 +815,7 @@
           });
           return;
         }
-        if (!confirm(t("xml.clear_browser_confirm", "Clear saved copy in this browser? Unsaved export only in download folder."))) return;
-        run();
+        return;
       };
 
       ["meta-title", "meta-tagline", "meta-proponent", "meta-coverage", "stat-routes", "stat-ontime", "stat-barangays", "stat-exceptions"].forEach(function (id) {

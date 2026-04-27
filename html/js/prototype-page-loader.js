@@ -187,6 +187,10 @@ window.BAGOPrototype = (function () {
     });
   }
 
+  function uiAlert(message, title) {
+    modalAlert(String(message || ""), title || "BAGO.PH");
+  }
+
   function copyText(value) {
     var text = String(value || "");
     if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
@@ -296,17 +300,17 @@ window.BAGOPrototype = (function () {
     var mobile = normalizeMobile(opts.mobile || "");
     var pin = String(opts.pin || "").replace(/\D/g, "").slice(0, 4);
     if (!mobile || mobile.length < 10) {
-      alert(tr("auth.mobile_invalid_10", "Enter a valid Philippine mobile number (10 digits after +63)."));
+      uiAlert(tr("auth.mobile_invalid_10", "Enter a valid Philippine mobile number (10 digits after +63)."));
       return;
     }
     if (!/^\d{4}$/.test(pin)) {
-      alert(tr("auth.pin_exact_4", "PIN must be exactly 4 digits."));
+      uiAlert(tr("auth.pin_exact_4", "PIN must be exactly 4 digits."));
       return;
     }
     if (role === "collector") {
       var inv = String(opts.inviteCode || "").replace(/\D/g, "");
       if (inv !== "207142") {
-        alert(tr("auth.invite_invalid", "Invalid or expired supervisor invite code. Prototype accepts code 207142."));
+        uiAlert(tr("auth.invite_invalid", "Invalid or expired supervisor invite code. Prototype accepts code 207142."));
         return;
       }
     }
@@ -734,7 +738,7 @@ window.BAGOPrototype = (function () {
       var passList = document.querySelectorAll("input[type=\"password\"]");
       var password = passList.length ? String(passList[0].value || "") : "";
       if (!email || password.length < 10) {
-        alert(tr("auth.email_password_min_10", "Enter government email and password (min 10 characters)."));
+        uiAlert(tr("auth.email_password_min_10", "Enter government email and password (min 10 characters)."));
         return;
       }
       if (apiHasBase()) {
@@ -753,14 +757,14 @@ window.BAGOPrototype = (function () {
             go(dashboardFor(outLgu.role));
             return;
           }
-          alert(outLgu.message || tr("auth.login_failed", "Login failed"));
+          uiAlert(outLgu.message || tr("auth.login_failed", "Login failed"));
           var fbLgu = tryLocalLguLogin(email, password);
           if (fbLgu.ok) {
             setRole(fbLgu.role);
             go(dashboardFor(fbLgu.role));
             return;
           }
-          alert(tr("auth.api_failed_fallback", "API failed. Local fallback: ") + (fbLgu.message || tr("auth.login_failed", "login failed")));
+          uiAlert(tr("auth.api_failed_fallback", "API failed. Local fallback: ") + (fbLgu.message || tr("auth.login_failed", "login failed")));
           return;
         } catch (eLgu) {
           var fbLgu2 = tryLocalLguLogin(email, password);
@@ -769,7 +773,7 @@ window.BAGOPrototype = (function () {
             go(dashboardFor(fbLgu2.role));
             return;
           }
-          alert(tr("auth.api_failed_fallback", "API failed. Local fallback: ") + (fbLgu2.message || eLgu.message || tr("auth.login_failed", "Login failed")));
+          uiAlert(tr("auth.api_failed_fallback", "API failed. Local fallback: ") + (fbLgu2.message || eLgu.message || tr("auth.login_failed", "Login failed")));
           return;
         }
       }
@@ -779,7 +783,7 @@ window.BAGOPrototype = (function () {
         go(dashboardFor(fbLgu3.role));
         return;
       }
-      alert(tr("auth.api_unavailable", "API unavailable. ") + (fbLgu3.message || tr("auth.login_failed", "Login failed")));
+      uiAlert(tr("auth.api_unavailable", "API unavailable. ") + (fbLgu3.message || tr("auth.login_failed", "Login failed")));
       return;
     }
 
@@ -788,7 +792,7 @@ window.BAGOPrototype = (function () {
     var mobile = normalizeMobile(mobileInput ? mobileInput.value : "");
     var pin = String(pinInput ? pinInput.value : "").replace(/\D/g, "").slice(0, 4);
     if (!mobile || mobile.length < 10 || !/^\d{4}$/.test(pin)) {
-      alert(tr("auth.mobile_pin_required", "Enter valid mobile number and 4-digit PIN."));
+      uiAlert(tr("auth.mobile_pin_required", "Enter valid mobile number and 4-digit PIN."));
       return;
     }
 
@@ -809,7 +813,7 @@ window.BAGOPrototype = (function () {
           go("otp");
           return;
         }
-        alert(out.message || tr("auth.login_failed", "Login failed"));
+        uiAlert(out.message || tr("auth.login_failed", "Login failed"));
         var fallback = tryLocalLogin(mobile, pin);
         if (fallback.ok) {
           setRole(fallback.role);
@@ -817,7 +821,7 @@ window.BAGOPrototype = (function () {
           go(dashboardFor(fallback.role));
           return;
         }
-        alert(tr("auth.api_failed_fallback_failed", "API failed. Local fallback failed: ") + (fallback.message || tr("auth.login_failed", "login failed")));
+        uiAlert(tr("auth.api_failed_fallback_failed", "API failed. Local fallback failed: ") + (fallback.message || tr("auth.login_failed", "login failed")));
         return;
       } catch (e) {
         var fallback2 = tryLocalLogin(mobile, pin);
@@ -827,7 +831,7 @@ window.BAGOPrototype = (function () {
           go(dashboardFor(fallback2.role));
           return;
         }
-        alert(tr("auth.api_failed_fallback_failed", "API failed. Local fallback failed: ") + (fallback2.message || e.message || tr("auth.login_failed", "Login failed")));
+        uiAlert(tr("auth.api_failed_fallback_failed", "API failed. Local fallback failed: ") + (fallback2.message || e.message || tr("auth.login_failed", "Login failed")));
         return;
       }
     }
@@ -838,7 +842,7 @@ window.BAGOPrototype = (function () {
       go(dashboardFor(fallback3.role));
       return;
     }
-    alert(tr("auth.api_unavailable_fallback_failed", "API unavailable. Local fallback failed: ") + (fallback3.message || tr("auth.login_failed", "login failed")));
+    uiAlert(tr("auth.api_unavailable_fallback_failed", "API unavailable. Local fallback failed: ") + (fallback3.message || tr("auth.login_failed", "login failed")));
   }
 
   async function onRegister() {
@@ -855,27 +859,27 @@ window.BAGOPrototype = (function () {
     var confirmPin = String(passInputs.length > 1 ? passInputs[1].value : "").replace(/\D/g, "").slice(0, 4);
     var role = "user";
     if (!fullName || fullName.length < 3) {
-      alert(tr("auth.full_name_required", "Enter full name."));
+      uiAlert(tr("auth.full_name_required", "Enter full name."));
       return;
     }
     if (!mobile || mobile.length < 10) {
-      alert(tr("auth.mobile_required", "Enter valid mobile number."));
+      uiAlert(tr("auth.mobile_required", "Enter valid mobile number."));
       return;
     }
     if (!city) {
-      alert(tr("auth.city_required", "Select a city."));
+      uiAlert(tr("auth.city_required", "Select a city."));
       return;
     }
     if (!barangay) {
-      alert(tr("auth.barangay_required", "Select a barangay."));
+      uiAlert(tr("auth.barangay_required", "Select a barangay."));
       return;
     }
     if (!/^\d{4}$/.test(pin)) {
-      alert(tr("auth.pin_exact_4", "PIN must be exactly 4 digits."));
+      uiAlert(tr("auth.pin_exact_4", "PIN must be exactly 4 digits."));
       return;
     }
     if (confirmPin && pin !== confirmPin) {
-      alert(tr("auth.pin_mismatch", "PIN and confirm PIN do not match."));
+      uiAlert(tr("auth.pin_mismatch", "PIN and confirm PIN do not match."));
       return;
     }
 
@@ -925,7 +929,7 @@ window.BAGOPrototype = (function () {
 
   async function onSubmitReport() {
     if (!token()) {
-      alert(tr("report.login_first", "Login first before submitting report."));
+      uiAlert(tr("report.login_first", "Login first before submitting report."));
       go("index");
       return;
     }
@@ -942,7 +946,7 @@ window.BAGOPrototype = (function () {
         return String(row.barangay_name || "").toLowerCase() === String(brgyRaw || "").replace(/^Brgy\.\s*/i, "").toLowerCase();
       }) || barangays[0];
       if (!b) {
-        alert(tr("report.no_barangays_api", "No barangays found in API."));
+        uiAlert(tr("report.no_barangays_api", "No barangays found in API."));
         return;
       }
       var created = await apiRequest("POST", "/api/reports", {
@@ -951,10 +955,10 @@ window.BAGOPrototype = (function () {
         street_address: street || "Not specified",
         barangay_id: b.barangay_id
       });
-      alert(tr("report.submitted_prefix", "Report submitted: ") + created.reference_number);
+      uiAlert(tr("report.submitted_prefix", "Report submitted: ") + created.reference_number);
       go("dashboard-resident");
     } catch (e) {
-      alert(e.message || tr("report.submit_failed", "Failed to submit report"));
+      uiAlert(e.message || tr("report.submit_failed", "Failed to submit report"));
     }
   }
 
@@ -971,18 +975,18 @@ window.BAGOPrototype = (function () {
       });
       var ref = refEl ? refEl.textContent.trim() : "";
       if (!ref) {
-        alert(tr("report.reference_not_found_screen", "Report reference not found on screen."));
+        uiAlert(tr("report.reference_not_found_screen", "Report reference not found on screen."));
         return;
       }
       var id = await resolveRefToReportId(ref);
       if (!id) {
-        alert(tr("report.reference_not_found_api", "Report not found in API: ") + ref);
+        uiAlert(tr("report.reference_not_found_api", "Report not found in API: ") + ref);
         return;
       }
       await apiRequest("PATCH", "/api/reports/" + id, { status: "In Progress" });
-      alert(tr("report.updated_in_progress", "Report updated to In Progress."));
+      uiAlert(tr("report.updated_in_progress", "Report updated to In Progress."));
     } catch (e) {
-      alert(e.message || tr("report.update_failed", "Failed to update report"));
+      uiAlert(e.message || tr("report.update_failed", "Failed to update report"));
     }
   }
 
@@ -992,20 +996,20 @@ window.BAGOPrototype = (function () {
         return /^RPT-\d{4}-\d+$/i.test(String(el.textContent || "").trim());
       });
       var ref = mono ? mono.textContent.trim() : "";
-      if (!ref) return alert(tr("report.no_reference", "No report reference found."));
+      if (!ref) return uiAlert(tr("report.no_reference", "No report reference found."));
       var id = await resolveRefToReportId(ref);
-      if (!id) return alert(tr("report.not_found_prefix", "Report not found: ") + ref);
+      if (!id) return uiAlert(tr("report.not_found_prefix", "Report not found: ") + ref);
       await apiRequest("PATCH", "/api/reports/" + id, { status: "Acknowledged" });
-      alert(tr("report.saved", "Report saved."));
+      uiAlert(tr("report.saved", "Report saved."));
     } catch (e) {
-      alert(e.message || tr("report.save_failed", "Failed to save report"));
+      uiAlert(e.message || tr("report.save_failed", "Failed to save report"));
     }
   }
 
   async function onAddSchedule() {
     try {
       var barangays = await apiRequest("GET", "/api/barangays");
-      if (!barangays.length) return alert(tr("schedule.no_barangays", "No barangays found."));
+      if (!barangays.length) return uiAlert(tr("schedule.no_barangays", "No barangays found."));
       var b = barangays[0];
       var d = new Date();
       d.setDate(d.getDate() + 1);
@@ -1018,9 +1022,9 @@ window.BAGOPrototype = (function () {
         time_end: "09:00",
         status: "Scheduled"
       });
-      alert(tr("schedule.created_for_prefix", "Schedule created for ") + b.barangay_name + " (" + day + ").");
+      uiAlert(tr("schedule.created_for_prefix", "Schedule created for ") + b.barangay_name + " (" + day + ").");
     } catch (e) {
-      alert(e.message || tr("schedule.create_failed", "Failed to create schedule"));
+      uiAlert(e.message || tr("schedule.create_failed", "Failed to create schedule"));
     }
   }
 
@@ -1046,7 +1050,7 @@ window.BAGOPrototype = (function () {
           .map(function (el) { return String(el.value || "").replace(/\D/g, "").slice(0, 1); })
           .join("");
         if (expected1 && got1 !== expected1) {
-          alert(tr("auth.invalid_otp", "Invalid OTP. Check browser console for local test OTP."));
+          uiAlert(tr("auth.invalid_otp", "Invalid OTP. Check browser console for local test OTP."));
           return;
         }
         localStorage.removeItem("bagoPendingOtp");
@@ -1059,7 +1063,7 @@ window.BAGOPrototype = (function () {
           .map(function (el) { return String(el.value || "").replace(/\D/g, "").slice(0, 1); })
           .join("");
         if (expected2 && got2 !== expected2) {
-          alert(tr("auth.invalid_otp", "Invalid OTP. Check browser console for local test OTP."));
+          uiAlert(tr("auth.invalid_otp", "Invalid OTP. Check browser console for local test OTP."));
           return;
         }
         localStorage.removeItem("bagoPendingOtp");
@@ -1072,7 +1076,7 @@ window.BAGOPrototype = (function () {
           .map(function (el) { return String(el.value || "").replace(/\D/g, "").slice(0, 1); })
           .join("");
         if (expected3 && got3 !== expected3) {
-          alert(tr("auth.invalid_otp", "Invalid OTP. Check browser console for local test OTP."));
+          uiAlert(tr("auth.invalid_otp", "Invalid OTP. Check browser console for local test OTP."));
           return;
         }
         localStorage.removeItem("bagoPendingOtp");

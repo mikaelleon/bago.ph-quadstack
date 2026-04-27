@@ -65,16 +65,12 @@
     body.querySelectorAll(".btn-del").forEach(function (btn) {
       btn.addEventListener("click", async function () {
         var id = Number(btn.getAttribute("data-id"));
-        var ok = true;
-        if (window.BAGOXmlModal && typeof window.BAGOXmlModal.openConfirm === "function") {
-          ok = await window.BAGOXmlModal.openConfirm({
-            title: t("common.delete", "Delete"),
-            message: t("schedule.delete_confirm", "Delete schedule?"),
-            confirmLabel: t("common.delete", "Delete")
-          });
-        } else {
-          ok = confirm(t("schedule.delete_confirm", "Delete schedule?"));
-        }
+        if (!window.BAGOXmlModal || typeof window.BAGOXmlModal.openConfirm !== "function") return;
+        var ok = await window.BAGOXmlModal.openConfirm({
+          title: t("common.delete", "Delete"),
+          message: t("schedule.delete_confirm", "Delete schedule?"),
+          confirmLabel: t("common.delete", "Delete")
+        });
         if (!ok) return;
         await window.BAGOApi.request("DELETE", "/api/schedules/" + id);
         await loadSchedules();
@@ -102,13 +98,18 @@
       return Number(s.schedule_id) === Number(id);
     });
     if (!row) return;
-    var status = prompt(t("common.status", "Status"), row.status);
-    if (status === null) return;
-    var date = prompt(t("schedule.date_prompt", "Date (YYYY-MM-DD)"), String(row.collection_date).slice(0, 10));
-    if (date === null) return;
+    if (!window.BAGOXmlModal || typeof window.BAGOXmlModal.openModal !== "function") return;
+    var values = await window.BAGOXmlModal.openModal({
+      title: t("schedule.edit", "Edit schedule"),
+      fields: [
+        { name: "status", label: t("common.status", "Status"), value: row.status || "" },
+        { name: "collection_date", label: t("schedule.date_prompt", "Date (YYYY-MM-DD)"), value: String(row.collection_date).slice(0, 10) }
+      ]
+    });
+    if (!values) return;
     await window.BAGOApi.request("PATCH", "/api/schedules/" + id, {
-      status: status,
-      collection_date: date
+      status: values.status,
+      collection_date: values.collection_date
     });
     await loadSchedules();
   }

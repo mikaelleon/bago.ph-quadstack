@@ -265,8 +265,7 @@
       });
       return;
     }
-    if (!confirm(t("xml.barangays.delete_confirm", "Delete this barangay row?"))) return;
-    run();
+    return;
   }
 
   function addRow() {
@@ -363,8 +362,7 @@
           });
           return;
         }
-        if (!confirm(t("xml.clear_browser_confirm_short", "Clear saved copy in this browser?"))) return;
-        run();
+        return;
       };
       el("btn-add").onclick = addRow;
 
