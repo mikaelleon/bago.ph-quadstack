@@ -20,7 +20,8 @@
       <form id="qr-scan-form">
         <label for="qr-token">QR Secure Token</label>
         <input id="qr-token" placeholder="BAGO-XXXXXX token" required />
-        <button type="submit">Validate and Credit</button>
+        <div id="qr-token-error"></div>
+        <button id="qr-submit-btn" type="submit">Validate and Credit</button>
       </form>
       <pre id="qr-scan-result">No scan yet.</pre>
     </div>

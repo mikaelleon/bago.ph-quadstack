@@ -42,21 +42,27 @@
         <h2>Create Schedule</h2>
         <form id="lgu-schedule-form">
           <select id="lgu-barangay" required></select>
+          <div id="lgu-barangay-error" class="muted"></div>
           <select id="lgu-waste" required>
             <option>Biodegradable</option>
             <option>Non-Biodegradable</option>
             <option>Recyclable</option>
             <option>Residual</option>
           </select>
+          <div id="lgu-waste-error" class="muted"></div>
           <input id="lgu-date" type="date" required />
+          <div id="lgu-date-error" class="muted"></div>
           <input id="lgu-start" type="time" value="07:00" required />
+          <div id="lgu-start-error" class="muted"></div>
           <input id="lgu-end" type="time" value="09:00" required />
+          <div id="lgu-end-error" class="muted"></div>
           <select id="lgu-status" required>
             <option>Scheduled</option>
             <option>Updated</option>
             <option>Cancelled</option>
           </select>
-          <button type="submit">Save Schedule</button>
+          <div id="lgu-status-error" class="muted"></div>
+          <button id="lgu-schedule-submit-btn" type="submit">Save Schedule</button>
         </form>
       </div>
       <div class="card">

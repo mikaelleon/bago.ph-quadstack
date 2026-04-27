@@ -17,6 +17,35 @@
     if (node) node.textContent = String(message || "");
   }
 
+  function setErr(id, msg) {
+    var n = q(id);
+    if (n) n.textContent = msg || "";
+  }
+
+  function validateCreateForm() {
+    var barangay = String((q("lgu-barangay") && q("lgu-barangay").value) || "");
+    var waste = String((q("lgu-waste") && q("lgu-waste").value) || "");
+    var date = String((q("lgu-date") && q("lgu-date").value) || "");
+    var start = String((q("lgu-start") && q("lgu-start").value) || "");
+    var end = String((q("lgu-end") && q("lgu-end").value) || "");
+    var status = String((q("lgu-status") && q("lgu-status").value) || "");
+    var valid = true;
+    setErr("lgu-barangay-error", barangay ? "" : t("schedule.barangay_required", "Barangay required."));
+    setErr("lgu-waste-error", waste ? "" : t("schedule.waste_required", "Waste type required."));
+    setErr("lgu-date-error", date ? "" : t("schedule.date_required", "Date required."));
+    setErr("lgu-start-error", start ? "" : t("schedule.start_required", "Start time required."));
+    setErr("lgu-end-error", end ? "" : t("schedule.end_required", "End time required."));
+    setErr("lgu-status-error", status ? "" : t("schedule.status_required", "Status required."));
+    if (!barangay || !waste || !date || !start || !end || !status) valid = false;
+    if (start && end && end <= start) {
+      setErr("lgu-end-error", t("schedule.time_logic", "End time must be after start time."));
+      valid = false;
+    }
+    var btn = q("lgu-schedule-submit-btn");
+    if (btn) btn.disabled = !valid;
+    return valid;
+  }
+
   function asTime(v) {
     if (!v) return "";
     return String(v).slice(0, 5);
@@ -92,17 +121,24 @@
 
   async function onCreateSubmit(e) {
     e.preventDefault();
-    await window.BAGOApi.request("POST", "/api/schedules", {
-      barangay_id: Number(q("lgu-barangay").value),
-      waste_type: q("lgu-waste").value,
-      collection_date: q("lgu-date").value,
-      time_start: q("lgu-start").value,
-      time_end: q("lgu-end").value,
-      status: q("lgu-status").value
-    });
-    e.target.reset();
-    await loadBarangays();
-    await loadSchedules();
+    if (!validateCreateForm()) return;
+    var btn = q("lgu-schedule-submit-btn");
+    if (btn) btn.disabled = true;
+    try {
+      await window.BAGOApi.request("POST", "/api/schedules", {
+        barangay_id: Number(q("lgu-barangay").value),
+        waste_type: q("lgu-waste").value,
+        collection_date: q("lgu-date").value,
+        time_start: q("lgu-start").value,
+        time_end: q("lgu-end").value,
+        status: q("lgu-status").value
+      });
+      e.target.reset();
+      await loadBarangays();
+      await loadSchedules();
+    } finally {
+      validateCreateForm();
+    }
   }
 
   async function editSchedule(id) {
@@ -140,6 +176,12 @@
       setState(err && err.message ? err.message : t("schedule.load_failed", "Failed to load schedules."));
     }
     q("lgu-schedule-form").addEventListener("submit", onCreateSubmit);
+    ["lgu-barangay", "lgu-waste", "lgu-date", "lgu-start", "lgu-end", "lgu-status"].forEach(function (id) {
+      var node = q(id);
+      if (node) node.addEventListener("input", validateCreateForm);
+      if (node) node.addEventListener("change", validateCreateForm);
+    });
+    validateCreateForm();
   }
 
   window.BAGOScheduleLGU = { initLguSchedule: initLguSchedule };

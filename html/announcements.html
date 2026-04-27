@@ -25,7 +25,9 @@
         <h1>Publish Announcement</h1>
         <form id="announcement-form">
           <input id="ann-title" placeholder="Title" required maxlength="120" />
+          <div id="ann-title-error"></div>
           <textarea id="ann-message" rows="4" placeholder="Message" required></textarea>
+          <div id="ann-message-error"></div>
           <select id="ann-scope">
             <option value="all">All Barangays</option>
             <option value="resident">Residents</option>
@@ -36,7 +38,7 @@
             <option>General</option>
             <option>Urgent</option>
           </select>
-          <button type="submit">Publish</button>
+          <button id="ann-submit-btn" type="submit">Publish</button>
         </form>
         <div id="ann-status"></div>
       </div>

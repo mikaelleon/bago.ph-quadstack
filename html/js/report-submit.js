@@ -10,6 +10,38 @@
     return document.getElementById(id);
   }
 
+  function setErr(id, msg) {
+    var n = q(id);
+    if (n) n.textContent = msg || "";
+  }
+
+  function validateReportForm() {
+    var issue = String((q("report-issue") && q("report-issue").value) || "").trim();
+    var barangay = String((q("report-barangay") && q("report-barangay").value) || "").trim();
+    var street = String((q("report-street") && q("report-street").value) || "").trim();
+    var fileInput = q("report-photo");
+    var photo = fileInput && fileInput.files && fileInput.files[0] ? fileInput.files[0] : null;
+    var valid = true;
+    setErr("report-issue-error", issue ? "" : t("report.issue_required", "Issue type required."));
+    setErr("report-barangay-error", barangay ? "" : t("report.barangay_required", "Barangay required."));
+    setErr("report-street-error", street ? "" : t("report.street_required", "Street address required."));
+    setErr("report-photo-error", "");
+    if (!issue || !barangay || !street) valid = false;
+    if (photo) {
+      var isImg = /^image\/(jpeg|jpg|png|webp)$/i.test(String(photo.type || ""));
+      if (!isImg) {
+        setErr("report-photo-error", t("report.photo_type", "Photo must be JPG/PNG/WEBP."));
+        valid = false;
+      } else if (Number(photo.size || 0) > 10 * 1024 * 1024) {
+        setErr("report-photo-error", t("report.photo_size", "Photo too large."));
+        valid = false;
+      }
+    }
+    var btn = q("report-submit-btn");
+    if (btn) btn.disabled = !valid;
+    return valid;
+  }
+
   function showError(message, retryFn) {
     if (window.BAGOErrorBanner && typeof window.BAGOErrorBanner.render === "function") {
       window.BAGOErrorBanner.render("report-submit-status", {
@@ -36,6 +68,9 @@
 
   async function onSubmitResidentReport(e) {
     e.preventDefault();
+    if (!validateReportForm()) return;
+    var btn = q("report-submit-btn");
+    if (btn) btn.disabled = true;
     if (window.BAGOErrorBanner && typeof window.BAGOErrorBanner.clear === "function") {
       window.BAGOErrorBanner.clear("report-submit-status");
     }
@@ -51,6 +86,12 @@
       window.BAGOUploadProgress.set("report-submit-status", 35);
     }
     const loc = await captureLocation();
+    if (loc.lat == null || loc.lng == null) {
+      setErr("report-geo-error", t("report.geo_required", "Enable location access before submit."));
+      validateReportForm();
+      return;
+    }
+    setErr("report-geo-error", "");
     const form = new FormData();
     form.append("issue_type", q("report-issue").value);
     form.append("description", q("report-description").value);
@@ -80,6 +121,8 @@
       q("report-submit-status").textContent = t("report.submitted_prefix", "Submitted: ") + data.reference_number;
     }
     e.target.reset();
+    validateReportForm();
+    setErr("report-geo-error", "");
   }
 
   async function loadBarangaysForReport() {
@@ -104,10 +147,18 @@
 
   async function initResidentReportSubmit() {
     await loadBarangaysForReport();
+    ["report-issue", "report-barangay", "report-street", "report-photo"].forEach(function (id) {
+      var node = q(id);
+      if (!node) return;
+      node.addEventListener("input", validateReportForm);
+      node.addEventListener("change", validateReportForm);
+    });
+    validateReportForm();
     q("resident-report-form").addEventListener("submit", async (e) => {
       try {
         await onSubmitResidentReport(e);
       } catch (err) {
+        validateReportForm();
         showError(err.message || t("report.submit_failed", "Failed to submit"), function () {
           q("resident-report-form").requestSubmit();
         });

@@ -2,7 +2,7 @@
 
 ## Summary
 - Total subtasks: `210`
-- Completed: `93 (44%)`
+- Completed: `98 (47%)`
 - Effort breakdown: `S×166 + M×35 + L×9`
 
 | Main task | % complete |
@@ -11,7 +11,7 @@
 | `T-UI-02` | 100% |
 | `T-UI-03` | 100% |
 | `T-UI-04` | 57% |
-| `T-UI-05` | 17% |
+| `T-UI-05` | 58% |
 | `T-UI-06` | 22% |
 | `T-UI-07` | 21% |
 | `T-UI-08` | 0% |
@@ -248,15 +248,15 @@
 - [ ] (M) Implement inline validation + submit-state binding for resident registration (`html/register.html`) — artifact: name/mobile/barangay/PIN rules.
 - [ ] (M) Implement inline validation + submit-state binding for collector registration (`html/auth-web-register-collector.html`) — artifact: invite/ID rules.
 - [ ] (M) Implement inline validation + submit-state binding for LGU registration (`html/auth-web-register-lgu.html`) — artifact: `.gov.ph` + password policy + doc requirement.
-- [ ] (M) Implement full inline validation for report submit (`html/report.html`, `html/js/report-submit.js`) — artifact: file type/size/geolocation/required errors.
-- [ ] (M) Implement full inline validation for schedule create form (`html/schedule.html`, `html/js/schedule-lgu.js`) — artifact: field and time/date logical checks.
-- [ ] (S) Implement inline validation + submit state for announcement publish form (`html/announcements.html`) — artifact: title/message constraints + disabled submit.
-- [ ] (S) Implement inline validation + submit state for report status update form (`html/report.html`) — artifact: ID/status checks + inline errors.
-- [ ] (S) Implement inline validation + submit state for QR audit form (`html/qr-audit.html`) — artifact: token format errors under input.
+- [x] (M) Implement full inline validation for report submit (`html/report.html`, `html/js/report-submit.js`) — artifact: file type/size/geolocation/required errors.
+- [x] (M) Implement full inline validation for schedule create form (`html/schedule.html`, `html/js/schedule-lgu.js`) — artifact: field and time/date logical checks.
+- [x] (S) Implement inline validation + submit state for announcement publish form (`html/announcements.html`) — artifact: title/message constraints + disabled submit.
+- [x] (S) Implement inline validation + submit state for report status update form (`html/report.html`) — artifact: ID/status checks + inline errors.
+- [x] (S) Implement inline validation + submit state for QR audit form (`html/qr-audit.html`) — artifact: token format errors under input.
 - [x] (S) Keep/extend inline modal validation path in XML schedules editor forms — artifact: `validate(...)` callbacks in `html/js/xml-schedules-app.js`.
 - [x] (S) Keep/extend inline modal validation path in XML barangays editor forms — artifact: `validate(...)` callbacks in `html/js/xml-barangays-app.js`.
 
-**Completion** — `2 / 12 subtasks (17%)`  
+**Completion** — `7 / 12 subtasks (58%)`  
 **Dependencies** — `T-UI-01`, `T-UI-02`, `T-UI-03`, `T-UI-04`  
 **Done when**
 - Every form in §5 has inline per-field validation and submit-state binding.

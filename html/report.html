@@ -43,11 +43,16 @@
             <option>Blocked Road</option>
             <option>Other</option>
           </select>
+          <div id="report-issue-error" class="muted"></div>
           <select id="report-barangay" required></select>
+          <div id="report-barangay-error" class="muted"></div>
           <input id="report-street" placeholder="Street address" required />
+          <div id="report-street-error" class="muted"></div>
           <input id="report-photo" type="file" accept="image/*" capture="environment" />
+          <div id="report-photo-error" class="muted"></div>
           <textarea id="report-description" rows="4" placeholder="Describe issue (optional)"></textarea>
-          <button type="submit">Submit Report</button>
+          <div id="report-geo-error" class="muted"></div>
+          <button id="report-submit-btn" type="submit">Submit Report</button>
         </form>
         <div id="report-submit-status"></div>
       </div>
@@ -71,6 +76,7 @@
         <div id="lgu-report-list"></div>
         <form id="lgu-report-status-form" style="margin-top:10px;">
           <input id="lgu-report-id" placeholder="Report ID" required />
+          <div id="lgu-report-id-error" class="muted"></div>
           <select id="lgu-report-status" required>
             <option value="Open">Open</option>
             <option value="Acknowledged">Acknowledged</option>
@@ -78,7 +84,8 @@
             <option value="Resolved">Resolved</option>
             <option value="Rejected">Rejected</option>
           </select>
-          <button type="submit">Apply Status</button>
+          <div id="lgu-report-status-error" class="muted"></div>
+          <button id="lgu-report-status-btn" type="submit">Apply Status</button>
         </form>
         <div id="lgu-report-status-message" class="muted"></div>
       </div>
