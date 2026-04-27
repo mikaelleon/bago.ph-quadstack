@@ -2,12 +2,12 @@
 
 ## Summary
 - Total subtasks: `210`
-- Completed: `56 (27%)`
+- Completed: `66 (31%)`
 - Effort breakdown: `S×166 + M×35 + L×9`
 
 | Main task | % complete |
 |---|---:|
-| `T-UI-01` | 27% |
+| `T-UI-01` | 93% |
 | `T-UI-02` | 20% |
 | `T-UI-03` | 0% |
 | `T-UI-04` | 41% |
@@ -46,23 +46,23 @@
 **Source ref** — `ui-completeness-spec.md` §3.
 
 **Subtasks**
-- [ ] (M) Create `css/tokens.css` and move canonical color/type/spacing/radius/elevation/motion tokens there — artifact: `css/tokens.css`.
+- [x] (M) Create `css/tokens.css` and move canonical color/type/spacing/radius/elevation/motion tokens there — artifact: `css/tokens.css`.
 - [x] (S) Keep existing base token set from `css/style.css` as migration source — artifact: `css/style.css` `:root` token block.
 - [x] (S) Keep extended token set from `css/bento.css` as migration source — artifact: `css/bento.css` `:root` token block.
-- [ ] (M) Define primary/secondary/neutral 50-900 scales and map aliases used by pages — artifact: token scale table in `css/tokens.css`.
-- [ ] (S) Define spacing scale `4/8/12/16/24/32/48` and replace ad hoc values in shared classes — artifact: spacing vars + updated shared classes.
-- [ ] (S) Define type scale tokens (`xs`..`display`) and replace hard-coded sizes in shared components — artifact: typography tokens + refactored CSS.
-- [ ] (M) Build unified button component classes (`primary/secondary/ghost/danger`, `sm/md/lg`, `loading`, `disabled`) — artifact: `css/components/button.css` or equivalent shared block.
-- [ ] (M) Build unified field component classes (`input/select/textarea`, `error`, `disabled`, `hint`) — artifact: `css/components/forms.css`.
-- [ ] (M) Build shared table component classes (`sortable`, `loading`, `empty`, `pagination`) — artifact: `css/components/table.css`.
+- [x] (M) Define primary/secondary/neutral 50-900 scales and map aliases used by pages — artifact: token scale table in `css/tokens.css`.
+- [x] (S) Define spacing scale `4/8/12/16/24/32/48` and replace ad hoc values in shared classes — artifact: spacing vars + updated shared classes.
+- [x] (S) Define type scale tokens (`xs`..`display`) and replace hard-coded sizes in shared components — artifact: typography tokens + refactored CSS.
+- [x] (M) Build unified button component classes (`primary/secondary/ghost/danger`, `sm/md/lg`, `loading`, `disabled`) — artifact: `css/components/button.css` or equivalent shared block.
+- [x] (M) Build unified field component classes (`input/select/textarea`, `error`, `disabled`, `hint`) — artifact: `css/components/forms.css`.
+- [x] (M) Build shared table component classes (`sortable`, `loading`, `empty`, `pagination`) — artifact: `css/components/table.css`.
 - [x] (S) Reuse existing modal base class set in bento system as foundation — artifact: `css/bento.css` `.bento-modal*`.
-- [ ] (M) Build shared toast component styles + tokens — artifact: `css/components/toast.css`.
-- [ ] (M) Build shared skeleton component styles (`row/card/button`) — artifact: `css/components/skeleton.css`.
-- [ ] (M) Build shared breadcrumb + dropdown + tabs component styles — artifact: `css/components/navigation.css`.
+- [x] (M) Build shared toast component styles + tokens — artifact: `css/components/toast.css`.
+- [x] (M) Build shared skeleton component styles (`row/card/button`) — artifact: `css/components/skeleton.css`.
+- [x] (M) Build shared breadcrumb + dropdown + tabs component styles — artifact: `css/components/navigation.css`.
 - [ ] (L) Remove duplicate inline per-page style blocks by migrating common rules to shared CSS — artifact: reduced inline `<style>` blocks in `html/*.html`.
 - [x] (S) Preserve global Poppins baseline until tokenized typography rollout completes — artifact: `html/js/bago-env.js` font bootstrap.
 
-**Completion** — `4 / 15 subtasks (27%)`  
+**Completion** — `14 / 15 subtasks (93%)`  
 **Dependencies** — none  
 **Done when**
 - Shared token source exists and pages consume it.

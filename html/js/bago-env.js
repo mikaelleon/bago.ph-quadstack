@@ -34,6 +34,28 @@
     }
   }
 
+  function ensureUiDesignSystemStyles() {
+    var path = String(window.location.pathname || "/");
+    var base = path.indexOf("/html/") === 0 || path === "/html" ? "/css/" : "../css/";
+    var styles = [
+      { key: "tokens", href: base + "tokens.css" },
+      { key: "ui-button", href: base + "components/button.css" },
+      { key: "ui-forms", href: base + "components/forms.css" },
+      { key: "ui-table", href: base + "components/table.css" },
+      { key: "ui-toast", href: base + "components/toast.css" },
+      { key: "ui-skeleton", href: base + "components/skeleton.css" },
+      { key: "ui-navigation", href: base + "components/navigation.css" }
+    ];
+    styles.forEach(function (row) {
+      if (document.querySelector('link[data-bago-ui-style="' + row.key + '"]')) return;
+      var link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = row.href;
+      link.setAttribute("data-bago-ui-style", row.key);
+      document.head.appendChild(link);
+    });
+  }
+
   function loadI18nRuntime() {
     if (window.__BAGO_I18N_LOAD_PROMISE__) return window.__BAGO_I18N_LOAD_PROMISE__;
     window.__BAGO_I18N_LOAD_PROMISE__ = new Promise(function (resolve) {
@@ -77,5 +99,6 @@
   }
 
   ensureGlobalPoppins();
+  ensureUiDesignSystemStyles();
   loadI18nRuntime();
 })();
