@@ -16,6 +16,34 @@
     else localStorage.removeItem("bagoToken");
   }
 
+  function normalizeLocale(locale) {
+    const raw = String(locale || "").trim().toLowerCase();
+    if (raw === "fil") return "tl";
+    return raw === "tl" ? "tl" : "en";
+  }
+
+  function getLocale() {
+    try {
+      const stored = localStorage.getItem("bagoLocale");
+      if (stored) return normalizeLocale(stored);
+      const nav = String((navigator && navigator.language) || "").toLowerCase();
+      return nav.indexOf("tl") === 0 || nav.indexOf("fil") === 0 ? "tl" : "en";
+    } catch (_e) {
+      return "en";
+    }
+  }
+
+  function setLocale(locale) {
+    const next = normalizeLocale(locale);
+    try {
+      localStorage.setItem("bagoLocale", next);
+    } catch (_e) {}
+    if (window.BAGO && window.BAGO.i18n && typeof window.BAGO.i18n.set === "function") {
+      window.BAGO.i18n.set(next);
+    }
+    return next;
+  }
+
   async function request(method, path, body) {
     const url = base() + path;
     const headers = { Accept: "application/json" };
@@ -49,10 +77,11 @@
     try {
       var body =
         email && String(email).indexOf("@") !== -1
-          ? { email: String(email).trim().toLowerCase(), password: String(password || "") }
-          : { mobile: mobile, pin: pin };
+          ? { email: String(email).trim().toLowerCase(), password: String(password || ""), locale: getLocale() }
+          : { mobile: mobile, pin: pin, locale: getLocale() };
       const data = await request("POST", "/api/auth/login", body);
       setToken(data.token);
+      if (data && data.locale) setLocale(data.locale);
       return { ok: true, role: data.role };
     } catch (e) {
       return {
@@ -70,9 +99,11 @@
         full_name,
         mobile,
         pin,
-        role
+        role,
+        locale: getLocale()
       });
       setToken(data.token);
+      if (data && data.locale) setLocale(data.locale);
       return { ok: true, role: data.role };
     } catch (e) {
       return {
@@ -101,12 +132,27 @@
     });
   }
 
+  async function syncLocaleFromProfile() {
+    if (!hasBase() || !getToken()) return null;
+    try {
+      const data = await request("GET", "/api/auth/me");
+      if (data && data.locale) {
+        return setLocale(data.locale);
+      }
+    } catch (_e) {}
+    return null;
+  }
+
   window.BAGOApi = {
     base,
     hasBase,
     getToken,
     setToken,
     request,
+    normalizeLocale,
+    getLocale,
+    setLocale,
+    syncLocaleFromProfile,
     tryLogin,
     tryRegister,
     loadBarangaysIntoSelect

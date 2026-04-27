@@ -38,6 +38,40 @@ window.BAGOPrototype = (function () {
     }
   }
 
+  function ensureI18nRuntime() {
+    if (window.__BAGO_I18N_LOAD_PROMISE__) return window.__BAGO_I18N_LOAD_PROMISE__;
+    window.__BAGO_I18N_LOAD_PROMISE__ = new Promise(function (resolve) {
+      if (window.BAGO && window.BAGO.i18n) {
+        resolve(window.BAGO.i18n);
+        return;
+      }
+      var path = String(window.location.pathname || "/");
+      var base = path.indexOf("/html/") === 0 || path === "/html" ? "/html/" : "./";
+      var scripts = [base + "js/i18n/strings.js", base + "js/i18n/i18n.js"];
+      var idx = 0;
+      function next() {
+        if (idx >= scripts.length) {
+          resolve(window.BAGO && window.BAGO.i18n ? window.BAGO.i18n : null);
+          return;
+        }
+        var src = scripts[idx++];
+        if (document.querySelector('script[data-bago-i18n-src="' + src + '"]')) {
+          next();
+          return;
+        }
+        var s = document.createElement("script");
+        s.src = src;
+        s.async = false;
+        s.setAttribute("data-bago-i18n-src", src);
+        s.onload = next;
+        s.onerror = next;
+        document.head.appendChild(s);
+      }
+      next();
+    });
+    return window.__BAGO_I18N_LOAD_PROMISE__;
+  }
+
   /** Lightweight overlay dialogs (no React dependency). */
   function modalAlert(message, title) {
     title = title || "BAGO.PH";
@@ -643,6 +677,46 @@ window.BAGOPrototype = (function () {
     });
   }
 
+  function currentLocale() {
+    if (window.BAGO && window.BAGO.i18n && typeof window.BAGO.i18n.get === "function") {
+      return window.BAGO.i18n.get();
+    }
+    try {
+      return String(localStorage.getItem("bagoLocale") || "en");
+    } catch (_e) {
+      return "en";
+    }
+  }
+
+  function applyLocale(locale) {
+    var next = String(locale || currentLocale());
+    try {
+      localStorage.setItem("bagoLocale", next === "tl" ? "tl" : "en");
+    } catch (_e) {}
+    if (window.BAGO && window.BAGO.i18n && typeof window.BAGO.i18n.set === "function") {
+      window.BAGO.i18n.set(next);
+    }
+  }
+
+  async function syncLocaleAfterAuth() {
+    if (!window.BAGOApi) {
+      applyLocale(currentLocale());
+      return;
+    }
+    if (typeof window.BAGOApi.syncLocaleFromProfile === "function") {
+      var fromProfile = await window.BAGOApi.syncLocaleFromProfile();
+      if (fromProfile) {
+        applyLocale(fromProfile);
+        return;
+      }
+    }
+    if (typeof window.BAGOApi.getLocale === "function") {
+      applyLocale(window.BAGOApi.getLocale());
+      return;
+    }
+    applyLocale(currentLocale());
+  }
+
   async function onLogin() {
     var emailEl = document.querySelector("input[type=\"email\"]");
     var email = emailEl ? String(emailEl.value || "").trim().toLowerCase() : "";
@@ -666,6 +740,7 @@ window.BAGOPrototype = (function () {
             outLgu = { ok: true, role: dataLgu.role };
           }
           if (outLgu.ok) {
+            await syncLocaleAfterAuth();
             setRole(outLgu.role);
             go(dashboardFor(outLgu.role));
             return;
@@ -720,6 +795,7 @@ window.BAGOPrototype = (function () {
           out = { ok: true, role: data.role };
         }
         if (out.ok) {
+          await syncLocaleAfterAuth();
           setRole(out.role);
           issueOtpForLocal(mobile);
           go("otp");
@@ -814,6 +890,7 @@ window.BAGOPrototype = (function () {
           out = { ok: true, role: data.role };
         }
         if (out.ok) {
+          await syncLocaleAfterAuth();
           saveLocalAccount(mobile, pin, out.role || role);
           setRole(out.role);
           issueOtpForLocal(mobile);
@@ -1077,6 +1154,7 @@ window.BAGOPrototype = (function () {
   }
 
   ensureGlobalPoppins();
+  ensureI18nRuntime();
   bindPhase2Handlers();
   ensureDemoAccounts();
   enforceAccess();

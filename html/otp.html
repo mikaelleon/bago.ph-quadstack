@@ -79,6 +79,8 @@
     ensureCoreLibs()
       .then(function () { return loadScript(withBases("js/bago-env.js")); })
       .then(function () { return loadScript(withBases("js/bago-api.js")); })
+      .then(function () { return loadScript(withBases("js/i18n/strings.js")); })
+      .then(function () { return loadScript(withBases("js/i18n/i18n.js")); })
       .then(function () { return loadBabelJsx(withBases("hf-prototype/components/shared.jsx")); })
       .then(function () { return loadBabelJsx(withBases("hf-prototype/components/shared-screens.jsx")); })
       .then(function () { return loadScript(withBases("js/prototype-page-loader.js")); })

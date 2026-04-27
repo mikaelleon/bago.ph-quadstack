@@ -2,13 +2,13 @@
 
 ## Summary
 - Total subtasks: **82**
-- Completed: **2 (2%)**
+- Completed: **16 (20%)**
 - Effort breakdown: **S×16 + M×53 + L×13**
 
 | Main task ID | % complete |
 |---|---:|
-| `T-I18N-01` | 0 / 8 (0%) |
-| `T-I18N-02` | 0 / 6 (0%) |
+| `T-I18N-01` | 8 / 8 (100%) |
+| `T-I18N-02` | 6 / 6 (100%) |
 | `T-I18N-03` | 0 / 6 (0%) |
 | `T-I18N-04` | 0 / 6 (0%) |
 | `T-I18N-05` | 0 / 5 (0%) |
@@ -23,15 +23,15 @@
 **Goal** — Build core client i18n runtime and attribute-binding foundation for static HTML/JS pages.  
 **Source ref** — §4, §5.  
 **Subtasks**
-- [ ] (M) Create string catalog module with `window.BAGO_I18N` and key namespaces — `html/js/i18n/strings.js`.
-- [ ] (M) Create runtime module exposing `BAGO.i18n.t/set/get/apply/detectInitialLocale` — `html/js/i18n/i18n.js`.
-- [ ] (M) Implement `data-i18n` text-node binder — `html/js/i18n/i18n.js`.
-- [ ] (M) Implement `data-i18n-attr` parser supporting multi-attribute maps — `html/js/i18n/i18n.js`.
-- [ ] (S) Wire `DOMContentLoaded` bootstrap for locale detect + apply — `html/js/i18n/i18n.js` + page bootstraps.
-- [ ] (S) Emit `bago:locale-changed` custom event after locale swap — `html/js/i18n/i18n.js`.
-- [ ] (S) Add missing-key fallback chain (`requested -> en -> key`) — `html/js/i18n/i18n.js`.
-- [ ] (M) Include i18n scripts in pre-auth and live in-app pages — `html/*.html`.
-**Completion** — **0 / 8 subtasks (0%)**.  
+- [x] (M) Create string catalog module with `window.BAGO_I18N` and key namespaces — `html/js/i18n/strings.js`.
+- [x] (M) Create runtime module exposing `BAGO.i18n.t/set/get/apply/detectInitialLocale` — `html/js/i18n/i18n.js`.
+- [x] (M) Implement `data-i18n` text-node binder — `html/js/i18n/i18n.js`.
+- [x] (M) Implement `data-i18n-attr` parser supporting multi-attribute maps — `html/js/i18n/i18n.js`.
+- [x] (S) Wire `DOMContentLoaded` bootstrap for locale detect + apply — `html/js/i18n/i18n.js` + page bootstraps.
+- [x] (S) Emit `bago:locale-changed` custom event after locale swap — `html/js/i18n/i18n.js`.
+- [x] (S) Add missing-key fallback chain (`requested -> en -> key`) — `html/js/i18n/i18n.js`.
+- [x] (M) Include i18n scripts in pre-auth and live in-app pages — `html/*.html`.
+**Completion** — **8 / 8 subtasks (100%)**.  
 **Dependencies** — none.  
 **Done when**
 - `BAGO.i18n` global exists and callable on any page.
@@ -42,13 +42,13 @@
 **Goal** — Implement locale persistence, detection, and client override behavior.  
 **Source ref** — §2, §3, §5.  
 **Subtasks**
-- [ ] (S) Add `bagoLocale` read/write utility with value guard (`en|tl`) — `html/js/i18n/i18n.js`.
-- [ ] (S) Implement first-visit detection via `navigator.language` (`tl|fil -> tl`) — `html/js/i18n/i18n.js`.
-- [ ] (S) Persist explicit user choice and override detection on subsequent loads — `html/js/i18n/i18n.js`.
-- [ ] (S) Keep `bagoLocale` intact on logout flow — `html/role-access.js`, `html/js/prototype-page-loader.js`.
-- [ ] (M) Sync chosen locale after successful auth login/register flow — `html/js/prototype-page-loader.js`.
-- [ ] (M) Load user locale from profile response if available and reconcile with local override — `html/js/bago-api.js` + auth flow handlers.
-**Completion** — **0 / 6 subtasks (0%)**.  
+- [x] (S) Add `bagoLocale` read/write utility with value guard (`en|tl`) — `html/js/i18n/i18n.js`.
+- [x] (S) Implement first-visit detection via `navigator.language` (`tl|fil -> tl`) — `html/js/i18n/i18n.js`.
+- [x] (S) Persist explicit user choice and override detection on subsequent loads — `html/js/i18n/i18n.js`.
+- [x] (S) Keep `bagoLocale` intact on logout flow — `html/role-access.js`, `html/js/prototype-page-loader.js`.
+- [x] (M) Sync chosen locale after successful auth login/register flow — `html/js/prototype-page-loader.js`.
+- [x] (M) Load user locale from profile response if available and reconcile with local override — `html/js/bago-api.js` + auth flow handlers.
+**Completion** — **6 / 6 subtasks (100%)**.  
 **Dependencies** — `T-I18N-01`.  
 **Done when**
 - Reload preserves locale across sessions.
