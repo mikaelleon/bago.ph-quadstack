@@ -32,6 +32,15 @@
 
   async function initDashboardLGU() {
     try {
+      var token =
+        window.BAGOApi && typeof window.BAGOApi.getToken === "function"
+          ? window.BAGOApi.getToken()
+          : localStorage.getItem("bagoToken");
+      if (!token) {
+        q("dashboard-state").textContent = "Session missing. Sign in again to load live analytics.";
+        q("dashboard-error").textContent = "";
+        return;
+      }
       q("dashboard-state").textContent = "Loading dashboard...";
       q("dashboard-error").textContent = "";
       const out = await loadOverview();
@@ -43,7 +52,12 @@
       if (window.BAGOLguCharts) window.BAGOLguCharts.render(out.series);
     } catch (err) {
       q("dashboard-state").textContent = "";
-      q("dashboard-error").textContent = err.message || "Failed to load dashboard";
+      const msg = String((err && err.message) || "Failed to load dashboard");
+      if ((err && err.status === 401) || /bearer token/i.test(msg) || /unauthori/i.test(msg)) {
+        q("dashboard-error").textContent = "Session expired. Please sign in again.";
+        return;
+      }
+      q("dashboard-error").textContent = msg;
     }
   }
 

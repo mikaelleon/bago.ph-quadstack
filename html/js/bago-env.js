@@ -59,6 +59,23 @@
     });
   }
 
+  function ensureUiFallbackStyles() {
+    if (document.getElementById("bago-ui-fallback-style")) return;
+    var style = document.createElement("style");
+    style.id = "bago-ui-fallback-style";
+    style.textContent =
+      ".ui-breadcrumb{margin:0 0 12px;font-size:13px;color:#616161;}" +
+      ".ui-breadcrumb ol{list-style:none;margin:0;padding:0;display:flex;align-items:center;gap:8px;}" +
+      ".ui-breadcrumb li{display:flex;align-items:center;gap:8px;}" +
+      ".ui-breadcrumb li+li:before{content:'/';color:#9e9e9e;}" +
+      ".ui-breadcrumb a{color:#334155;text-decoration:none;}" +
+      ".ui-breadcrumb a:hover{text-decoration:underline;}" +
+      ".ui-breadcrumb span{color:#616161;}" +
+      ".ui-btn{display:inline-flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid #cfd8dc;background:#fff;color:#0d1b2a;padding:8px 12px;font:600 13px/1.2 Poppins,Arial,sans-serif;}" +
+      ".ui-btn-secondary{background:#fff;color:#0d1b2a;}";
+    document.head.appendChild(style);
+  }
+
   function loadI18nRuntime() {
     if (window.__BAGO_I18N_LOAD_PROMISE__) return window.__BAGO_I18N_LOAD_PROMISE__;
     window.__BAGO_I18N_LOAD_PROMISE__ = new Promise(function (resolve) {
@@ -103,5 +120,6 @@
 
   ensureGlobalPoppins();
   ensureUiDesignSystemStyles();
+  ensureUiFallbackStyles();
   loadI18nRuntime();
 })();
